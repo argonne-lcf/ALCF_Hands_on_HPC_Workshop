@@ -142,7 +142,7 @@ def get_bounding_boxes(filename):
 
 
 if __name__ == '__main__':
-   logging.basicConfig(level=logging.DEBUG)
+   logging.basicConfig(level=logging.INFO)
    import argparse,json
    parser = argparse.ArgumentParser(description='test this')
    parser.add_argument('-c', '--config', dest='config_filename',
