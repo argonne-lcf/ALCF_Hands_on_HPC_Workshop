@@ -5,7 +5,19 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.utils.data.distributed
-import horovod.torch as hvd
+try:
+    import horovod.torch as hvd
+    with_hvd=True
+except:
+    with_hvd=False
+    class Hvd:
+        def init():
+            print("I could not find Horovod package, will do things sequentially")
+        def rank():
+            return 0
+        def size():
+            return 1
+hvd=Hvd; 
 import time
 
 t0 = time.time()
@@ -104,16 +116,21 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr * hvd.size(),
                       momentum=args.momentum)
 
 # Horovod: broadcast parameters & optimizer state.
-hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-hvd.broadcast_optimizer_state(optimizer, root_rank=0)
+if (with_hvd):
+    hvd.broadcast_parameters(model.state_dict(), root_rank=0)
+    hvd.broadcast_optimizer_state(optimizer, root_rank=0)
 
 # Horovod: (optional) compression algorithm.
-compression = hvd.Compression.fp16 if args.fp16_allreduce else hvd.Compression.none
+if (with_hvd):
+    compression = hvd.Compression.fp16 if args.fp16_allreduce else hvd.Compression.none
+else:
+    compression = False
 
 # Horovod: wrap optimizer with DistributedOptimizer.
-optimizer = hvd.DistributedOptimizer(optimizer,
-                                     named_parameters=model.named_parameters(),
-                                     compression=compression)
+if (with_hvd):
+    optimizer = hvd.DistributedOptimizer(optimizer,
+                                         named_parameters=model.named_parameters(),
+                                         compression=compression)
 
 
 def train(epoch):
@@ -138,7 +155,10 @@ def train(epoch):
 
 def metric_average(val, name):
     tensor = torch.tensor(val)
-    avg_tensor = hvd.allreduce(tensor, name=name)
+    if (with_hvd):
+        avg_tensor = hvd.allreduce(tensor, name=name)
+    else:
+        avg_tensor = tensor
     return avg_tensor.item()
 
 
