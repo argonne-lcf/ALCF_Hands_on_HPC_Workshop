@@ -29,6 +29,7 @@ python -m virtualenv --system-site-packages $VENV_LOCATION
 source $VENV_LOCATION/bin/activate
 python -m pip install cmake
 python -m pip install matplotlib
+python -m pip install sklearn
 ```
 5. Now we are ready to build our executable by executing the provided shell script:
 ```
