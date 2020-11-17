@@ -2,7 +2,7 @@
 
 # Clean up the directory
 rm -rf *.png
-cd build/
+cd app_build/
 
 rm -rf *.png
 rm -rf *.npy
@@ -16,4 +16,3 @@ rm -rf CMakeCache.txt
 
 cmake ../
 make
-
