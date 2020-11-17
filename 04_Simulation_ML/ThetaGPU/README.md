@@ -1,7 +1,5 @@
 # Description
 
-This branch has code/documentation relevant to running this application on ThetaGPU using optimized datascience machine learning libraries. For generic information about this code please visit the Readme.MD of the master branch.
-
 These are the steps to execute this code on ThetaGPU (interactively):
 1. Login to a ThetaGPU head node
 ```
