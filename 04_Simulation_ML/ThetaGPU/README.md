@@ -26,6 +26,7 @@ Now that we can access the internet, we need to set up a virtual environment in 
 python -m pip install --user virtualenv
 export VENV_LOCATION=/home/rmaulik/THETAGPU_TF_ENV # Add your path here
 python -m virtualenv --system-site-packages $VENV_LOCATION
+source $VENV_LOCATION/bin/activate
 python -m pip install cmake
 python -m pip install matplotlib
 ```
