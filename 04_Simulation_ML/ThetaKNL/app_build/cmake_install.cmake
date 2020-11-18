@@ -1,4 +1,4 @@
-# Install script for directory: /gpfs/mira-home/rmaulik/project_link/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaKNL
+# Install script for directory: /lus/theta-fs0/projects/datascience/rmaulik/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaKNL
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/gpfs/mira-home/rmaulik/project_link/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaKNL/app_build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/lus/theta-fs0/projects/datascience/rmaulik/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaKNL/app_build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
