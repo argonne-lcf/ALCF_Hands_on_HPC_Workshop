@@ -23,13 +23,7 @@ qsub -n 1 -q debug-cache-quad -A datascience -I -t 1:00:00
 ```
 source setup.sh
 ```
-3. Build the executable using cmake
-```
-cd build/ 
-cmake ../
-make
-```
-4. If build is successful you are ready to run the example as follows
+3. If build is successful you are ready to run the example as follows
 ```
 aprun -n 1 -N 1 -e OMP_NUM_THREADS=32 -d 32 -j 2 -e KMP_BLOCKTIME=0 -cc depth ./app
 ```
@@ -37,16 +31,16 @@ aprun -n 1 -N 1 -e OMP_NUM_THREADS=32 -d 32 -j 2 -e KMP_BLOCKTIME=0 -cc depth ./
 # What you should see
 
 ## Field evolution
-![Fields](Field_evolution.png "Fields")
+![Fields](app_build/Field_evolution.png "Fields")
 
 ## Modal decomposition
-![Modes](SVD_Eigenvectors.png "Modes")
+![Modes](app_build/SVD_Eigenvectors.png "Modes")
 
 ## Forecasting the modal evolution in time (still rather poor but you get the idea)
-![Forecasting Mode 0](Mode_0_prediction.png "Mode 0 prediction")
+![Forecasting Mode 0](app_build/Mode_0_prediction.png "Mode 0 prediction")
 
-![Forecasting Mode 1](Mode_1_prediction.png "Mode 1 prediction")
+![Forecasting Mode 1](app_build/Mode_1_prediction.png "Mode 1 prediction")
 
-![Forecasting Mode 2](Mode_2_prediction.png "Mode 2 prediction")
+![Forecasting Mode 2](app_build/Mode_2_prediction.png "Mode 2 prediction")
 
 
