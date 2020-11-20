@@ -21,7 +21,7 @@ Do the following before you come to the tutorial:
 *  From here you can enter the url for the github repo: `https://github.com/argonne-lcf/sdl_ai_workshop` and hit `<enter>`.
 ![open_github](README_images/colab_open_github.png)
 *  This will show you a list of the Notebooks available in the repo.
-*  Select the `introduction.ipynb` file to open and work through it.
+*  Select the `statistical_learning.ipynb` file to open and work through it.
 *  As each session of the tutorial begins, you will simply select the corresponding notebook from this list and it will create a copy for you in your Colaboratory account (all `*.ipynb` files in the Colaboratory account will be stored in your Google Drive).
 * To use a GPU, in the notbook the select `Runtime` -> `Change Runtime Type` and you have a dropbox list of hardward settings to choose from where the notebook can run.
 
