@@ -17,7 +17,7 @@ except:
             return 0
         def size():
             return 1
-hvd=Hvd; 
+    hvd=Hvd; 
 import time
 
 t0 = time.time()

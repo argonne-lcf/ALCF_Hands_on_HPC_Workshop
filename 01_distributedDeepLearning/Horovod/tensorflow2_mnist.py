@@ -19,15 +19,15 @@ try:
     import horovod.tensorflow as hvd
 except:
     class Hvd:
-        def __init__():
+        def __init__(self, ):
+            print("No horovod")
+        def init(self, ):
             return 0
-        def init():
+        def rank(self, ):
             return 0
-        def rank():
+        def local_rank(self, ):
             return 0
-        def local_rank():
-            return 0
-        def size():
+        def size(self, ):
             return 1
     hvd=Hvd()
 import time
@@ -96,7 +96,10 @@ def training_step(images, labels, first_batch):
         loss_value = loss(labels, probs)
 
     # Horovod: add Horovod Distributed GradientTape.
-    tape = hvd.DistributedGradientTape(tape)
+    try:
+        tape = hvd.DistributedGradientTape(tape)
+    except:
+        print("No horovod")
 
     grads = tape.gradient(loss_value, mnist_model.trainable_variables)
     opt.apply_gradients(zip(grads, mnist_model.trainable_variables))
@@ -108,21 +111,23 @@ def training_step(images, labels, first_batch):
     # Note: broadcast should be done after the first gradient step to ensure optimizer
     # initialization.
     if first_batch:
-        hvd.broadcast_variables(mnist_model.variables, root_rank=0)
-        hvd.broadcast_variables(opt.variables(), root_rank=0)
+        try:
+            hvd.broadcast_variables(mnist_model.variables, root_rank=0)
+            hvd.broadcast_variables(opt.variables(), root_rank=0)
+        except:
+            print("No horovod")
 
     return loss_value
 
-
+from tqdm import tqdm 
 # Horovod: adjust number of steps based on number of GPUs.
 for ep in range(args.epochs):
-    for batch, (images, labels) in enumerate(dataset.take(10000 // hvd.size())):
+    for batch, (images, labels) in tqdm(enumerate(dataset.take(10000 // hvd.size()))):
         loss_value = training_step(images, labels, (batch == 0) and (ep == 0))
 
-        if batch % 10 == 0:
-            print('[%d] Epoch - %d, step #%d\tLoss: %.6f' % (hvd.rank(), ep, batch, loss_value))
         if hvd.rank() == 0 and batch % 10 == 0:
             checkpoint.save(checkpoint_dir)
+    print('[%d] Epoch - %d, step #%d\tLoss: %.6f' % (hvd.rank(), ep, batch, loss_value))
 
 # Horovod: save checkpoints only on worker 0 to prevent other workers from
 # corrupting it.

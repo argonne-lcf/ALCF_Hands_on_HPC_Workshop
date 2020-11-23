@@ -19,15 +19,15 @@ try:
     import horovod.tensorflow as hvd
 except:
     class Hvd:
-        def __init__():
+        def __init__(self,):
+            print("faked Horovod")
+        def init(self, ):
             return 0
-        def init():
+        def rank(self,):
             return 0
-        def rank():
+        def local_rank(self,):
             return 0
-        def local_rank():
-            return 0
-        def size():
+        def size(self,):
             return 1
     hvd=Hvd()
 import time
@@ -35,7 +35,7 @@ t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow CIFAR10 Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
-parser.add_argument('--epochs', type=int, default=4, metavar='N',
+parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 4)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
@@ -62,22 +62,21 @@ else:
         tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
 
 (cifar10_images, cifar10_labels), _ = \
-    tf.keras.datasets.cifar10.load_data(path='cifar10.npz')
+    tf.keras.datasets.cifar10.load_data()
 
 dataset = tf.data.Dataset.from_tensor_slices(
     (tf.cast(cifar10_images[..., tf.newaxis] / 255.0, tf.float32),
              tf.cast(cifar10_labels, tf.int64))
 )
-dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
+dataset = dataset.repeat().shuffle(1000).batch(args.batch_size)
 
 loss = tf.losses.SparseCategoricalCrossentropy()
 
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
-cifar10_model = tf.keras.applications.AlexNet(
-    include_top=True, weights='imagenet', input_tensor=None, input_shape=(32, 32, 3),
-    pooling=None, classes=10, **kwargs
-)
+cifar10_model = tf.keras.applications.ResNet50(include_top=False,
+    input_tensor=None, input_shape=(32, 32, 3),
+    pooling=None, classes=10)
 checkpoint_dir = './checkpoints/ckpt'
 checkpoint = tf.train.Checkpoint(model=cifar10_model, optimizer=opt)
 
@@ -89,8 +88,10 @@ def training_step(images, labels, first_batch):
         loss_value = loss(labels, probs)
 
     # Horovod: add Horovod Distributed GradientTape.
-    tape = hvd.DistributedGradientTape(tape)
-
+    try:
+        tape = hvd.DistributedGradientTape(tape)
+    except:
+        print("no horovod")
     grads = tape.gradient(loss_value, cifar10_model.trainable_variables)
     opt.apply_gradients(zip(grads, cifar10_model.trainable_variables))
 
@@ -101,15 +102,17 @@ def training_step(images, labels, first_batch):
     # Note: broadcast should be done after the first gradient step to ensure optimizer
     # initialization.
     if first_batch:
-        hvd.broadcast_variables(cifar10_model.variables, root_rank=0)
-        hvd.broadcast_variables(opt.variables(), root_rank=0)
-
+        try:
+            hvd.broadcast_variables(cifar10_model.variables, root_rank=0)
+            hvd.broadcast_variables(opt.variables(), root_rank=0)
+        except:
+            print("no horovod")
     return loss_value
 
 
 # Horovod: adjust number of steps based on number of GPUs.
 for ep in range(args.epochs):
-    for batch, (images, labels) in enumerate(dataset.take(10000 // hvd.size())):
+    for batch, (images, labels) in enumerate(dataset.take(1000 // hvd.size())):
         loss_value = training_step(images, labels, (batch == 0) and (ep == 0))
 
         if batch % 10 == 0:

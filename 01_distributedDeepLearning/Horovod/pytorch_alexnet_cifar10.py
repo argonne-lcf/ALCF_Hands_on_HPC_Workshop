@@ -17,7 +17,7 @@ except:
             return 0
         def size():
             return 1
-hvd=Hvd; 
+    hvd=Hvd; 
 import time
 
 t0 = time.time()
@@ -65,11 +65,11 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
 train_dataset = \
     datasets.CIFAR10('datasets/', train=True, download=True,
-                    transform=transforms.Compose([
-                        transforms.RandomHorizontalFlip(),
-                        transforms.RandomCrop(32, 4),
-                        transforms.ToTensor(),
-                        normalize,
+                     transform=transforms.Compose([
+                         transforms.RandomHorizontalFlip(),
+                         transforms.RandomCrop(32, 4),
+                         transforms.ToTensor(),
+                         normalize,
                     ]))
 # Horovod: use DistributedSampler to partition the training data.
 train_sampler = torch.utils.data.distributed.DistributedSampler(
@@ -80,7 +80,7 @@ train_loader = torch.utils.data.DataLoader(
 test_dataset = \
     datasets.CIFAR10('datasets', train=False, transform=transforms.Compose([
         transforms.ToTensor(), normalize, 
-    ]))
+]))
 # Horovod: use DistributedSampler to partition the test data.
 test_sampler = torch.utils.data.distributed.DistributedSampler(
     test_dataset, num_replicas=hvd.size(), rank=hvd.rank())
@@ -89,8 +89,42 @@ test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.test_bat
 
 
 import torchvision.models as models
+NUM_CLASSES = 10
+class AlexNet(nn.Module):
+    def __init__(self, num_classes=NUM_CLASSES):
+        super(AlexNet, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(64, 192, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(192, 384, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(384, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+        )
+        self.classifier = nn.Sequential(
+            nn.Dropout(),
+            nn.Linear(256 * 2 * 2, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, num_classes),
+        )
 
-model = models.alexnet(num_classes=10)
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), 256 * 2 * 2)
+        x = self.classifier(x)
+        return x
+
+model = AlexNet(num_classes=10)
 
 if args.device.find("gpu")!=-1:
     # Move model to GPU.
