@@ -13,7 +13,7 @@ export LD_LIBRARY_PATH=/opt/cray/pe/mpt/7.7.14/gni/mpich-intel-abi/16.0/lib:$LD_
 
 # Clean up the directory
 rm -rf *.png
-cd build/
+cd app_build/
 
 rm -rf *.png
 rm -rf *.npy
@@ -24,4 +24,6 @@ rm -rf app
 rm -rf cmake_install.cmake
 rm -rf Makefile
 rm -rf CMakeCache.txt
-cd ..
+
+cmake ../
+make
