@@ -18,7 +18,7 @@
 from PIL import Image as PIL_Image
 import torch
 import torchvision
-import logging,os,glob
+import logging,os,glob,time
 import numpy as np
 import xml.etree.ElementTree as ET
 logger = logging.getLogger(__name__)
@@ -307,13 +307,20 @@ def get_datasets(config):
 
 if __name__ == '__main__':
     # configure logging module
-    logging.basicConfig(level=logging.INFO)
+    logging_format = '%(asctime)s %(levelname)s:%(process)s:%(thread)s:%(name)s:%(message)s'
+    logging_datefmt = '%Y-%m-%d %H:%M:%S'
+    logging_level = logging.INFO
+    logging.basicConfig(level=logging_level,
+                       format=logging_format,
+                       datefmt=logging_datefmt)
     # parse command line
     import argparse,json
     parser = argparse.ArgumentParser(description='test this')
     parser.add_argument('-c', '--config', dest='config_filename',
                        help='configuration filename in json format',
                        required=True)
+    parser.add_argument('-e', '--epochs',help='number of epochs',default=4,type=int)
+    parser.add_argument('-b', '--batches',help='number of batches',default=5,type=int)
     args = parser.parse_args()
 
     # parse config file
@@ -331,23 +338,29 @@ if __name__ == '__main__':
     test_sampler = torch.utils.data.distributed.DistributedSampler(testds,num_ranks,rank,shuffle=True,drop_last=True)
 
     ## create data loaders
+    batch_size = config['data']['batch_size']
     train_loader = torch.utils.data.DataLoader(trainds,shuffle=False,
-                                               sampler=train_sampler,num_workers=10,
-                                               batch_size=config['data']['batch_size'])
+                                               sampler=train_sampler,num_workers=config['data']['num_parallel_readers'],
+                                               batch_size=batch_size,persistent_workers=True)
     test_loader = torch.utils.data.DataLoader(testds,shuffle=False,
-                                               sampler=test_sampler,num_workers=10,
-                                               batch_size=config['data']['batch_size'])
+                                               sampler=test_sampler,num_workers=config['data']['num_parallel_readers'],
+                                               batch_size=batch_size,persistent_workers=True)
 
     # epoch loop
-    for epoch in range(5):
+    for epoch in range(args.epochs):
         logger.info(f'epoch = {epoch}')
 
         # calling this is required to get the shuffle to work
         train_sampler.set_epoch(epoch)
 
         # can iterate over a dataset object
+        start = time.time()
         for batch_number,(inputs,labels) in enumerate(train_loader):
             logger.info('batch_number = %s input shape = %s    labels shape = %s  labels = %s',batch_number,inputs.shape,labels.shape,np.squeeze(labels[0:10].numpy()).tolist())
             #logger.info('batch_number = %s labels = %s',batch_number,labels)
+            
+            # simulate training step
+            time.sleep(0.5)
 
-            if batch_number > 5: break
+            if batch_number > args.batches: break
+        logger.info('image rate: %10.0f',batch_number*batch_size/(time.time() - start))
