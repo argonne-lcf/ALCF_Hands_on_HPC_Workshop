@@ -129,7 +129,7 @@ model = AlexNet(num_classes=10)
 if args.device.find("gpu")!=-1:
     # Move model to GPU.
     model.cuda()
-
+criterion = nn.CrossEntropyLoss()
 # Horovod: scale learning rate by the number of GPUs.
 optimizer = optim.SGD(model.parameters(), lr=args.lr * hvd.size(),
                       momentum=args.momentum)
@@ -161,7 +161,8 @@ def train(epoch):
             data, target = data.cuda(), target.cuda()
         optimizer.zero_grad()
         output = model(data)
-        loss = F.nll_loss(output, target)
+        loss = criterion(output, target)
+        #loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
         if batch_idx % args.log_interval == 0:
@@ -190,7 +191,8 @@ def test():
             data, target = data.cuda(), target.cuda()
         output = model(data)
         # sum up batch loss
-        test_loss += F.nll_loss(output, target, size_average=False).item()
+#        test_loss += F.nll_loss(output, target, size_average=False).item()
+        test_loss = criterion(output, target)
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
         test_accuracy += pred.eq(target.data.view_as(pred)).cpu().float().sum()

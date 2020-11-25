@@ -63,26 +63,15 @@ else:
     if gpus:
         tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
 
-(mnist_images, mnist_labels), _ = \
-    tf.keras.datasets.mnist.load_data(path='mnist.npz')
+(cifar10_images, cifar10_labels), _ = \
+    tf.keras.datasets.cifar10.load_data()
 
 dataset = tf.data.Dataset.from_tensor_slices(
-    (tf.cast(mnist_images[..., tf.newaxis] / 255.0, tf.float32),
-             tf.cast(mnist_labels, tf.int64))
+    (tf.cast(cifar10_images[..., tf.newaxis] / 255.0, tf.float32),
+             tf.cast(cifar10_labels, tf.int64))
 )
 nsamples = len(list(dataset))
 dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
-
-mnist_model = tf.keras.Sequential([
-    tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
-    tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-    tf.keras.layers.Dropout(0.25),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(10, activation='softmax')
-])
 
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
@@ -91,9 +80,48 @@ opt = tf.optimizers.Adam(args.lr * hvd.size())
 if (with_hvd):
     opt = hvd.DistributedOptimizer(opt)
 
+#cifar10_model = tf.keras.applications.ResNet50(include_top=False,
+#    input_tensor=None, input_shape=(32, 32, 3),
+#    pooling=None, classes=10)
+input_shape=(32, 32, 3)
+num_classes = 10
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import *
+cifar10_model = Sequential()
+
+cifar10_model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
+cifar10_model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
+cifar10_model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
+cifar10_model.add(Flatten())
+cifar10_model.add(Dense(256, activation='relu'))
+cifar10_model.add(Dense(128, activation='relu'))
+cifar10_model.add(Dense(num_classes, activation='softmax'))
+'''
+cifar10_model = tf.keras.Sequential(
+    [
+        tf.keras.layers.Conv2D(filters=96,kernel_size=(3,3),strides=(4,4),input_shape=input_shape, activation='relu'), 
+        tf.keras.layers.MaxPooling2D(pool_size=(2,2),strides=(2,2)), 
+        tf.keras.layers.Conv2D(256,(5,5),padding='same',activation='relu'), 
+        tf.keras.layers.MaxPooling2D(pool_size=(2,2),strides=(2,2)), 
+        tf.keras.layers.Conv2D(384,(3,3),padding='same',activation='relu'), 
+        tf.keras.layers.Conv2D(384,(3,3),padding='same',activation='relu'), 
+        tf.keras.layers.Conv2D(256,(3,3),padding='same',activation='relu'), 
+        tf.keras.layers.MaxPooling2D(pool_size=(2,2),strides=(2,2)), 
+        tf.keras.layers.Flatten(), 
+        tf.keras.layers.Dense(4096, activation='relu'), 
+        tf.keras.layers.Dropout(0.4), 
+        tf.keras.layers.Dense(4096, activation='relu'), 
+        tf.keras.layers.Dropout(0.4), 
+        tf.keras.layers.Dense(num_classes,activation='softmax'), ]
+)
+'''
+print(cifar10_model.summary())
 # Horovod: Specify `experimental_run_tf_function=False` to ensure TensorFlow
 # uses hvd.DistributedOptimizer() to compute gradients.
-mnist_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(),
+cifar10_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(),
                     optimizer=opt,
                     metrics=['accuracy'],
                     experimental_run_tf_function=False)
@@ -128,7 +156,7 @@ verbose = 1 if hvd.rank() == 0 else 0
 
 # Train the model.
 # Horovod: adjust number of steps based on number of GPUs.
-mnist_model.fit(dataset, steps_per_epoch=nsamples // hvd.size() // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose)
+cifar10_model.fit(dataset, steps_per_epoch=nsamples // hvd.size() // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose)
 t1 = time.time()
 if (hvd.rank()==0):
     print("Total training time: %s seconds" %(t1 - t0))

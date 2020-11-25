@@ -68,8 +68,10 @@ dataset = tf.data.Dataset.from_tensor_slices(
     (tf.cast(mnist_images[..., tf.newaxis] / 255.0, tf.float32),
              tf.cast(mnist_labels, tf.int64))
 )
-dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
 
+nsamples = len(list(dataset))
+# shuffle the dataset, with shuffle buffer to be 10000
+dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
 mnist_model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
     tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
@@ -122,12 +124,14 @@ def training_step(images, labels, first_batch):
 from tqdm import tqdm 
 # Horovod: adjust number of steps based on number of GPUs.
 for ep in range(args.epochs):
-    for batch, (images, labels) in tqdm(enumerate(dataset.take(10000 // hvd.size()))):
+    nstep = nsamples//hvd.size()//args.batch_size
+    for batch, (images, labels) in enumerate(dataset.take(nstep)):
         loss_value = training_step(images, labels, (batch == 0) and (ep == 0))
 
-        if hvd.rank() == 0 and batch % 10 == 0:
+        if hvd.rank() == 0 and batch % 10 == 0: 
             checkpoint.save(checkpoint_dir)
-    print('[%d] Epoch - %d, step #%d\tLoss: %.6f' % (hvd.rank(), ep, batch, loss_value))
+            print('[%d] Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (hvd.rank(), ep, batch, nstep, loss_value))
+    print('[%d] Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (hvd.rank(), ep, batch, nstep, loss_value))
 
 # Horovod: save checkpoints only on worker 0 to prevent other workers from
 # corrupting it.
