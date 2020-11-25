@@ -152,7 +152,6 @@ def train(epoch):
                 epoch, batch_idx * len(data), len(train_sampler),
                 100. * batch_idx / len(train_loader), loss.item()))
 
-
 def metric_average(val, name):
     tensor = torch.tensor(val)
     if (with_hvd):

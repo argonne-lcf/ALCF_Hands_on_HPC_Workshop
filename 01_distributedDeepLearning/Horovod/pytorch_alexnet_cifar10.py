@@ -63,14 +63,16 @@ if hvd.rank()==0:
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
+
+
+transform = transforms.Compose(
+    [transforms.ToTensor(),
+     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
 train_dataset = \
     datasets.CIFAR10('datasets/', train=True, download=True,
-                     transform=transforms.Compose([
-                         transforms.RandomHorizontalFlip(),
-                         transforms.RandomCrop(32, 4),
-                         transforms.ToTensor(),
-                         normalize,
-                    ]))
+                     transform=transform,)
+
 # Horovod: use DistributedSampler to partition the training data.
 train_sampler = torch.utils.data.distributed.DistributedSampler(
     train_dataset, num_replicas=hvd.size(), rank=hvd.rank())
@@ -78,9 +80,8 @@ train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=args.batch_size, sampler=train_sampler, **kwargs)
 
 test_dataset = \
-    datasets.CIFAR10('datasets', train=False, transform=transforms.Compose([
-        transforms.ToTensor(), normalize, 
-]))
+    datasets.CIFAR10('datasets', train=False, transform=transform)
+
 # Horovod: use DistributedSampler to partition the test data.
 test_sampler = torch.utils.data.distributed.DistributedSampler(
     test_dataset, num_replicas=hvd.size(), rank=hvd.rank())
@@ -191,8 +192,8 @@ def test():
             data, target = data.cuda(), target.cuda()
         output = model(data)
         # sum up batch loss
-#        test_loss += F.nll_loss(output, target, size_average=False).item()
-        test_loss = criterion(output, target)
+        #test_loss += F.nll_loss(output, target, size_average=False).item()
+        test_loss += criterion(output, target).item()
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
         test_accuracy += pred.eq(target.data.view_as(pred)).cpu().float().sum()
