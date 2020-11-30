@@ -1,5 +1,7 @@
 # Distributed training with Horovod
 
+Author: Huihuo Zheng <huihuo.zheng@anl.gov>
+
 We provide MNIST and CIFAR10 examples for data parallel training. 
 * Pytorch example
   * pytorch_mnist.py
@@ -12,5 +14,7 @@ We provide MNIST and CIFAR10 examples for data parallel training.
   * tensorflow2_keras_cifar10.py
   
 All the examples can be run either on CPUs or GPUs by specifying ```--device [cpu|gpu]```. 
+
+Please check theta.md and thetagpu.md on how to run the examples on Theta and ThetaGPU respectively. 
 
   
