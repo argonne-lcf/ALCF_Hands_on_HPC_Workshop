@@ -120,7 +120,7 @@ else:
     # Horovod: save checkpoints only on worker 0 to prevent other workers from corrupting them.
 
 if hvd.rank() == 0:
-    callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoint-{epoch}.h5'))
+    callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoints/keras_mnist-{epoch}.h5'))
 
 # Horovod: write logs on worker 0.
 verbose = 1 if hvd.rank() == 0 else 0

@@ -87,7 +87,7 @@ loss = tf.losses.SparseCategoricalCrossentropy()
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
 
-checkpoint_dir = './checkpoints/ckpt'
+checkpoint_dir = './checkpoints/tf2_mnist'
 checkpoint = tf.train.Checkpoint(model=mnist_model, optimizer=opt)
 
 

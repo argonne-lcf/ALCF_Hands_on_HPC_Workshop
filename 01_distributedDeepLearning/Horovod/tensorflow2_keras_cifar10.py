@@ -40,8 +40,8 @@ parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 10)')
-parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
-                    help='learning rate (default: 0.01)')
+parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+                    help='learning rate (default: 0.001)')
 parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
@@ -203,7 +203,7 @@ else:
     # Horovod: save checkpoints only on worker 0 to prevent other workers from corrupting them.
 
 if hvd.rank() == 0:
-    callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoint-{epoch}.h5'))
+    callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoints/keras_cifar10-{epoch}.h5'))
 
 # Horovod: write logs on worker 0.
 verbose = 1 if hvd.rank() == 0 else 0
