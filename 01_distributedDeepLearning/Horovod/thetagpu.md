@@ -21,12 +21,12 @@ source /lus/theta-fs0/software/datascience/thetagpu/anaconda3/setup.sh
 	mpirun -np 8 python pytorch_cifar10.py --device gpu
 	```
 
-  -  TensorFlow MNIST
+   -  TensorFlow MNIST
 	```bash
 	mpirun -np 8 python tensorflow2_mnist.py --device gpu
 	```
 
-  - TensorFlow Keras MNIST
+   - TensorFlow Keras MNIST
 	```bash
 	mpirun -np 8 python  tensorflow2_keras_mnist.py --device gpu
 	```
