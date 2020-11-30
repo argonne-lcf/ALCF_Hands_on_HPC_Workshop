@@ -2,7 +2,7 @@
 
 1. Request an interactive session on Theta
 ```bash
-qsub -n 4 -q debug-cache-quad -A datascience -I -t 1:00:00
+qsub -n 4 -q debug-cache-quad -A SDL_Workshop -I -t 1:00:00
 ```
 
 3. Setup the Python environment to include TensorFlow, Keras, PyTorch and Horovod
@@ -41,7 +41,7 @@ You can do a simply scaling test.
 ```bash
 for n in 1 2 4 8 16 32 64 
 do
-  qsub -O pytorch_mnist_${n}nodes_t -n ${n} -q ATPESC2020 -A ATPESC2020 sumissions/theta/qsub_pytorch_mnist.sh
+  qsub -O pytorch_mnist_${n}nodes_t -n ${n} -q ATPESC2020 -A SDL_Workhop sumissions/theta/qsub_pytorch_mnist.sh
 done
 ```
 You can check the test accuracy and the timing for different scales. 

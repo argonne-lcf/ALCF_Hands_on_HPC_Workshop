@@ -1,8 +1,8 @@
 #!/bin/bash
 #COBALT -n 4
 #COBALT -t 1:00:00
-#COBALT -q ATPESC2020 --attrs mcdram=cache:numa=quad
-#COBALT -A ATPESC2020 -O pytorch_cifar10
+#COBALT -q debug-cache-quad --attrs mcdram=cache:numa=quad
+#COBALT -A SDL_Workshop -O pytorch_cifar10
 
 #submisstion script for running tensorflow_mnist with horovod
 
