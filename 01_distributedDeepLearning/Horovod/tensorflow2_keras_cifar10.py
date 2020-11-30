@@ -80,25 +80,64 @@ opt = tf.optimizers.Adam(args.lr * hvd.size())
 if (with_hvd):
     opt = hvd.DistributedOptimizer(opt)
 
-#cifar10_model = tf.keras.applications.ResNet50(include_top=False,
-#    input_tensor=None, input_shape=(32, 32, 3),
-#    pooling=None, classes=10)
 input_shape=(32, 32, 3)
 num_classes = 10
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import *
-cifar10_model = Sequential()
 
-cifar10_model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
-cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
-cifar10_model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
-cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
-cifar10_model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
-cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
-cifar10_model.add(Flatten())
-cifar10_model.add(Dense(256, activation='relu'))
-cifar10_model.add(Dense(128, activation='relu'))
-cifar10_model.add(Dense(num_classes, activation='softmax'))
+model = Sequential()
+model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
+model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Flatten())
+model.add(Dense(512))
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+model.add(Dense(num_classes))
+model.add(Activation('softmax'))
+
+cifar10_model = model;
+'''
+cifar10_model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
+    tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
+    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+    tf.keras.layers.Dropout(0.25),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+'''
+
+#cifar10_model = Sequential()
+
+#cifar10_model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
+#cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
+#cifar10_model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+#cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
+#cifar10_model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+#cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
+#cifar10_model.add(Flatten())
+#cifar10_model.add(Dense(256, activation='relu'))
+#cifar10_model.add(Dense(128, activation='relu'))
+#cifar10_model.add(Dense(num_classes, activation='softmax'))
+
+#cifar10_model = tf.keras.applications.ResNet50(include_top=False,
+#    input_tensor=None, input_shape=(32, 32, 3),
+#    classes=10)
+
 '''
 cifar10_model = tf.keras.Sequential(
     [
@@ -118,14 +157,14 @@ cifar10_model = tf.keras.Sequential(
         tf.keras.layers.Dense(num_classes,activation='softmax'), ]
 )
 '''
-print(cifar10_model.summary())
+
 # Horovod: Specify `experimental_run_tf_function=False` to ensure TensorFlow
 # uses hvd.DistributedOptimizer() to compute gradients.
 cifar10_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(),
                     optimizer=opt,
                     metrics=['accuracy'],
                     experimental_run_tf_function=False)
-
+#print(cifar10_model.summary())
 if (with_hvd):
     callbacks = [
         # Horovod: broadcast initial variable states from rank 0 to all other processes.

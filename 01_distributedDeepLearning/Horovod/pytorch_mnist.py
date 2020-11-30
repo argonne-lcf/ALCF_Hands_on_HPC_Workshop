@@ -25,7 +25,7 @@ t0 = time.time()
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
-parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
+parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 10)')
@@ -135,6 +135,8 @@ if (with_hvd):
 
 def train(epoch):
     model.train()
+    running_loss = 0.0
+    training_acc = 0.0
     # Horovod: set epoch to sampler for shuffling.
     train_sampler.set_epoch(epoch)
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -145,12 +147,22 @@ def train(epoch):
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
+        pred = output.data.max(1, keepdim=True)[1]
+        training_acc += pred.eq(target.data.view_as(pred)).cpu().float().sum()
+        running_loss += loss.item()
+
         if batch_idx % args.log_interval == 0:
             # Horovod: use train_sampler to determine the number of examples in
             # this worker's partition.
             print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(hvd.rank(), 
-                epoch, batch_idx * len(data), len(train_sampler),
-                100. * batch_idx / len(train_loader), loss.item()))
+                epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
+    running_loss = running_loss / len(train_sampler)
+    training_acc = training_acc / len(train_sampler)
+    loss_avg = metric_average(running_loss, 'running_loss')
+    training_acc = metric_average(training_acc, 'training_acc')
+
+    if hvd.rank()==0: print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(loss_avg, training_acc*100))
+
 
 def metric_average(val, name):
     tensor = torch.tensor(val)
@@ -165,15 +177,18 @@ def test():
     model.eval()
     test_loss = 0.
     test_accuracy = 0.
+    n = 0
     for data, target in test_loader:
         if args.cuda:
             data, target = data.cuda(), target.cuda()
         output = model(data)
         # sum up batch loss
-        test_loss += F.nll_loss(output, target, size_average=False).item()
+        #test_loss += F.nll_loss(output, target, size_average=False).item()
+        test_loss += F.nll_loss(output, target).item()
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
         test_accuracy += pred.eq(target.data.view_as(pred)).cpu().float().sum()
+        n=n+1
 
     # Horovod: use test_sampler to determine the number of examples in
     # this worker's partition.
@@ -186,7 +201,7 @@ def test():
 
     # Horovod: print output only on first rank.
     if hvd.rank() == 0:
-        print('\nTest set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
+        print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
 
 

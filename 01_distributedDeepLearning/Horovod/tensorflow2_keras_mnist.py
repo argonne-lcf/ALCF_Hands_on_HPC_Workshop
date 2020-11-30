@@ -72,7 +72,6 @@ dataset = tf.data.Dataset.from_tensor_slices(
 )
 nsamples = len(list(dataset))
 dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
-
 mnist_model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
     tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
