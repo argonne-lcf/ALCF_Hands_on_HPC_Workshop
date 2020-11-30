@@ -37,8 +37,8 @@ parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 4)')
-parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
-                    help='learning rate (default: 0.01)')
+parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+                    help='learning rate (default: 0.001)')
 parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
@@ -78,7 +78,7 @@ opt = tf.optimizers.Adam(args.lr * hvd.size())
 cifar10_model = tf.keras.applications.DenseNet121(include_top=False,
     input_tensor=None, input_shape=(32, 32, 3),
     pooling=None, classes=10)
-checkpoint_dir = './checkpoints/ckpt'
+checkpoint_dir = './checkpoints/tf2_cifar10'
 checkpoint = tf.train.Checkpoint(model=cifar10_model, optimizer=opt)
 
 
