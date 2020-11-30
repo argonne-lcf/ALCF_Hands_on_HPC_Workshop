@@ -2,7 +2,8 @@
 
 Author: Huihuo Zheng <huihuo.zheng@anl.gov>
 
-We provide MNIST and CIFAR10 examples for data parallel training. 
+We provide MNIST and CIFAR10 examples for data parallel training. These examples were adopted from Horovod with modification. 
+
 * Pytorch example
   * pytorch_mnist.py
   * pytorch_cifar10.py

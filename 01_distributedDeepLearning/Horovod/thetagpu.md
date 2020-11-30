@@ -6,9 +6,8 @@ qsub -n 1 -q full-node -A datascience -I -t 1:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch and Horovod
-
 ```bash
-source /lus/theta-fs0/software/datascience/anaconda3/setup.sh
+source /lus/theta-fs0/software/datascience/thetagpu/anaconda3/setup.sh
 ```
 
 3. Run examples
