@@ -18,4 +18,4 @@ All the examples can be run either on CPUs or GPUs by specifying ```--device [cp
 
 Please check theta.md and thetagpu.md on how to run the examples on Theta and ThetaGPU respectively. 
 
-  
+For submitting in script modes, one can check the submission scripts in ./submissions folder. 
