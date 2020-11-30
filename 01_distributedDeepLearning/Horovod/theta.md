@@ -39,10 +39,7 @@ aprun -n 16 -N 4 -e OMP_NUM_THREADS=32 -d 32 -j 2 -e KMP_BLOCKTIME=0 -cc depth p
 5. Testing scaling and investigating the issue of large batch size training (this requires new queues )
 You can do a simply scaling test. 
 ```bash
-for n in 1 2 4 8 16 32 64 
-do
-  qsub -O pytorch_mnist_${n}nodes_t -n ${n} -q ATPESC2020 -A SDL_Workhop sumissions/theta/qsub_pytorch_mnist.sh
-done
+qsub -O pytorch_mnist_scale -n 128 -q default -A SDL_Workhop sumissions/theta/qsub_pytorch_mnist_scale.sh
 ```
 You can check the test accuracy and the timing for different scales. 
 
