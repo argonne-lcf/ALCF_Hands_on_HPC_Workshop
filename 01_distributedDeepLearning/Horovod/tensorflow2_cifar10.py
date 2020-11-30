@@ -68,13 +68,14 @@ dataset = tf.data.Dataset.from_tensor_slices(
     (tf.cast(cifar10_images[..., tf.newaxis] / 255.0, tf.float32),
              tf.cast(cifar10_labels, tf.int64))
 )
+nsamples = len(list(dataset))
 dataset = dataset.repeat().shuffle(1000).batch(args.batch_size)
 
 loss = tf.losses.SparseCategoricalCrossentropy()
 
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
-cifar10_model = tf.keras.applications.ResNet50(include_top=False,
+cifar10_model = tf.keras.applications.DenseNet121(include_top=False,
     input_tensor=None, input_shape=(32, 32, 3),
     pooling=None, classes=10)
 checkpoint_dir = './checkpoints/ckpt'
@@ -111,12 +112,13 @@ def training_step(images, labels, first_batch):
 
 
 # Horovod: adjust number of steps based on number of GPUs.
+nsteps = nsamples // hvd.size() // args.batch_size
 for ep in range(args.epochs):
-    for batch, (images, labels) in enumerate(dataset.take(1000 // hvd.size())):
+    for batch, (images, labels) in enumerate(dataset.take(nsamples // hvd.size() // args.batch_size)):
         loss_value = training_step(images, labels, (batch == 0) and (ep == 0))
 
         if batch % 10 == 0:
-            print('[%d] Epoch - %d, step #%d\tLoss: %.6f' % (hvd.rank(), ep, batch, loss_value))
+            print('[%d] Epoch - %d, step #%d/%d\tLoss: %.6f' % (hvd.rank(), ep, batch, nsteps, loss_value))
         if hvd.rank() == 0 and batch % 10 == 0:
             checkpoint.save(checkpoint_dir)
 

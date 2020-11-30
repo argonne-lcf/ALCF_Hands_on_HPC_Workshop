@@ -65,13 +65,15 @@ else:
 
 (cifar10_images, cifar10_labels), _ = \
     tf.keras.datasets.cifar10.load_data()
-
+(train_images, train_labels), (test_images, test_labels) =    tf.keras.datasets.cifar10.load_data()
+train_images, test_images = train_images / 255.0, test_images / 255.0
 dataset = tf.data.Dataset.from_tensor_slices(
     (tf.cast(cifar10_images[..., tf.newaxis] / 255.0, tf.float32),
              tf.cast(cifar10_labels, tf.int64))
 )
 nsamples = len(list(dataset))
 dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
+
 
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
@@ -82,10 +84,22 @@ if (with_hvd):
 
 input_shape=(32, 32, 3)
 num_classes = 10
-from tensorflow.keras import Sequential
+from tensorflow.keras import Sequential, layers
 from tensorflow.keras.layers import *
 
+#model = Sequential()
+
 model = Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10))
+
+'''
 model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
 model.add(Activation('relu'))
 model.add(Conv2D(32, (3, 3)))
@@ -106,7 +120,8 @@ model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
-
+'''
+model.summary()
 cifar10_model = model;
 '''
 cifar10_model = tf.keras.Sequential([
@@ -160,7 +175,7 @@ cifar10_model = tf.keras.Sequential(
 
 # Horovod: Specify `experimental_run_tf_function=False` to ensure TensorFlow
 # uses hvd.DistributedOptimizer() to compute gradients.
-cifar10_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(),
+cifar10_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
                     optimizer=opt,
                     metrics=['accuracy'],
                     experimental_run_tf_function=False)
@@ -195,7 +210,10 @@ verbose = 1 if hvd.rank() == 0 else 0
 
 # Train the model.
 # Horovod: adjust number of steps based on number of GPUs.
-cifar10_model.fit(dataset, steps_per_epoch=nsamples // hvd.size() // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose)
+#cifar10_model.fit(dataset, steps_per_epoch=nsamples // hvd.size() // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose)
+
+history = cifar10_model.fit(train_images, train_labels, epochs=args.epochs, steps_per_epoch=nsamples//hvd.size()//args.batch_size, callbacks=callbacks, verbose=verbose, validation_data=(test_images, test_labels), shuffle = True)
+
 t1 = time.time()
 if (hvd.rank()==0):
     print("Total training time: %s seconds" %(t1 - t0))
