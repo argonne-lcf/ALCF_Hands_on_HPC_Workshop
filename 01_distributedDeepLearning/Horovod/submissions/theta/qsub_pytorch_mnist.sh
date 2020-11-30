@@ -10,7 +10,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-source /projects/ATPESC2020/hzheng/ATPESC_MachineLearning/DataParallelDeepLearning/setup.sh
+module load datascience/pytorch-1.4
 
 PROC_PER_NODE=4
 

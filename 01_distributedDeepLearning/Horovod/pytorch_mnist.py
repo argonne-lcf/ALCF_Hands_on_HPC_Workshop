@@ -17,6 +17,8 @@ except:
             return 0
         def size():
             return 1
+        def local_rank():
+            return 0
     hvd=Hvd; 
 import time
 

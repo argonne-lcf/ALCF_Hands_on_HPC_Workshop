@@ -5,3 +5,5 @@ This section of the workshop will introduce to you the methods we use to run dis
 
 We show distributed training using two frameworks - Horovod (for TensorFlow and PyTorch), and DDT (for PyTorch only).
 
+
+

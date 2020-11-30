@@ -1,14 +1,6 @@
-# Hands on for Data Parallel Deep Learning
+# Hands on for Data Parallel Deep Learning on Theta (CPU)
 
-1. Copy the folder to your home directory
-```bash 
-cp /gpfs/mira-home/hzheng/projects/ATPESC2020/hzheng/ATPESC_MachineLearning/DataParallelDeepLearning ~/DataParallelDeepLearning
-[ -e ~/.keras ] || mkdir ~/.keras
-[ -e ~/.keras/datasets ] || mkdir ~/.keras/datasets
-cp /gpfs/mira-home/hzheng/projects/ATPESC2020/hzheng/ATPESC_MachineLearning/DataParallelDeepLearning/datasets/mnist.npz ~/.keras/datasets
-```
-
-2. Request an interactive session on Theta
+1. Request an interactive session on Theta
 ```bash
 qsub -n 4 -q ATPESC2020 -A ATPESC2020 -I -t 1:00:00
 ```
