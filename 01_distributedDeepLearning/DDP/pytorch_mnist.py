@@ -10,6 +10,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.utils.data.distributed
 
+import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 
@@ -22,9 +23,11 @@ try:
     size = MPI.COMM_WORLD.Get_size()
     rank = MPI.COMM_WORLD.Get_rank()
 
+
     # Pytorch will look for these:
     os.environ["RANK"] = str(rank)
     os.environ["WORLD_SIZE"] = str(size)
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(local_rank)
 
     # It will want the master address too, which we'll broadcast:
     if rank == 0:
@@ -85,11 +88,13 @@ torch.manual_seed(args.seed)
 
 if args.device == 'gpu':
     # DDP: pin GPU to local rank.
-    torch.cuda.set_device(int(local_rank))
+    # torch.cuda.set_device(int(local_rank))
     torch.cuda.manual_seed(args.seed)
 
 if (args.num_threads!=0):
     torch.set_num_threads(args.num_threads)
+
+print(torch.cuda.current_device())
 
 if rank==0:
     print("Torch Thread setup: ")
@@ -144,10 +149,9 @@ class Net(nn.Module):
 model = Net()
 
 
-print(args.device)
 if args.device == 'gpu':
     # Move model to GPU.
-    model.cuda(local_rank)
+    model.cuda()
 
 if with_ddp:
     # wrap the model in DDP:
@@ -163,8 +167,11 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr * size,
 
 def train(epoch):
     model.train()
-    running_loss = 0.0
-    training_acc = 0.0
+    running_loss = torch.tensor(0.0)
+    training_acc = torch.tensor(0.0)
+    if args.device == "gpu":
+        running_loss = running_loss.cuda()
+        training_acc = training_acc.cuda()
     # Horovod: set epoch to sampler for shuffling.
     train_sampler.set_epoch(epoch)
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -176,16 +183,16 @@ def train(epoch):
         loss.backward()
         optimizer.step()
         pred = output.data.max(1, keepdim=True)[1]
-        training_acc += pred.eq(target.data.view_as(pred)).cpu().float().sum()
-        running_loss += loss.item()
+        training_acc += pred.eq(target.data.view_as(pred)).float().sum()
+        running_loss += loss
 
         if batch_idx % args.log_interval == 0 and rank == 0 :
             # Horovod: use train_sampler to determine the number of examples in
             # this worker's partition.
             print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
                 epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
-    running_loss = running_loss / len(train_sampler)
-    training_acc = training_acc / len(train_sampler)
+    running_loss /= len(train_sampler)
+    training_acc /= len(train_sampler)
     loss_avg = metric_average(running_loss, 'running_loss')
     training_acc = metric_average(training_acc, 'training_acc')
 
@@ -193,18 +200,22 @@ def train(epoch):
 
 
 def metric_average(val, name):
-    tensor = torch.tensor(val)
     if (with_ddp):
-        avg_tensor = MPI.COMM_WORLD.Allreduce(tensor.numpy())
+        # Sum everything and divide by total size:
+        dist.all_reduce(val,op=dist.reduce_op.SUM)
+        val /= size
     else:
-        avg_tensor = tensor
-    return avg_tensor.item()
+        pass
+    return val
 
 
 def test():
     model.eval()
-    test_loss = 0.
-    test_accuracy = 0.
+    test_loss = torch.tensor(0.0)
+    test_accuracy = torch.tensor(0.0)
+    if args.device == "gpu":
+        test_loss = test_loss.cuda()
+        test_accuracy = test_accuracy.cuda()
     n = 0
     for data, target in test_loader:
         if args.cuda:
@@ -215,7 +226,7 @@ def test():
         test_loss += F.nll_loss(output, target).item()
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
-        test_accuracy += pred.eq(target.data.view_as(pred)).cpu().float().sum()
+        test_accuracy += pred.eq(target.data.view_as(pred)).float().sum()
         n=n+1
 
     # Horovod: use test_sampler to determine the number of examples in
