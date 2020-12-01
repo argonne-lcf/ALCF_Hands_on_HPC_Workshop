@@ -1,6 +1,6 @@
 # Profiling Deep Learning frameworks
-
-## Communication profiling (by Huihuo Zheng)
+Contacts: Huihuo Zhang, Taylor Childers
+## Communication profiling
 We introduce two profiling tools for understanding the communication in distributed deep learning. 
 * MPI flat profiling using mpitrace
 To turn on the profiling, one has to set the following environment variable ```LD_PRELOAD```. 
@@ -17,3 +17,7 @@ export HOROVOD_TIMELINE=timeline.json
 This file is only recorded on rank 0, but it contains information about activity of all workers. You can then open the timeline file using the chrome://tracing facility of the Chrome browser.
 
 More details: https://horovod.readthedocs.io/en/stable/timeline_include.html
+
+## Tensorflow Profiler
+We introduce you to profiling using Tensorflow.
+[Text Here](TensorflowProfiler/)
