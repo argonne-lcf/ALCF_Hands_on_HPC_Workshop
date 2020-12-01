@@ -46,12 +46,14 @@ After navigating to the page in your browser you should see a page similar to th
 
 
 ## On ThetaKNL
-
+```bash
+qsub submit_theta.sh
+```
 
 ## On ThetaGPU
 
 Run on ThetaGPU using
 ```bash
-qsub submission/thetagpu/qsub_tensorflow_cifar10.sh
+qsub submit_thetagpu.sh
 ```
 
