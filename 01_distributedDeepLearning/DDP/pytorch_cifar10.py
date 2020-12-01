@@ -8,8 +8,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-import torch.utils.data.distributed
 
+import torch.utils.data.distributed
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
@@ -45,6 +45,8 @@ except:
     rank = 0
 
 
+
+
 t0 = time.time()
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
@@ -69,6 +71,7 @@ parser.add_argument('--device', default='cpu', choices=['cpu', 'gpu'],
 parser.add_argument('--num_threads', default=0, help='set number of threads per worker', type=int)
 args = parser.parse_args()
 
+
 args.cuda = torch.cuda.is_available()
 
 # DDP: initialize library.
@@ -84,8 +87,6 @@ if with_ddp:
 
 
 
-torch.manual_seed(args.seed)
-
 if args.device == 'gpu':
     # DDP: pin GPU to local rank.
     # torch.cuda.set_device(int(local_rank))
@@ -94,19 +95,26 @@ if args.device == 'gpu':
 if (args.num_threads!=0):
     torch.set_num_threads(args.num_threads)
 
+
 if rank==0:
     print("Torch Thread setup: ")
     print(" Number of threads: ", torch.get_num_threads())
+
+
 #    print(" Number of inter_op threads: ", torch.get_num_interop_threads())
+normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                 std=[0.229, 0.224, 0.225])
+kwargs = {'num_workers': 1, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
 
 
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.device == 'gpu' else {}
+transform = transforms.Compose(
+    [transforms.ToTensor(),
+     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
 train_dataset = \
-    datasets.MNIST('datasets/', train=True, download=True,
-                   transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ]))
+    datasets.CIFAR10('datasets/', train=True, download=True,
+                     transform=transform,)
+
 # Horovod: use DistributedSampler to partition the training data.
 train_sampler = torch.utils.data.distributed.DistributedSampler(
     train_dataset, num_replicas=size, rank=rank)
@@ -114,10 +122,8 @@ train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=args.batch_size, sampler=train_sampler, **kwargs)
 
 test_dataset = \
-    datasets.MNIST('datasets', train=False, transform=transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
-    ]))
+    datasets.CIFAR10('datasets', train=False, transform=transform)
+
 # Horovod: use DistributedSampler to partition the test data.
 test_sampler = torch.utils.data.distributed.DistributedSampler(
     test_dataset, num_replicas=size, rank=rank)
@@ -125,27 +131,43 @@ test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.test_bat
                                           sampler=test_sampler, **kwargs)
 
 
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        self.conv2_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320, 50)
-        self.fc2 = nn.Linear(50, 10)
+import torchvision.models as models
+NUM_CLASSES = 10
+class AlexNet(nn.Module):
+    def __init__(self, num_classes=NUM_CLASSES):
+        super(AlexNet, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(64, 192, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(192, 384, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(384, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+        )
+        self.classifier = nn.Sequential(
+            nn.Dropout(),
+            nn.Linear(256 * 2 * 2, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, num_classes),
+        )
 
     def forward(self, x):
-        x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        x = x.view(-1, 320)
-        x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
-        x = self.fc2(x)
-        return F.log_softmax(x)
+        x = self.features(x)
+        x = x.view(x.size(0), 256 * 2 * 2)
+        x = self.classifier(x)
+        return x
 
-
-model = Net()
-
+model = AlexNet(num_classes=10)
 
 if args.device == 'gpu':
     # Move model to GPU.
@@ -156,46 +178,48 @@ if with_ddp:
     model = DDP(model)
 
 
+if args.device.find("gpu")!=-1:
+    # Move model to GPU.
+    model.cuda()
+criterion = nn.CrossEntropyLoss()
 # Horovod: scale learning rate by the number of GPUs.
 optimizer = optim.SGD(model.parameters(), lr=args.lr * size,
                       momentum=args.momentum)
 
 
 
-
 def train(epoch):
     model.train()
+    # Horovod: set epoch to sampler for shuffling.
+    train_sampler.set_epoch(epoch)
     running_loss = torch.tensor(0.0)
     training_acc = torch.tensor(0.0)
     if args.device == "gpu":
         running_loss = running_loss.cuda()
         training_acc = training_acc.cuda()
-    # Horovod: set epoch to sampler for shuffling.
-    train_sampler.set_epoch(epoch)
     for batch_idx, (data, target) in enumerate(train_loader):
-        if args.device == "gpu":
+        if args.cuda:
             data, target = data.cuda(), target.cuda()
         optimizer.zero_grad()
         output = model(data)
-        loss = F.nll_loss(output, target)
+        loss = criterion(output, target)
+        #loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
         pred = output.data.max(1, keepdim=True)[1]
-        training_acc += pred.eq(target.data.view_as(pred)).float().sum()
-        running_loss += loss
-
-        if batch_idx % args.log_interval == 0 and rank == 0 :
+        training_acc += pred.eq(target.data.view_as(pred)).cpu().float().sum()
+        running_loss += loss.item()
+        if batch_idx % args.log_interval == 0:
             # Horovod: use train_sampler to determine the number of examples in
             # this worker's partition.
             print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
-                epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
-    running_loss /= len(train_sampler)
-    training_acc /= len(train_sampler)
+                epoch, batch_idx * len(data), len(train_sampler),
+                100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
+    running_loss = running_loss / len(train_sampler)
+    training_acc = training_acc / len(train_sampler)
     loss_avg = metric_average(running_loss, 'running_loss')
     training_acc = metric_average(training_acc, 'training_acc')
-
     if rank==0: print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(loss_avg, training_acc*100))
-
 
 def metric_average(val, name):
     if (with_ddp):
@@ -207,6 +231,7 @@ def metric_average(val, name):
     return val
 
 
+
 def test():
     model.eval()
     test_loss = torch.tensor(0.0)
@@ -214,18 +239,16 @@ def test():
     if args.device == "gpu":
         test_loss = test_loss.cuda()
         test_accuracy = test_accuracy.cuda()
-    n = 0
     for data, target in test_loader:
         if args.cuda:
             data, target = data.cuda(), target.cuda()
         output = model(data)
         # sum up batch loss
         #test_loss += F.nll_loss(output, target, size_average=False).item()
-        test_loss += F.nll_loss(output, target).item()
+        test_loss += criterion(output, target).item()
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
         test_accuracy += pred.eq(target.data.view_as(pred)).float().sum()
-        n=n+1
 
     # Horovod: use test_sampler to determine the number of examples in
     # this worker's partition.
