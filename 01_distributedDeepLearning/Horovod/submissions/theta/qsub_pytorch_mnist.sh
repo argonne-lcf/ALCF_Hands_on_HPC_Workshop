@@ -10,7 +10,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-module load datascience/pytorch-1.4
+module load datascience/pytorch-1.7
 
 PROC_PER_NODE=4
 

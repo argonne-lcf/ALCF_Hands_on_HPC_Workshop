@@ -6,15 +6,9 @@ qsub -n 4 -q debug-cache-quad -A SDL_Workshop -I -t 1:00:00
 ```
 
 3. Setup the Python environment to include TensorFlow, Keras, PyTorch and Horovod
-
-For PyTorch
 ```bash
-module load datascience/pytorch-1.4
-```
-
-For TensorFlow
-```bash
-module load datascience/tensorflow-2.2
+module load datascience/pytorch-1.7
+module load datascience/tensorflow-2.3
 ```
 
 4. Run examples
