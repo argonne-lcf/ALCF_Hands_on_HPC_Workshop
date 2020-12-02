@@ -7,3 +7,8 @@ Here there are examples of building a data pipeline for both Tensorflow and PyTo
 # ImageNet Dataset
 
 This example uses the ImageNet dataset to build training batches.
+
+![Turtle](images/n01667778_12001.JPEG) ![Dog](images/n02094114_1205.JPEG)
+
+
+
