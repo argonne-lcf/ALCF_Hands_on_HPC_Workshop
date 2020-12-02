@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 1:00:00 -q full-node
-#COBALT -A SDL_Workshop -O keras_mnist
+#COBALT -A SDL_Workshop -O results/thetagpu/$jobid.keras_mnist
 
 #submisstion script for running tensorflow_mnist with horovod
 

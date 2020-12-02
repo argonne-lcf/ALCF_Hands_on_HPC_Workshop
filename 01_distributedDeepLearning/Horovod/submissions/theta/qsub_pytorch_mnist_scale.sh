@@ -2,7 +2,7 @@
 #COBALT -n 128
 #COBALT -t 1:00:00
 #COBALT -q default --attrs mcdram=cache:numa=quad
-#COBALT -A SDL_Workshop -O pytorch_mnist
+#COBALT -A SDL_Workshop -O results/theta/pytorch_mnist_scale
 
 #submisstion script for running tensorflow_mnist with horovod
 
@@ -20,7 +20,7 @@ do
 	  -j 2 -d 32 -cc depth \
 	  -e OMP_NUM_THREADS=32 \
 	  -e KMP_BLOCKTIME=0 \
-	  python pytorch_mnist.py --num_threads=32 --device cpu --epochs 8 >& pytorch_mnist.out.n$n & 
+	  python pytorch_mnist.py --num_threads=32 --device cpu --epochs 32 >& results/theta/pytorch_mnist_scale.out.n$n & 
 done
 wait
 
