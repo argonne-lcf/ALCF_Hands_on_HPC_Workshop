@@ -126,8 +126,7 @@ def build_dataset_from_filelist(config,filelist_filename):
    # run 'load_image_label_bb' on each input image file, process multiple files in parallel
    # this function opens the JPEG, converts it to a tensorflow vector and gets the truth class label
    logger.debug('starting map')
-   ds = filelist.map(load_image_label_bb,
-                     num_parallel_calls=tf.data.experimental.AUTOTUNE)
+   ds = filelist.map(load_image_label_bb)
                      
    # unbatch called because some JPEGs result in more than 1 image returned
    ds = ds.apply(tf.data.Dataset.unbatch)
@@ -136,7 +135,7 @@ def build_dataset_from_filelist(config,filelist_filename):
    ds = ds.batch(dc['batch_size'])
 
    # setup a pipeline that pre-fetches images before they are needed (keeps CPU busy)
-   ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)  
+   #ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)  
 
    return ds
 
@@ -228,8 +227,6 @@ if __name__ == '__main__':
                        help='log output directory',default='logdir')
    parser.add_argument('-n','--nsteps', dest='nsteps',
                        help='number of steps to run',default=10,type=int)
-   parser.add_argument('--interop',type=int,help='set Tensorflow "inter_op_parallelism_threads" session config varaible ',default=None)
-   parser.add_argument('--intraop',type=int,help='set Tensorflow "intra_op_parallelism_threads" session config varaible ',default=None)
 
    args = parser.parse_args()
 
@@ -237,11 +234,9 @@ if __name__ == '__main__':
    config = json.load(open(args.config_filename))
    config['hvd'] = None
    
-   # define some parallel processing sizes
-   if args.interop is not None:
-      tf.config.threading.set_inter_op_parallelism_threads(args.interop)
-   if args.intraop is not None:
-      tf.config.threading.set_intra_op_parallelism_threads(args.intraop)
+   # make serial 
+   tf.config.threading.set_inter_op_parallelism_threads(1)
+   tf.config.threading.set_intra_op_parallelism_threads(1)
    
    # use the tensorflow profiler here
    with tf.profiler.experimental.Profile(args.logdir):
