@@ -11,3 +11,9 @@ The ALCF regularly hosts a simulation, data, and learning workshop to help users
    * Hyperparameter Optimization using DeepHyper on ALCF Systems
    * Profiling Deep Learning applications
    * Integrating inference in to simulation
+
+Please clone the repo while on a Theta login node:
+
+```
+git clone https://github.com/argonne-lcf/sdl_ai_workshop.git
+```

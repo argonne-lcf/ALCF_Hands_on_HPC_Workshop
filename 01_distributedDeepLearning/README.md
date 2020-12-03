@@ -6,4 +6,6 @@ We show distributed training using two frameworks: Horovod (for TensorFlow and P
 and `DistributedDataParallel (DDP)` (for PyTorch only).
 
 
+Some instructions on Data Parallel Training can be found here:
 
+https://argonne-lcf.github.io/ThetaGPU-Docs/data_parallel_training/
