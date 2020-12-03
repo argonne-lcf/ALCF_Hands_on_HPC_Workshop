@@ -1,5 +1,6 @@
 #!/bin/sh
 unset PYTHONPATH
+export CRAYPE_LINK_TYPE=dynamic
 
 module use /soft/datascience/a21/modulefiles
 module load intelpython36
