@@ -17,6 +17,6 @@ do
     mpirun -np $n python pytorch_mnist.py --device gpu --epochs 32 >& results/thetagpu/pytorch_mnist.n$n.out
 done
 # Go beyond one node
-mpirun -np 16 -npernode 8 --hostfile $COBALT_NODEFILE pytorch_mnist.py --device gpu --epochs 32 >& results/thetagpu/pytorch_mnist.n16.out
+mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np 16 -npernode 8 --hostfile $COBALT_NODEFILE pytorch_mnist.py --device gpu --epochs 32 >& results/thetagpu/pytorch_mnist.n16.out
 
 

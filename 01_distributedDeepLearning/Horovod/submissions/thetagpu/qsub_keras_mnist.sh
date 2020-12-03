@@ -17,5 +17,5 @@ do
 done
 wait 
 
-mpirun -np 16 -npernode --hostfile ${COBALT_NODEFILE} $(which python) tensorflow2_keras_mnist.py --device gpu --epochs 32 >& results/thetagpu/tensorflow2_keras_mnist.out.16
+mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np 16 -npernode --hostfile ${COBALT_NODEFILE} python tensorflow2_keras_mnist.py --device gpu --epochs 32 >& results/thetagpu/tensorflow2_keras_mnist.out.16
 

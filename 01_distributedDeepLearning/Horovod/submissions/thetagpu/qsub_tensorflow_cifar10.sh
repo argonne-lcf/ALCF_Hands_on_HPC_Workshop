@@ -12,7 +12,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 #source /lus/theta-fs0/software/datascience/thetagpu/anaconda3/setup.sh
 source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
 
-mpirun -np 16 --hostfile $COBALT_NODEFILE  -npernode 8 $(which python) tensorflow2_cifar10.py --device gpu --epochs 16 >& results/thetagpu/tensorflow2_cifar10.n16.out
+mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np 16 --hostfile $COBALT_NODEFILE  -npernode 8 $(which python) tensorflow2_cifar10.py --device gpu --epochs 16 >& results/thetagpu/tensorflow2_cifar10.n16.out
 
 # scaling  study 
 #

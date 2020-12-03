@@ -11,7 +11,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
 
-mpirun -np 16 -npernode 8 --hostfile ${COBALT_NODEFILE} $(which python) tensorflow2_keras_cifar10.py --device gpu --epochs 32 >& results/thetagpu/tensorflow2_keras_cifar10.out.16
+mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np 16 -npernode 8 --hostfile ${COBALT_NODEFILE} python tensorflow2_keras_cifar10.py --device gpu --epochs 32 >& results/thetagpu/tensorflow2_keras_cifar10.out.16
 
 #for n in 1 2 4 8
 #do
