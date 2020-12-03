@@ -39,3 +39,9 @@ source setup.sh
 mpirun -n 1 -npernode 1 -hostfile $COBALT_NODEFILE ./app
 ```
 
+### To run on the queue (and not interactively)
+```
+qsub submit.sh
+```
+Note that you need to inspect the `queue_submission.sh` script to make sure it is _your_ virtual environment that is used
+
