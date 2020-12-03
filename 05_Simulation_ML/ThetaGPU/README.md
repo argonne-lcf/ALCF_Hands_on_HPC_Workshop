@@ -47,5 +47,5 @@ mpirun -n 1 -npernode 1 -hostfile $COBALT_NODEFILE ./app
 ```
 qsub submit.sh
 ```
-Note that you need to inspect the `queue_submission.sh` script to make sure it is _your_ virtual environment that is used
+Note that you need to inspect the `queue_submission.sh` script to make sure it is _your_ virtual environment that is used. The submission script being used here assumes that you have set up a virtual environment with cmake, matplotlib, sklearn, etc. (i.e., steps 1,2,3,4 should have been executed previously)
 
