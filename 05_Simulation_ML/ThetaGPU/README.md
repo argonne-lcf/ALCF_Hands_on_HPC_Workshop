@@ -30,6 +30,10 @@ python -m pip install cmake
 python -m pip install matplotlib
 python -m pip install sklearn
 ```
+In the future, you only need to reactivate the environment:
+```
+source $VENV_LOCATION/bin/activate
+```
 5. Now we are ready to build our executable by executing the provided shell script (within the cloned repo):
 ```
 source setup.sh
