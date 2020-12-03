@@ -1,1 +1,1 @@
-# Distributed training with PyTorch DDT
+# Distributed training with PyTorch DDP
