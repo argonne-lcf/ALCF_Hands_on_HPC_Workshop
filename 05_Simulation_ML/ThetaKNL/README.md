@@ -1,12 +1,12 @@
 # Description
 
-These are the steps to execute this code on ThetaKNL (interactively):
+We assume that you have cloned the repo to a suitable location. These are the steps to execute this code on ThetaKNL (interactively):
 
 1. Request an interactive session on Theta
 ```
 qsub -n 1 -q debug-cache-quad -A datascience -I -t 1:00:00
 ```
-2. Setup the Python environment to include TensorFlow and PyTorch (though we only need the former)
+2. From within the cloned repo, setup the Python environment to include TensorFlow
 ```
 source setup.sh
 ```
