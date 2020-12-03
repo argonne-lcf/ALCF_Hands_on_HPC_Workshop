@@ -1,8 +1,5 @@
 // cmake .. // From build
 // make
-// export PATH=/home/rmlans/anaconda3/envs/tf2_env/bin:$PATH
-// export LD_LIBRARY_PATH=/home/rmlans/anaconda3/envs/tf2_env/lib:$LD_LIBRARY_PATH
-
 #include <iostream>
 #include <time.h>
 #include <math.h>
