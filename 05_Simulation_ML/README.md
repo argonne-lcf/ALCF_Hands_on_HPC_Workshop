@@ -14,15 +14,15 @@ The test-case demonstrated here is representative of several Sci-ML workloads. W
 
 For running this mini-app on ThetaKNL/GPU, look at the scripts/README within `ThetaGPU/` and `ThetaKNL/` subdirectories.
 
-# What you should see when you run this on either ThetaGPU or ThetaKNL
+## What you should see when you run this on either ThetaGPU or ThetaKNL
 
-## Field evolution
+### Field evolution
 ![Fields](ThetaKNL/app_build/Field_evolution.png "Fields")
 
-## Modal decomposition
+### Modal decomposition
 ![Modes](ThetaKNL/app_build/SVD_Eigenvectors.png "Modes")
 
-## Forecasting the modal evolution in time (still rather poor but you get the idea)
+### Forecasting the modal evolution in time (still rather poor but you get the idea)
 ![Forecasting Mode 0](ThetaKNL/app_build/Mode_0_prediction.png "Mode 0 prediction")
 
 ![Forecasting Mode 1](ThetaKNL/app_build/Mode_1_prediction.png "Mode 1 prediction")
