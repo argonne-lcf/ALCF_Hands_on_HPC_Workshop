@@ -98,7 +98,7 @@ class Dataset(torch.utils.data.Dataset):
             # open the JPEG
             img = PIL_Image.open(filename).convert(mode='RGB')
             # convert to a tensor with NCHW
-            img = torchvision.transforms.functional.to_tensor(img)
+            #img = torchvision.transforms.functional.to_tensor(img)
 
             # open the annotation file and retrieve the bounding boxes and indices
             bounding_boxes = self.get_bounding_boxes(annotation_filename)
@@ -108,6 +108,7 @@ class Dataset(torch.utils.data.Dataset):
                 img = self.crop_and_resize(img,bounding_boxes,self.resize_shape)
             else:
                 img = torchvision.transforms.Resize(self.resize_shape)(img)
+                img = torchvision.transforms.functional.to_tensor(img)
 
             imgs = torch.unsqueeze(img,0)
 
@@ -125,11 +126,13 @@ class Dataset(torch.utils.data.Dataset):
 
     @staticmethod
     def crop_and_resize(image,bounding_boxes,resize_shape):
-        imgs = torch.zeros(len(bounding_boxes),image.shape[0],resize_shape[0],resize_shape[1])
+        timg = torchvision.transforms.functional.to_tensor(image)
+        imgs = torch.zeros(len(bounding_boxes),timg.shape[0],resize_shape[0],resize_shape[1])
         for i in range(bounding_boxes.shape[0]):
             bb = bounding_boxes[i]
-            img = image[...,bb[0]:bb[2],bb[1]:bb[3]]
-            imgs[i,...] = torchvision.transforms.Resize(resize_shape)(img)
+            #img = image[...,bb[0]:bb[2],bb[1]:bb[3]]
+            timg = torchvision.transforms.Resize(resize_shape)(image)
+            imgs[i,...] = torchvision.transforms.functional.to_tensor(timg)
         return imgs[0]
 
 
@@ -178,133 +181,6 @@ def get_datasets(config):
    return train_ds,valid_ds
 
 
-
-
-
-# take a config dictionary and a path to a filelist
-# return a tf.dataset.Dataset object that will iterate over the JPEGs in filelist
-# def build_dataset_from_filelist(config,filelist_filename):
-#    logger.info(f'build dataset {filelist_filename}')
-
-#    dc = config['data']
-
-#    # if running horovod(MPI) need to shard the dataset based on rank
-#    numranks = 1
-#    if config['hvd']:
-#       numranks = config['hvd'].size()
-
-#    # loading full filelist
-#    filelist = []
-#    with open(filelist_filename) as file:
-#       for line in file:
-#          filelist.append(line.strip())
-
-#    # provide user with estimated batches in epoch
-#    batches_per_rank = int(len(filelist) / dc['batch_size'] / numranks)
-#    logger.info(f'input filelist contains {len(filelist)} files, estimated batches per rank {batches_per_rank}')
-   
-#    # convert python list to tensorflow vector object
-#    filelist = tf.data.Dataset.from_tensor_slices(filelist)
-
-#    # if using horovod (MPI) shard the data based on total ranks (size) and rank
-#    if config['hvd']:
-#       filelist = filelist.shard(config['hvd'].size(), config['hvd'].rank())
-   
-#    # shuffle the data, set shuffle buffer (needs to be large), and reshuffle after each epoch
-#    logger.debug('starting shuffle')
-#    filelist = filelist.shuffle(dc['shuffle_buffer'],reshuffle_each_iteration=dc['reshuffle_each_iteration'])
-
-#    # run 'load_image_label_bb' on each input image file, process multiple files in parallel
-#    # this function opens the JPEG, converts it to a tensorflow vector and gets the truth class label
-#    logger.debug('starting map')
-#    ds = filelist.map(load_image_label_bb,
-#                      num_parallel_calls=tf.data.experimental.AUTOTUNE)
-#    # unbatch called because some JPEGs result in more than 1 image returned
-#    ds = ds.apply(tf.data.Dataset.unbatch)
-
-#    # batch the data
-#    ds = ds.batch(dc['batch_size'])
-
-#    # setup a pipeline that pre-fetches images before they are needed (keeps CPU busy)
-#    ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)  
-
-#    return ds
-
-
-# # this function parses the image path, uses the label hash to convert the string
-# # label in the path to a numerical label, decodes the input JPEG, and returns
-# # the input image and label
-# def load_image_label_bb(image_path):
-#    logger.debug(f'load_image_and_label_bb %s', image_path)
-
-#    # for each JPEG, there is an Annotation file that contains a list of
-#    # classes contained in the image and a bounding box for each object.
-#    # However, some images contain a single class, in which case the
-#    # dataset contains no annotation file which is annoying, but...
-#    # Images with multiple objects per file are always the same class.
-#    label = tf.strings.split(image_path, os.path.sep)[-2]
-#    annot_path = tf.strings.regex_replace(image_path,'Data','Annotations')
-#    annot_path = tf.strings.regex_replace(annot_path,'JPEG','xml')
-
-#    # open the annotation file and retrieve the bounding boxes and indices
-#    bounding_boxes,box_indices = tf.py_function(get_bounding_boxes,[annot_path],[tf.float32,tf.int32])
-
-#    # open the JPEG
-#    img = tf.io.read_file(image_path)
-#    # convert the compressed string to a 3D uint8 tensor
-#    img = tf.image.decode_jpeg(img, channels=3)
-#    # add batching index [batch,width,height,channel]
-#    img = tf.expand_dims(img,0)
-
-#    # create individual images based on bounding boxes
-#    imgs = tf.image.crop_and_resize(img,bounding_boxes,box_indices,crop_size)
-
-#    # Use `convert_image_dtype` to convert to floats in the [0,1] range.
-#    imgs = tf.image.convert_image_dtype(imgs, tf.float16)
-#    # resize the image to the desired size. networks don't like variable sized arrays.
-#    imgs = tf.image.resize(imgs, crop_size)
-#    # convert string label to numerical label
-#    label = labels_hash.lookup(label)
-#    # duplicate labels to match the number of images created from bounding boxes
-#    labels = tf.fill([tf.shape(imgs)[0]],label)
-#    # return images and labels
-#    return imgs, labels
-
-
-# # this function opens the annotation XML file and parses the contents
-# # the contents include a list of objects in the JPEG, a label and
-# # bounding box for each object
-# def get_bounding_boxes(filename):
-#    filename = bytes.decode(filename.numpy())
-#    logger.debug(filename)
-#    try:
-#       tree = ET.parse(filename)
-#       root = tree.getroot()
-
-#       img_size = root.find('size')
-#       img_width = int(img_size.find('width').text)
-#       img_height = int(img_size.find('height').text)
-#       # img_depth = int(img_size.find('depth').text)
-
-#       objs = root.findall('object')
-#       bndbxs = []
-#       # label = None
-#       for object in objs:
-#          # label = object.find('name').text
-#          bndbox = object.find('bndbox')
-#          bndbxs.append([
-#             float(bndbox.find('ymin').text) / (img_height - 1),
-#             float(bndbox.find('xmin').text) / (img_width - 1),
-#             float(bndbox.find('ymax').text) / (img_height - 1),
-#             float(bndbox.find('xmax').text) / (img_width - 1)
-#          ])
-#    except FileNotFoundError:
-#       bndbxs = [[0,0,1,1]]
-
-#    return np.asarray(bndbxs,np.float),np.zeros(len(bndbxs))
-
-
-
 if __name__ == '__main__':
     # configure logging module
     logging_format = '%(asctime)s %(levelname)s:%(process)s:%(thread)s:%(name)s:%(message)s'
@@ -328,6 +204,8 @@ if __name__ == '__main__':
     config['hvd'] = None
     rank = 0
     num_ranks = 1
+
+    torch.set_num_threads(64);
 
     # call function to build dataset objects
     # both of the returned objects are tf.dataset.Dataset objects

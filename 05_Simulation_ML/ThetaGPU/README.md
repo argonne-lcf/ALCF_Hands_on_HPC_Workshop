@@ -1,6 +1,6 @@
 # Description
 
-These are the steps to execute this code on ThetaGPU (interactively):
+We assume that you have cloned the repo to a suitable location. These are the steps to execute this code on ThetaGPU (interactively):
 1. Login to a ThetaGPU head node
 ```
 ssh thetagpusn1
@@ -10,6 +10,7 @@ ssh thetagpusn1
 qsub -n 1 -q default -A datascience -I -t 1:00:00
 ```
 Following this, we need to execute a few commands to get setup with an appropriately optimized tensorflow. These are:
+
 3. Activate the TensorFlow 2.2 singularity container:
 ```
 singularity exec -B /lus:/lus --nv /lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif bash
@@ -29,7 +30,7 @@ python -m pip install cmake
 python -m pip install matplotlib
 python -m pip install sklearn
 ```
-5. Now we are ready to build our executable by executing the provided shell script:
+5. Now we are ready to build our executable by executing the provided shell script (within the cloned repo):
 ```
 source setup.sh
 ```

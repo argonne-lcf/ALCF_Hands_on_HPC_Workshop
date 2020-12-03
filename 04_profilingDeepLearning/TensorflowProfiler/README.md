@@ -44,6 +44,7 @@ After navigating to the page in your browser you should see a page similar to th
 
 ![tensorboard_overview](images/tensorboard_overview.png)
 
+Sometimes the `Profile` tab at the top left does not show up, but can be selected via the drop down menu at the top right.
 
 ## On ThetaKNL
 ```bash
