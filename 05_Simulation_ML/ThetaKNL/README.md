@@ -17,5 +17,5 @@ aprun -n 1 -N 1 -e OMP_NUM_THREADS=32 -d 32 -j 2 -e KMP_BLOCKTIME=0 -cc depth ./
 
 All the steps above can be achieved by submitting to a queue using `qsub` by
 ```
-source submit.sh
+qsub submit.sh
 ```
