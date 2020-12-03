@@ -10,6 +10,7 @@ ssh thetagpusn1
 qsub -n 1 -q default -A datascience -I -t 1:00:00
 ```
 Following this, we need to execute a few commands to get setup with an appropriately optimized tensorflow. These are:
+
 3. Activate the TensorFlow 2.2 singularity container:
 ```
 singularity exec -B /lus:/lus --nv /lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif bash
