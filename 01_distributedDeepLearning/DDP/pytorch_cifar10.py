@@ -4,6 +4,8 @@ import argparse
 import time
 import socket
 
+import numpy
+
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -13,7 +15,7 @@ import torch.utils.data.distributed
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
-
+print("Starting Script")
 # Set global variables for rank, local_rank, world size
 try:
     from mpi4py import MPI
@@ -37,13 +39,15 @@ try:
 
     master_addr = MPI.COMM_WORLD.bcast(master_addr, root=0)
     os.environ["MASTER_ADDR"] = master_addr
+    os.environ["MASTER_PORT"] = str(2345)
 
-except:
+except Exception as e:
     with_ddp=False
     local_rank = 0
     size = 1
     rank = 0
-
+    print("MPI initialization failed!")
+    print(e.what())
 
 
 
@@ -212,7 +216,7 @@ def train(epoch):
         if batch_idx % args.log_interval == 0:
             # Horovod: use train_sampler to determine the number of examples in
             # this worker's partition.
-            print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
+            if rank == 0: print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
                 epoch, batch_idx * len(data), len(train_sampler),
                 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
     running_loss = running_loss / len(train_sampler)
@@ -264,10 +268,14 @@ def test():
         print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
 
-
+epoch_times = []
 for epoch in range(1, args.epochs + 1):
+    e_start = time.time()
     train(epoch)
     test()
+    e_end = time.time()
+    epoch_times.append(e_end - e_start)
 t1 = time.time()
 if rank==0:
     print("Total training time: %s seconds" %(t1 - t0))
+    print("Average time per epoch in the last 5: ", numpy.mean(epoch_times[-5:]))

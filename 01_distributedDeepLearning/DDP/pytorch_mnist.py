@@ -4,6 +4,8 @@ import argparse
 import time
 import socket
 
+import numpy
+
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -12,7 +14,6 @@ import torch.utils.data.distributed
 
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
-
 
 # Set global variables for rank, local_rank, world size
 try:
@@ -37,12 +38,17 @@ try:
 
     master_addr = MPI.COMM_WORLD.bcast(master_addr, root=0)
     os.environ["MASTER_ADDR"] = master_addr
+    os.environ["MASTER_PORT"] = str(2345)
 
-except:
+
+except Exception as e:
     with_ddp=False
     local_rank = 0
     size = 1
     rank = 0
+    print("MPI initialization failed!")
+    print(e)
+
 
 
 t0 = time.time()
@@ -83,7 +89,6 @@ if with_ddp:
         backend=backend, init_method='env://')
 
 
-
 torch.manual_seed(args.seed)
 
 if args.device == 'gpu':
@@ -97,7 +102,6 @@ if (args.num_threads!=0):
 if rank==0:
     print("Torch Thread setup: ")
     print(" Number of threads: ", torch.get_num_threads())
-#    print(" Number of inter_op threads: ", torch.get_num_interop_threads())
 
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.device == 'gpu' else {}
@@ -187,7 +191,7 @@ def train(epoch):
         if batch_idx % args.log_interval == 0 and rank == 0 :
             # Horovod: use train_sampler to determine the number of examples in
             # this worker's partition.
-            print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
+            if rank == 0: print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
                 epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
     running_loss /= len(train_sampler)
     training_acc /= len(train_sampler)
@@ -242,9 +246,14 @@ def test():
             test_loss, 100. * test_accuracy))
 
 
+epoch_times = []
 for epoch in range(1, args.epochs + 1):
+    e_start = time.time()
     train(epoch)
     test()
+    e_end = time.time()
+    epoch_times.append(e_end - e_start)
 t1 = time.time()
 if rank==0:
     print("Total training time: %s seconds" %(t1 - t0))
+    print("Average time per epoch in the last 5: ", numpy.mean(epoch_times[-5:]))
