@@ -1,5 +1,7 @@
 # Distributed training with PyTorch DDT
 
+Author: Corey Adams corey.adams@anl.gov
+
 Pytorch has an additional built-in distributed data parallel package, DDP, short for Distributed Data Parallel.  It comes in pytorch 1.6 or higher, and wraps your model (__not__ your optimizer, like horovod) and performs computation and communication simultaneously.
 
 Here is the pytorch documentation:
@@ -86,5 +88,14 @@ It's only available with pytorch.  It's only worthwhile with distributed trainin
 
 There are two examples included here, with pytorch using mnist and cifar10.  Both are as similar as possible to the horovod examples, but with horovod steps replaced via DDP.  Feel free to do a diff and see all the changes!
 
+## Running in a container
+
+Unfortunately, running in a container to use DDP requires two scripts, not one, to successfully launch the program.  The reason for this is that our container does not have `mpi4py` and so we launch singularity with MPI from the main cobalt script, and each singularity instance launches a shell script that itself launches python.  To be more clear:
+
+- Cobalt script which runs on one node, and uses `mpirun` to launch `n` singularity instances, typically 8 per node.  
+    - Each singularity instance launches the same shell script
+    - Each shell script sets up a virtual environment, and then executes the main python script.
+
+Take a look in the `submissions` folder for more details about this.
 
 # Example Performance
