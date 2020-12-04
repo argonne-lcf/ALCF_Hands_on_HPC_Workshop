@@ -99,3 +99,19 @@ Unfortunately, running in a container to use DDP requires two scripts, not one, 
 Take a look in the `submissions` folder for more details about this.
 
 # Example Performance
+
+Here I show the results I got measuring the time-per-epoch averaged over the last 5 epochs of a training run.  I scaled out over a single node, and out onto 4 nodes x 8 GPUs
+
+
+| GPUs | Cifar10 Time/epoch [s] | MNIST Time/epoch [s] |
+| ---- | ---------------------- | -------------------- |
+|    1 |            13.6        |         11.7         |
+|    4 |            2.66        |         2.64         |
+|    8 |            1.43        |         1.37         |
+
+
+| Nodes | Cifar10 Time/epoch [s] | MNIST Time/epoch [s] |
+| ----- | ---------------------- | -------------------- |
+|    1  |           1.43         |        1.37          |
+|    2  |           0.82         |        0.80          |
+|    4  |           0.50         |        0.49          |
