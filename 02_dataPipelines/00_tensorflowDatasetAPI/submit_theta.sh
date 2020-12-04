@@ -3,6 +3,7 @@
 #COBALT -t 30
 #COBALT -q debug-flat-quad
 #COBALT -A SDL_Workshop
+#COBALT -O logdir/$COBALT_JOBID
 
 echo [$SECONDS] setup conda environment
 module load miniconda-3/2020-12

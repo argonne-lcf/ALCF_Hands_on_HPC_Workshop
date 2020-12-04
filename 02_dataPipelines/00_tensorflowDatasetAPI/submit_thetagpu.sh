@@ -15,4 +15,4 @@ echo NODES=$NODES  PPN=$PPN  RANKS=$RANKS
 export OMP_NUM_THREADS=64
 
 python ilsvrc_dataset.py -c ilsvrc.json --interop $OMP_NUM_THREADS --intraop $OMP_NUM_THREADS \
-   --logdir logdir/$COBALT_JOBID $HOROVOD  > logdir/$COBALT_JOBID.log 2>&1 
+   --logdir logdir/$COBALT_JOBID $HOROVOD 
