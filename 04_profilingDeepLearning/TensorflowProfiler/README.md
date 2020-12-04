@@ -22,7 +22,7 @@ In this example we run one epoch of the training since CIFAR10 is not an intensi
 
 If you have installed your own tensorflow, you need to ensure you are using Tensorflow 2.2+ and have installed the `tensorboard_profiler_plugin` via `pip install`.
 
-## Viewing output with Tensorboard
+# Viewing output with Tensorboard
 
 In order to view the profilers output one uses Tensorboard. This should already be installed if you have installed tensorflor or are using one of ALCF's installations. Generally, tensorboard can be run using the command:
 ```bash
@@ -46,12 +46,17 @@ After navigating to the page in your browser you should see a page similar to th
 
 Sometimes the `Profile` tab at the top left does not show up, but can be selected via the drop down menu at the top right.
 
-## On ThetaKNL
+The window has `Runs`, `Tools`, and `Hosts` drop downs on the left. `Runs` is a drop down list of all the runs in the current `logdir` specified when Tensorboard was started. `Tools` is a drop down that offers different analysis pages related to the current run. `Hosts` will list different MPI ranks for this run.
+
+We'll explore the `Tools` during our tutorial.
+
+
+## Running On ThetaKNL
 ```bash
 qsub submit_theta.sh
 ```
 
-## On ThetaGPU
+## Running On ThetaGPU
 
 Run on ThetaGPU using
 ```bash

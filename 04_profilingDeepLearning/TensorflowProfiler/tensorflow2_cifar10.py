@@ -43,6 +43,7 @@ parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
+parser.add_argument('--logdir', default='logdir', help='set log directory')
 
 args = parser.parse_args()
 
@@ -51,15 +52,13 @@ args = parser.parse_args()
 hvd.init()
 print("I am rank %s of %s" %(hvd.rank(), hvd.size()))
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
-if args.device == 'cpu':
-    tf.config.threading.set_intra_op_parallelism_threads(args.num_intra)
-    tf.config.threading.set_inter_op_parallelism_threads(args.num_inter)
-else:
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    for gpu in gpus:
-        tf.config.experimental.set_memory_growth(gpu, True)
-    if gpus:
-        tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
+tf.config.threading.set_intra_op_parallelism_threads(args.num_intra)
+tf.config.threading.set_inter_op_parallelism_threads(args.num_inter)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+  tf.config.experimental.set_memory_growth(gpu, True)
+if gpus:
+  tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
 
 (cifar10_images, cifar10_labels), _ = \
     tf.keras.datasets.cifar10.load_data()
@@ -113,7 +112,7 @@ def training_step(images, labels, first_batch):
 
 # Horovod: adjust number of steps based on number of GPUs.
 nsteps = nsamples // hvd.size() // args.batch_size
-tf.profiler.experimental.start('profiler/tf2_cifar10')
+tf.profiler.experimental.start(args.logdir)
 for ep in range(args.epochs):
     for batch, (images, labels) in enumerate(dataset.take(nsamples // hvd.size() // args.batch_size)):
         loss_value = training_step(images, labels, (batch == 0) and (ep == 0))

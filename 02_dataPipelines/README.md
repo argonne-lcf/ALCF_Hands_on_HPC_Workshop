@@ -72,7 +72,7 @@ The example `00_tensorflowDatasetAPI/ilsvrc_dataset_serial.py` can be run via
 python 00_tensorflowDatasetAPI/ilsvrc_dataset_serial.py -c 00_tensorflowDatasetAPI/ilsvrc.json
 ```
 
-You will see very poor performance as this is an example of serial data pipeline that only uses one or two cores. You can see in this screenshot from the Tensorflow Profiler how your processes are being utilized. The profile shows a single process handling all the data pipeline processes. All ReadFile calls are being done serially when they could be done in parallel. One long IO operation holds up the entire application.
+You will see very poor performance as this is an example of serial data pipeline that only uses one or two cores. You can see in this screenshot from the [Tensorflow Profiler](../04_profilingDeepLearning/TensorflowProfiler/) how your processes are being utilized. The profile shows a single process handling all the data pipeline processes. All ReadFile calls are being done serially when they could be done in parallel. One long IO operation holds up the entire application.
 ![serial](images/ilsvrc_serial.png)
 
 Now switch to running the parallel version

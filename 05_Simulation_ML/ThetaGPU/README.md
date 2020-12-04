@@ -30,6 +30,10 @@ python -m pip install cmake
 python -m pip install matplotlib
 python -m pip install sklearn
 ```
+In the future, you only need to reactivate the environment:
+```
+source $VENV_LOCATION/bin/activate
+```
 5. Now we are ready to build our executable by executing the provided shell script (within the cloned repo):
 ```
 source setup.sh
@@ -38,4 +42,10 @@ source setup.sh
 ```
 mpirun -n 1 -npernode 1 -hostfile $COBALT_NODEFILE ./app
 ```
+
+### To run on the queue (and not interactively)
+```
+qsub submit.sh
+```
+Note that you need to inspect the `queue_submission.sh` script to make sure it is _your_ virtual environment that is used. The submission script being used here assumes that you have set up a virtual environment with cmake, matplotlib, sklearn, etc. (i.e., steps 1,2,3,4 should have been executed previously)
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
-#COBALT -t 1:00:00 -q full-node
-#COBALT -A SDL_Workshop 
+#COBALT -t 10
+#COBALT -A SDL_Workshop
 
 #submisstion script for running tensorflow_mnist with horovod
 
