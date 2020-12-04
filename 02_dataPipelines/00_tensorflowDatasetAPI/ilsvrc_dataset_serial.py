@@ -252,8 +252,8 @@ if __name__ == '__main__':
          with tf.profiler.experimental.Trace('train_%02d' % i, step_num=i, _r=1):
             inputs,labels = next(trainds)
          
-         logger.info('i = %s input shape = %s    labels shape = %s',i,inputs.shape,labels.shape)
-         logger.info('i = %s labels = %s',i,labels)
+         logger.info('batch_number = %s input shape = %s    labels shape = %s',i,inputs.shape,labels.shape)
+         logger.info('batch_number = %s labels = %s',i,labels)
       # measure performance in images per second
       duration = time.time() - start
       images = config['data']['batch_size'] * args.nsteps
