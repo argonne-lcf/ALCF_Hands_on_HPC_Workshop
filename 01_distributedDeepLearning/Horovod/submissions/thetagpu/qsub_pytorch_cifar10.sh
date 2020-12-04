@@ -11,11 +11,13 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 source /lus/theta-fs0/projects/datascience/parton/thetagpu/pt-build/pt-intall/mconda3/setup.sh
 
-mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np 16 -npernode 8 --hostfile $COBALT_NODEFILE pytorch_cifar10.py --device gpu --epochs 64 >& results/thetagpu/pytorch_cifar10.n16.out
-
-# for doing a scaling test
-#for n in 1 2 4 8
-#do
-#    mpirun -np $n python pytorch_cifar10.py --device gpu --epochs 64 >& results/thetagpu/pytorch_cifar10.n$n.out
-#done
+if (( $COBALT_JOBSIZE > 1))
+then
+    mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np $((COBALT_JOBSIZE*8)) -npernode 8 --hostfile $COBALT_NODEFILE python pytorch_cifar10.py --device gpu --epochs 32 >& results/thetagpu/pytorch_cifar10.n$((COBALT_JOBSIZE*8)).out
+else
+    for n in 1 2 4 8
+    do
+	mpirun -np $n python pytorch_cifar10.py --device gpu --epochs 32 >& results/thetagpu/pytorch_cifar10.n$n.out
+    done
+fi
 
