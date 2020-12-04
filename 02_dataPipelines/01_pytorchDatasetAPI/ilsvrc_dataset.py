@@ -195,8 +195,11 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--config', dest='config_filename',
                        help='configuration filename in json format',
                        required=True)
-    parser.add_argument('-e', '--epochs',help='number of epochs',default=4,type=int)
-    parser.add_argument('-b', '--batches',help='number of batches',default=5,type=int)
+    parser.add_argument('-l','--logdir', dest='logdir',
+                       help='log output directory',default='logdir')
+    parser.add_argument('-n','--nsteps', dest='nsteps',
+                       help='number of steps to run',default=10,type=int)
+    parser.add_argument('-t', '--nthreads',help='number of threads',default=8,type=int)
     args = parser.parse_args()
 
     # parse config file
@@ -204,8 +207,6 @@ if __name__ == '__main__':
     config['hvd'] = None
     rank = 0
     num_ranks = 1
-
-    torch.set_num_threads(64);
 
     # call function to build dataset objects
     # both of the returned objects are tf.dataset.Dataset objects
@@ -225,20 +226,19 @@ if __name__ == '__main__':
                                                batch_size=batch_size,persistent_workers=True)
 
     # epoch loop
-    for epoch in range(args.epochs):
+    for epoch in range(1):
         logger.info(f'epoch = {epoch}')
 
-        # calling this is required to get the shuffle to work
+        # calling this is required to get the shuffle to work and to reset the dataset 
         train_sampler.set_epoch(epoch)
 
         # can iterate over a dataset object
         start = time.time()
         for batch_number,(inputs,labels) in enumerate(train_loader):
-            logger.info('batch_number = %s input shape = %s    labels shape = %s  labels = %s',batch_number,inputs.shape,labels.shape,np.squeeze(labels[0:10].numpy()).tolist())
-            #logger.info('batch_number = %s labels = %s',batch_number,labels)
+            logger.info('batch_number = %s input shape = %s    labels shape = %s',batch_number,inputs.shape,labels.shape)
+            logger.info('batch_number = %s labels = %s',batch_number,np.squeeze(labels[0:10].numpy()).tolist())
             
-            # simulate training step
-            time.sleep(0.5)
-
-            if batch_number > args.batches: break
-        logger.info('image rate: %10.0f',batch_number*batch_size/(time.time() - start))
+            if batch_number > args.nsteps: break
+        duration = time.time() - start
+        images = config['data']['batch_size'] * args.nsteps
+        logger.info('imgs/sec: %5.2f',images/duration)
