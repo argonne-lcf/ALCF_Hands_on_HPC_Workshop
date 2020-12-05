@@ -3,7 +3,9 @@ Example to profile DL codes on ThetaGPU using Nvidia profiler tools
 Nsight Systems - System-wide application algorithm tuning \
 Nsight Compute – Debug CUDA API and optimize CUDA kernels
 
-To profile with Nsight systems (refer to Step A in the ```submit_thetagpu.sh``` script). A typical command is
+The script ```submit_thetagpu.sh``` provides instructions to profile ```tensorflow2_cifar10.py``` code from ```01_distributedDeepLearning``` section.
+
+To profile with Nsight systems (refer to Step A in the ```submit_thetagpu.sh``` script). A typical command to profile an application, say train.py, is
 ```
 $ nsys profile python train.py
 ```
@@ -17,6 +19,6 @@ $ ncu profile python train.py
 
 To view the profiling results in GUI, follow the commands in the section "Steps to visualize results (Step C)" in the script.
 
-The profile looks like this 
+The profile for ```tensorflow2_cifar10.py``` looks like this. It shows the kernels generated with more details on a timeline trace. 
 
 ![Alt text](./nsys-trace.png?raw=true)
