@@ -17,4 +17,6 @@ $ ncu profile python train.py
 
 To view the profiling results in GUI, follow the commands in the section "Steps to visualize results (Step C)" in the script.
 
+The profile looks like this 
 
+![Alt text](./nsys-trace.png?raw=true)
