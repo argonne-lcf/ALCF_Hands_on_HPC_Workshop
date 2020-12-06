@@ -20,5 +20,5 @@ export KMP_AFFINITY=granularity=fine,compact,1,0
 export KMP_BLOCKTIME=0
 
 aprun -n $RANKS -N $RANKS_PER_NODE --cc none \
-   python ilsvrc_dataset.py -c ilsvrc.json --logdir logdir/$COBALT_JOBID --intraop $OMP_NUM_THREADS --interop $OMP_NUM_THREADS 
+   python ilsvrc_dataset.py -c ilsvrc.json --logdir logdir/$COBALT_JOBID --nthreads $OMP_NUM_THREADS 
 
