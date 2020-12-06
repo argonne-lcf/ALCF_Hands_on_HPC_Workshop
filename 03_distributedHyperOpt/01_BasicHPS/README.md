@@ -19,7 +19,7 @@ Every DeepHyper search requires at least 2 Python objects as input:
 
 We will illustrate DeepHyper HPS for the MNIST dataset, with a goal of tuning the hyperparameters to maximize the classification accuracy.
 
-## Environment setup on ALCF's`theta`:
+## Environment setup on ALCF's`Theta`:
 
 To start on Theta, let's set up  a clean workspace for the HPS:
 
