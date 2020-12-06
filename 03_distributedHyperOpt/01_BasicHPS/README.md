@@ -6,7 +6,8 @@
 - Include code from `load_data.py` and explain
 - Include code from `model_run.py` and explain
 - Include code from `problem.py` and explain
-- Include more detail throughout
+- Include links to `DeepHyper`, `Balsam` (github + documentation)
+- Include more detail throughout, walk through code blocks
   - Explain the hyperparameters in `problem.py`
   - Include section that tests each of the `load_data.py`, `model_run.py`, and `problem.py` scripts individually to make sure they run
 
