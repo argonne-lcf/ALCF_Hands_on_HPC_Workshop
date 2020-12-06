@@ -59,6 +59,126 @@ Start and connecto to the `db` database:
 source balsamactivate db
 ```
 
+## Setup the HPS
+
+### Load and split MNIST data in to distinct train / test sets
+
+We can load and split the data as follows, using the code from [03_distributedHyperOpt/01_BasicHPS/load_data.py](load_data.py):
+
+```python
+import tensorflow as tf
+
+def load_data():
+    """Returns MNIST data as `(x_train, y_train), (x_test, y_test)`."""
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+    # Flatten the data and normalize
+    x_train = x_train.reshape(60000, 784).astype('float32') / 255
+    x_test = x_test.reshape(10000, 784).astype('float32') / 255
+    
+    print(f'(x_train, y_train): ({x_train.shape}, {y_train.shape})')'
+    print(f'(x_test, y_test): ({x_test.shape}, {y_test.shape})')'
+    
+    return (x_train, y_train), (x_test, y_test)
+
+if __name__ == '__main__':
+    load_data()
+```
+
+### Defining the Search Space
+
+We include below the code for building, training, and evaluating the trained MNIST model. Note that this is indentical to the [`03_distributedHyperOpt/01_BasicHPS/model_run.py](model_run.py).
+
+For simplicity we look at a multi-layer perceptron with two hidden layers, built using [tf.keras.Sequential](https://www.tensorflow.org/api_docs/python/tf/keras/Sequential):
+
+```python
+import os
+import sys
+import tensorflow as tf
+
+# Identify current working directory and inject it into `sys.path`
+here = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, here)
+from load_data import load_data
+
+keras = tf.keras
+layers = tf.keras.layers
+
+HISTORY = None
+
+# Define default values of hyperparameters to use if None are specified
+POINT = { 
+    'epochs': 2,
+    'units1': 8,
+    'units2': 16,
+    'dropout1': 0.,
+    'dropout2': 0.,
+    'batch_size': 16,
+    'activation': 'relu',
+    'optimizer': 'SGD',
+}
+
+def run(point: dict = None):
+    global HISTORY
+    if point is None:
+        point = POINT
+        
+    print(point)
+    
+    (x_train, y_train), (x_test, y_test) = load_data()
+    
+    # Reserve 10,000 samples for validation
+    x_val = x_train[-10000:]
+    y_val = y_train[-10000:]
+    x_train = x_train[:-10000]
+    y_train = y_train[:-10000]
+    
+    epochs = point.get('epochs', None)
+    units1 = point.get('units1', None)
+    units2 = point.get('units2', None)
+    dropout1 = point.get('dropout1', None)
+    dropout2 = point.get('dropout2', None)
+      
+    model = tf.keras.Sequential([
+        layers.Dense(point['units1'], activation=point['activation']),
+        layers.Dropout(point['dropout1']),
+        layers.Dense(point['units2'], activation=point['activation']),
+        layers.Dropout(point['dropout2']),
+        layers.Dense(10),
+    ])
+    
+    model.compile(
+        optimizer=point['optimizer'],
+        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+        metrics=['accuracy'],
+      
+    )
+    
+    # Train the model
+    _ = model.fit(
+        x_train,
+        y_train,
+        batch_size=point['batch_size'],
+        epochs=point['epochs'],
+        verbose=1,
+        callbacks=[keras.callbacks.EarlyStopping(monitor='loss', verbose=1)],
+        # We need to pass some validation data
+        # for monitoring the validation loss and metrics
+        # at the end of each epoch
+        validation_data=(x_val, y_val),
+    )
+    
+    # Evaluate the trained model on the test set
+    score = model.evaluate(x_test, y_test, verbose=2)
+    print(f'test_loss, test_accuracy: {score[0]}, {score[1]}')
+    
+    return score[1]
+
+if __name__ == '__main__':
+    from problem import Problem
+    point = Problem.starting_point_asdict[0]
+    run(point)
+```
+
 ## Launch an Experiment
 
 The deephyper Theta module has a convenience script included for quick generation of DeepHyper Async Bayesian Model Search (AMBS) search jobs. Simply pass the paths to the `model_run.py` script (containing the `run()` function), and the `problem.py` file (containing the `HpProblem`) as follows:
