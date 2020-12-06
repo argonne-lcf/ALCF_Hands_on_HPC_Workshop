@@ -162,7 +162,7 @@ void analyse_data(PyObject *panalyses_func, double *u)
   // We don't need to decref array_1d because PyTuple_SetItem steals a reference 
 
   // Printing out values of the SVD eigenvectors of the first and second modes for each field DOF
-  // PyArray_DATA gives pointer to buffer, which we know is double 
+  // PyArray_DATA gives pointer to buffer (not a copy), which we know is double 
   double* c_out = reinterpret_cast<double*>(PyArray_DATA(pValue));
   for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
   {
@@ -175,8 +175,4 @@ void analyse_data(PyObject *panalyses_func, double *u)
   }
 
   Py_DECREF(pValue);
-
-  // Null and delete the pointer you allocated to get data from python
-  c_out = nullptr;
-  delete[] c_out;
 }
