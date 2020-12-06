@@ -7,7 +7,13 @@ import matplotlib.pyplot as plt
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import r2_score
+
+# Some metrics
+# Coefficient of determination
+def coeff_determination(y_pred, y_true): #Order of function inputs is important here        
+    SS_res =  np.sum(np.square( y_true-y_pred )) 
+    SS_tot = np.sum(np.square( y_true - np.mean(y_true) ) )
+    return ( 1 - SS_res/(SS_tot + 2.22044604925e-16) )
 
 
 #Build the model which does basic map of inputs to coefficients
@@ -119,8 +125,7 @@ class standard_lstm(Model):
 
                 valid_loss = valid_loss + self.get_loss(input_batch,output_batch).numpy()
                 predictions = self.call(self.input_seq_valid)
-                # order important: r2_score(y_true, y_pred)
-                valid_r2 = valid_r2 + r2_score(self.output_seq_valid, predictions)
+                valid_r2 = valid_r2 + coeff_determination(predictions,self.output_seq_valid)
 
             valid_r2 = valid_r2/(batch+1)
 
@@ -147,7 +152,7 @@ class standard_lstm(Model):
         # Check accuracy on test
         predictions = self.call(self.input_seq_test)
         print('Test loss:',self.get_loss(self.input_seq_test,self.output_seq_test).numpy())
-        r2 = r2_score(self.output_seq_test, predictions)
+        r2 = coeff_determination(predictions,self.output_seq_test)
         print('Test R2:',r2)
         r2_iter = 0
 
