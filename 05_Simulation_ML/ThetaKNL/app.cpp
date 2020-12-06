@@ -20,17 +20,15 @@ void initialize(double *u);
 void update_solution(double *u, double *u_temp);
 
 void init_numpy() {
+  // Import numpy C-API
   import_array1();
 }
 
 int main(int argc, char *argv[])
 {
-
     // Some python initialization
     // Pointers for loading python modules, function names
     PyObject *pName, *pModule, *pcollection_func, *panalyses_func;
-
-    int some_int = 0;
 
     Py_Initialize();
     PyRun_SimpleString("import sys");
@@ -61,6 +59,7 @@ int main(int argc, char *argv[])
     clock_t start, end;
     double t, cpu_time_used;
 
+    // Returns the _processor_ time consumed by the program
     start = clock();
     // Solve the problem
     t = 0.0;
