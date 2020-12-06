@@ -27,9 +27,6 @@ void init_numpy() {
 int main(int argc, char *argv[])
 {
     // Some python initialization
-    // Pointers for loading python modules, function names
-    PyObject *pName, *pModule, *pcollection_func, *panalyses_func;
-
     Py_Initialize();
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append(\".\")");
@@ -39,13 +36,13 @@ int main(int argc, char *argv[])
     init_numpy();
     
     std::cout << "Loading python module" << std::endl;
-    pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
-    pModule = PyImport_Import(pName);
+    PyObject* pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
+    PyObject* pModule = PyImport_Import(pName);
     std::cout << "Loaded python module" << std::endl; 
 
     std::cout << "Loading functions from module" << std::endl;
-    pcollection_func = PyObject_GetAttrString(pModule, "collection_func");
-    panalyses_func = PyObject_GetAttrString(pModule, "analyses_func");
+    PyObject* pcollection_func = PyObject_GetAttrString(pModule, "collection_func");
+    PyObject* panalyses_func = PyObject_GetAttrString(pModule, "analyses_func");
     std::cout << "Loaded functions" << std::endl;
 
     // Do the array initialization business for the solution field
