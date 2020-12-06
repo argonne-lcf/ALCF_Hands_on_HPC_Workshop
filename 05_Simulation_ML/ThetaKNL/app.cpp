@@ -8,11 +8,11 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
-double PI = 3.1415926535;
-double NU = 0.01;
-int NX = 256;
-double DT = 0.001;
-double FT = 2.0;
+constexpr double PI = 3.1415926535;
+constexpr double NU = 0.01;
+constexpr int NX = 256;
+constexpr double DT = 0.001;
+constexpr double FT = 2.0;
 
 void collect_data(PyObject *pcollection_func, double *u);
 void analyse_data(PyObject *panalyses_func, double *u);
