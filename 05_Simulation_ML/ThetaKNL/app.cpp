@@ -60,9 +60,10 @@ int main(int argc, char *argv[])
     do{
       // solve PDE at next time step 
       update_solution(u,u_prev);
-      
+
       // Exchanging data with python
       collect_data(pcollection_func,u);
+
       std::cout << "time = " << t << std::endl;;
       t = t + DT;
     }while(t<FT);
@@ -124,17 +125,14 @@ void update_solution(double *u, double *u_prev)
 
 void collect_data(PyObject *pcollection_func, double *u)
 {
-
-  PyObject *pArgs, *array_1d;
-  PyArrayObject *pValue;
-  pArgs = PyTuple_New(1);
+  PyObject* pArgs = PyTuple_New(1);
   
   //Numpy array dimensions
   npy_intp dim[] = {NX+2};
   // create a new array
-  array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
+  PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
   PyTuple_SetItem(pArgs, 0, array_1d);
-  pValue = (PyArrayObject*)PyObject_CallObject(pcollection_func, pArgs); //Casting to PyArrayObject
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(pcollection_func, pArgs); //Casting to PyArrayObject
   std::cout << "Called python data collection function successfully"<<std::endl;
 
   Py_DECREF(pArgs);
