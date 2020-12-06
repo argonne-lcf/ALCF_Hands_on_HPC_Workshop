@@ -152,13 +152,13 @@ void analyse_data(PyObject *panalyses_func, double *u)
   // Printing out values of the SVD eigenvectors of the first and second modes for each field DOF
   for (int i = 0; i < 10; ++i) 
   {
-    double* current = (double*) PyArray_GETPITR2(pValue, 0, i); // row 0, column i
+    double* current = (double*) PyArray_GETPTR2(pValue, 0, i); // row 0, column i
     std::cout << "First mode value: " << *current << std::endl;
   }
 
   for (int i = 0; i < 10; ++i)
   {
-    double* current = (double*) PyArray_GETPITR2(pValue, 1, i); // row 1, column i
+    double* current = (double*) PyArray_GETPTR2(pValue, 1, i); // row 1, column i
     std::cout << "Second mode value: " << *current << std::endl;
   }
 
