@@ -33,11 +33,13 @@ int main(int argc, char *argv[])
     std::cout << "Loading python module" << std::endl;
     PyObject* pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
     PyObject* pModule = PyImport_Import(pName);
+    Py_DECREF(pName); // finished with this string so release reference
     std::cout << "Loaded python module" << std::endl; 
 
     std::cout << "Loading functions from module" << std::endl;
     PyObject* pcollection_func = PyObject_GetAttrString(pModule, "collection_func");
     PyObject* panalyses_func = PyObject_GetAttrString(pModule, "analyses_func");
+    Py_DECREF(pModule); // finished with this module so release reference
     std::cout << "Loaded functions" << std::endl;
 
     // Do the array initialization business for the solution field
@@ -63,6 +65,8 @@ int main(int argc, char *argv[])
       t = t + DT;
     }while(t<FT);
 
+    Py_DECREF(pcollection_func);
+
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
@@ -71,6 +75,7 @@ int main(int argc, char *argv[])
     std::cout<<"Python based data analysis starting:"<< std::endl;
     
     analyse_data(panalyses_func,u);
+    Py_DECREF(panalyses_func);
 
     return 0;
 }
