@@ -21,7 +21,7 @@ def collection_func(input_array):
     iternum+=1
     return None
 
-def analyses_func(placeholder):
+def analyses_func():
 
     global data_array, x
     
@@ -70,7 +70,7 @@ def analyses_func(placeholder):
     print('Performing inference on testing data')
     ml_model.model_inference(test_series)
 
-    return_data = v[0:3,:].T
+    return_data = v[0:3,:]
 
     return return_data
 
