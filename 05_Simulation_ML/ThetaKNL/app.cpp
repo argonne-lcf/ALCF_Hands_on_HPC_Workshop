@@ -8,69 +8,67 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
-double PI = 3.1415926535;
-double NU = 0.01;
-int NX = 256;
-double DT = 0.001;
-double FT = 2.0;
+constexpr double PI = 3.1415926535;
+constexpr double NU = 0.01; // parameter for PDE
+constexpr int NX = 256; // number of points in spatial discretization
+constexpr double DT = 0.001; // time step delta t
+constexpr double FT = 2.0; // final time
 
 void collect_data(PyObject *pcollection_func, double *u);
 void analyse_data(PyObject *panalyses_func, double *u);
 void initialize(double *u);
-void update_solution(double *u, double *u_temp);
-
-void init_numpy() {
-  import_array1();
-}
+void update_solution(double *u, double *u_prev);
 
 int main(int argc, char *argv[])
 {
-
     // Some python initialization
-    // Pointers for loading python modules, function names
-    PyObject *pName, *pModule, *pcollection_func, *panalyses_func;
-
-    int some_int = 0;
-
     Py_Initialize();
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append(\".\")");
 
     std::cout << "Initializing numpy library" << std::endl;
     // initialize numpy array library
-    init_numpy();
+    import_array1(-1);
     
     std::cout << "Loading python module" << std::endl;
-    pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
-    pModule = PyImport_Import(pName);
+    PyObject* pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
+    PyObject* pModule = PyImport_Import(pName);
+    Py_DECREF(pName); // finished with this string so release reference
     std::cout << "Loaded python module" << std::endl; 
 
     std::cout << "Loading functions from module" << std::endl;
-    pcollection_func = PyObject_GetAttrString(pModule, "collection_func");
-    panalyses_func = PyObject_GetAttrString(pModule, "analyses_func");
+    PyObject* pcollection_func = PyObject_GetAttrString(pModule, "collection_func");
+    PyObject* panalyses_func = PyObject_GetAttrString(pModule, "analyses_func");
+    Py_DECREF(pModule); // finished with this module so release reference
     std::cout << "Loaded functions" << std::endl;
 
-    // Do the array initialization business for the solution field
-    double u[NX+2]; // 2 GHOST POINTS
+    // Initialize array for the solution field u with the initial condition for the PDE
+    double u[NX+2]; // length is number of spatial points (NX) plus 2 ghost points to handle boundary conditions
     initialize(u);
 
-    double u_temp[NX+2]; // 2 GHOST POINTS
-    initialize(u_temp);
+    double u_prev[NX+2]; // again include 2 ghost points
+    initialize(u_prev); // intialized to same as u
 
     // Time loop for evolution of the Burgers equation
     clock_t start, end;
     double t, cpu_time_used;
 
+    // Returns the _processor_ time consumed by the program
     start = clock();
     // Solve the problem
     t = 0.0;
     do{
-      update_solution(u,u_temp);
+      // solve PDE at next time step 
+      update_solution(u,u_prev);
+
       // Exchanging data with python
       collect_data(pcollection_func,u);
+
       std::cout << "time = " << t << std::endl;;
       t = t + DT;
     }while(t<FT);
+
+    Py_DECREF(pcollection_func);
 
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -80,6 +78,7 @@ int main(int argc, char *argv[])
     std::cout<<"Python based data analysis starting:"<< std::endl;
     
     analyse_data(panalyses_func,u);
+    Py_DECREF(panalyses_func);
 
     return 0;
 }
@@ -94,90 +93,86 @@ void initialize(double *u)
       u[i] = sin(x);
   }
 
-  // Update periodic BCs
+  // Handle the ghost points: periodic boundary conditions
   u[0] = u[NX];
   u[NX+1] = u[1];
 }
 
-void update_solution(double *u, double *u_temp)
+void update_solution(double *u, double *u_prev)
 {
-  double dx = 2.0 * PI/NX;
+  double dx = 2.0 * PI/NX; // delta x (spatial discretization)
 
+  // loop over the array, updating solution u with a finite difference method
+  // (based on values at the previous time in the neighborhood)
+  // Burgers' equation: u_t + u*u_x = nu * u_xx
+  // skips updating ghost points, one on either end
   for (int i = 1; i < NX+1; i++)
   {
-      u[i] = u_temp[i] + NU*DT/(dx*dx)*(u_temp[i+1]+u_temp[i-1]-2.0*u_temp[i]) - DT/(2*dx)*(u_temp[i+1]-u_temp[i-1])*u_temp[i];
-  }
+      u[i] = u_prev[i] + NU*DT/(dx*dx)*(u_prev[i+1]+u_prev[i-1]-2.0*u_prev[i]) - DT/(2*dx)*(u_prev[i+1]-u_prev[i-1])*u_prev[i];
+  } 
 
-  for (int i = 1; i < NX+1; i++)
-  {
-      u_temp[i] = u[i];
-  }  
-
-  // Update periodic BCs
+  // Handle the ghost points with periodic BCs
   u[0] = u[NX];
   u[NX+1] = u[1];
 
-  // Update periodic BCs
-  u_temp[0] = u_temp[NX];
-  u_temp[NX+1] = u_temp[1];
+  // copy u into u_prev for use next time
+  for (int i = 0; i < NX+2; i++)
+  {
+      u_prev[i] = u[i];
+  }
 
 }
 
 void collect_data(PyObject *pcollection_func, double *u)
 {
-
-  PyObject *pArgs, *array_1d;
-  PyArrayObject *pValue;
-  pArgs = PyTuple_New(1);
+  PyObject* pArgs = PyTuple_New(1);
   
   //Numpy array dimensions
   npy_intp dim[] = {NX+2};
-  // create a new array
-  array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
+
+  // create a new Python array that is a wrapper around u (not a copy) and put it in tuple pArgs
+  PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
   PyTuple_SetItem(pArgs, 0, array_1d);
-  pValue = (PyArrayObject*)PyObject_CallObject(pcollection_func, pArgs); //Casting to PyArrayObject
+
+  // pass array into our Python function and cast result to PyArrayObject
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(pcollection_func, pArgs); 
   std::cout << "Called python data collection function successfully"<<std::endl;
 
   Py_DECREF(pArgs);
   Py_DECREF(pValue);
-  PyArray_ENABLEFLAGS((PyArrayObject*)array_1d, NPY_ARRAY_OWNDATA); // Deallocate array_1d
-  // Py_DECREF(array_1d);
+  // We don't need to decref array_1d because PyTuple_SetItem steals a reference 
 }
 
 void analyse_data(PyObject *panalyses_func, double *u)
 {
-
-  PyObject *pArgs, *array_1d;
-  PyArrayObject *pValue;
-  pArgs = PyTuple_New(1);
+  PyObject* pArgs = PyTuple_New(1);
   
   //Numpy array dimensions
   npy_intp dim[] = {NX+2};
-  // create a new array
-  array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
+
+  // create a new Python array that is a wrapper around u (not a copy) and put it in tuple pArgs
+  PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
   PyTuple_SetItem(pArgs, 0, array_1d);
-  pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs); //Casting to PyArrayObject
+
+  // pass array into our Python function and cast result to PyArrayObject
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs);
   std::cout << "Called python analyses function successfully"<<std::endl;
 
   Py_DECREF(pArgs);
-  PyArray_ENABLEFLAGS((PyArrayObject*)array_1d, NPY_ARRAY_OWNDATA); // Deallocate array_1d
-  // Py_DECREF(array_1d);
+  // We don't need to decref array_1d because PyTuple_SetItem steals a reference 
 
   // Printing out values of the SVD eigenvectors of the first and second modes for each field DOF
+  // PyArray_DATA gives pointer to buffer (not a copy), which we know is double 
   double* c_out = reinterpret_cast<double*>(PyArray_DATA(pValue));
   for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
   {
-    std::cout << "First mode value: " << (*(c_out+i)) << std::endl;
+    std::cout << "First mode value: " << c_out[i] << std::endl;
   }
 
   for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
   {
-    std::cout << "Second mode value: " << (*(c_out+NX+i)) << std::endl;
+    std::cout << "Second mode value: " << c_out[NX+i] << std::endl;
   }
 
   Py_DECREF(pValue);
-
-  // Null and delete the pointer you allocated to get data from python
-  c_out = nullptr;
-  delete[] c_out;
 }
