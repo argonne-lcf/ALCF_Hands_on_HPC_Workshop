@@ -145,17 +145,14 @@ void collect_data(PyObject *pcollection_func, double *u)
 
 void analyse_data(PyObject *panalyses_func, double *u)
 {
-
-  PyObject *pArgs, *array_1d;
-  PyArrayObject *pValue;
-  pArgs = PyTuple_New(1);
+  PyObject* pArgs = PyTuple_New(1);
   
   //Numpy array dimensions
   npy_intp dim[] = {NX+2};
   // create a new array
-  array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
+  PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
   PyTuple_SetItem(pArgs, 0, array_1d);
-  pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs); //Casting to PyArrayObject
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs); //Casting to PyArrayObject
   std::cout << "Called python analyses function successfully"<<std::endl;
 
   Py_DECREF(pArgs);
