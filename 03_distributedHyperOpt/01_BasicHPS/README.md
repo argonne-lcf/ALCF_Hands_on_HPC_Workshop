@@ -6,9 +6,25 @@
 - Include code from `load_data.py` and explain
 - Include code from `model_run.py` and explain
 - Include code from `problem.py` and explain
-- Include more detail throughout
+- Include links to `DeepHyper`, `Balsam` (github + documentation)
+- Include more detail throughout, walk through code blocks
   - Explain the hyperparameters in `problem.py`
   - Include section that tests each of the `load_data.py`, `model_run.py`, and `problem.py` scripts individually to make sure they run
+- The `deephyper/0.2.1` module seems broken somehow, workaround for now:
+  - Issues encountered when trying to install deephyper with horovod, but should run without issue using analytics and balsam.
+
+```bash
+module load postgresql
+module load miniconda-3
+conda create -p dh-env
+conda activate dh-env
+conda install gxx_linux-64 gcc_linux-64
+conda install tensorflow -c intel
+# DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks)
+pip install deephyper[analytics,balsam]
+# or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
+pip install deephyper[analytics,hvd,balsam]
+```
 
 ---
 
@@ -19,7 +35,7 @@ Every DeepHyper search requires at least 2 Python objects as input:
 
 We will illustrate DeepHyper HPS for the MNIST dataset, with a goal of tuning the hyperparameters to maximize the classification accuracy.
 
-## Environment setup on ALCF's`theta`:
+## Environment setup on ALCF's`Theta`:
 
 To start on Theta, let's set up  a clean workspace for the HPS:
 
