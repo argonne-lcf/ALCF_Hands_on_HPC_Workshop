@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Initializing numpy library" << std::endl;
     // initialize numpy array library
-    import_array1();
+    import_array1(-1);
     
     std::cout << "Loading python module" << std::endl;
     PyObject* pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
@@ -149,26 +149,29 @@ void analyse_data(PyObject *panalyses_func, double *u)
   
   //Numpy array dimensions
   npy_intp dim[] = {NX+2};
-  // create a new array
+
+  // create a new Python array that is a wrapper around u (not a copy) and put it in tuple pArgs
   PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
   PyTuple_SetItem(pArgs, 0, array_1d);
-  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs); //Casting to PyArrayObject
+
+  // pass array into our Python function and cast result to PyArrayObject
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs);
   std::cout << "Called python analyses function successfully"<<std::endl;
 
   Py_DECREF(pArgs);
-  PyArray_ENABLEFLAGS((PyArrayObject*)array_1d, NPY_ARRAY_OWNDATA); // Deallocate array_1d
-  // Py_DECREF(array_1d);
+  // We don't need to decref array_1d because PyTuple_SetItem steals a reference 
 
   // Printing out values of the SVD eigenvectors of the first and second modes for each field DOF
+  // PyArray_DATA gives pointer to buffer, which we know is double 
   double* c_out = reinterpret_cast<double*>(PyArray_DATA(pValue));
   for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
   {
-    std::cout << "First mode value: " << (*(c_out+i)) << std::endl;
+    std::cout << "First mode value: " << c_out[i] << std::endl;
   }
 
   for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
   {
-    std::cout << "Second mode value: " << (*(c_out+NX+i)) << std::endl;
+    std::cout << "Second mode value: " << c_out[NX+i] << std::endl;
   }
 
   Py_DECREF(pValue);
