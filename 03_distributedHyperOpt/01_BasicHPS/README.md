@@ -33,6 +33,7 @@ source balsamactivate db
 Start by creating a new DeepHyper project workspace. This is a directory where you will create search problem instances that are automatically installed and importable across your Python environment.
 
 ```bash
+export DISABLE_PYMODULE_LOG=True
 deephyper start-project hps_demo
 ```
 
