@@ -129,16 +129,18 @@ void collect_data(PyObject *pcollection_func, double *u)
   
   //Numpy array dimensions
   npy_intp dim[] = {NX+2};
-  // create a new array
+
+  // create a new Python array that is a wrapper around u (not a copy) and put it in tuple pArgs
   PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
   PyTuple_SetItem(pArgs, 0, array_1d);
-  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(pcollection_func, pArgs); //Casting to PyArrayObject
+
+  // pass array into our Python function and cast result to PyArrayObject
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(pcollection_func, pArgs); 
   std::cout << "Called python data collection function successfully"<<std::endl;
 
   Py_DECREF(pArgs);
   Py_DECREF(pValue);
-  PyArray_ENABLEFLAGS((PyArrayObject*)array_1d, NPY_ARRAY_OWNDATA); // Deallocate array_1d
-  // Py_DECREF(array_1d);
+  // We don't need to decref array_1d because PyTuple_SetItem steals a reference 
 }
 
 void analyse_data(PyObject *panalyses_func, double *u)
