@@ -9,15 +9,15 @@
 #include <numpy/arrayobject.h>
 
 constexpr double PI = 3.1415926535;
-constexpr double NU = 0.01;
-constexpr int NX = 256;
-constexpr double DT = 0.001;
-constexpr double FT = 2.0;
+constexpr double NU = 0.01; // parameter for PDE
+constexpr int NX = 256; // number of points in spatial discretization
+constexpr double DT = 0.001; // time step delta t
+constexpr double FT = 2.0; // final time
 
 void collect_data(PyObject *pcollection_func, double *u);
 void analyse_data(PyObject *panalyses_func, double *u);
 void initialize(double *u);
-void update_solution(double *u, double *u_temp);
+void update_solution(double *u, double *u_prev);
 
 int main(int argc, char *argv[])
 {
@@ -42,12 +42,12 @@ int main(int argc, char *argv[])
     Py_DECREF(pModule); // finished with this module so release reference
     std::cout << "Loaded functions" << std::endl;
 
-    // Do the array initialization business for the solution field
-    double u[NX+2]; // 2 GHOST POINTS
+    // Initialize array for the solution field u with the initial condition for the PDE
+    double u[NX+2]; // length is number of spatial points (NX) plus 2 ghost points to handle boundary conditions
     initialize(u);
 
-    double u_temp[NX+2]; // 2 GHOST POINTS
-    initialize(u_temp);
+    double u_prev[NX+2]; // again include 2 ghost points
+    initialize(u_prev); // intialized to same as u
 
     // Time loop for evolution of the Burgers equation
     clock_t start, end;
@@ -58,7 +58,9 @@ int main(int argc, char *argv[])
     // Solve the problem
     t = 0.0;
     do{
-      update_solution(u,u_temp);
+      // solve PDE at next time step 
+      update_solution(u,u_prev);
+      
       // Exchanging data with python
       collect_data(pcollection_func,u);
       std::cout << "time = " << t << std::endl;;
@@ -90,32 +92,33 @@ void initialize(double *u)
       u[i] = sin(x);
   }
 
-  // Update periodic BCs
+  // Handle the ghost points: periodic boundary conditions
   u[0] = u[NX];
   u[NX+1] = u[1];
 }
 
-void update_solution(double *u, double *u_temp)
+void update_solution(double *u, double *u_prev)
 {
-  double dx = 2.0 * PI/NX;
+  double dx = 2.0 * PI/NX; // delta x (spatial discretization)
 
+  // loop over the array, updating solution u with a finite difference method
+  // (based on values at the previous time in the neighborhood)
+  // Burgers' equation: u_t + u*u_x = nu * u_xx
+  // skips updating ghost points, one on either end
   for (int i = 1; i < NX+1; i++)
   {
-      u[i] = u_temp[i] + NU*DT/(dx*dx)*(u_temp[i+1]+u_temp[i-1]-2.0*u_temp[i]) - DT/(2*dx)*(u_temp[i+1]-u_temp[i-1])*u_temp[i];
-  }
+      u[i] = u_prev[i] + NU*DT/(dx*dx)*(u_prev[i+1]+u_prev[i-1]-2.0*u_prev[i]) - DT/(2*dx)*(u_prev[i+1]-u_prev[i-1])*u_prev[i];
+  } 
 
-  for (int i = 1; i < NX+1; i++)
-  {
-      u_temp[i] = u[i];
-  }  
-
-  // Update periodic BCs
+  // Handle the ghost points with periodic BCs
   u[0] = u[NX];
   u[NX+1] = u[1];
 
-  // Update periodic BCs
-  u_temp[0] = u_temp[NX];
-  u_temp[NX+1] = u_temp[1];
+  // copy u into u_prev for use next time
+  for (int i = 0; i < NX+2; i++)
+  {
+      u_prev[i] = u[i];
+  }
 
 }
 
