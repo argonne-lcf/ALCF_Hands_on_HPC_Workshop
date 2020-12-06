@@ -147,13 +147,7 @@ def run(point: dict = None):
     y_val = y_train[-10000:]
     x_train = x_train[:-10000]
     y_train = y_train[:-10000]
-    
-    epochs = point.get('epochs', None)
-    units1 = point.get('units1', None)
-    units2 = point.get('units2', None)
-    dropout1 = point.get('dropout1', None)
-    dropout2 = point.get('dropout2', None)
-      
+
     model = tf.keras.Sequential([
         layers.Dense(point['units1'], activation=point['activation']),
         layers.Dropout(point['dropout1']),
@@ -166,7 +160,6 @@ def run(point: dict = None):
         optimizer=point['optimizer'],
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=['accuracy'],
-      
     )
     
     # Train the model
