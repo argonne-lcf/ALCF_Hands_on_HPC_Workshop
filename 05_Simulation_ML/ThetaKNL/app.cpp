@@ -19,11 +19,6 @@ void analyse_data(PyObject *panalyses_func, double *u);
 void initialize(double *u);
 void update_solution(double *u, double *u_temp);
 
-void init_numpy() {
-  // Import numpy C-API
-  import_array1();
-}
-
 int main(int argc, char *argv[])
 {
     // Some python initialization
@@ -33,7 +28,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Initializing numpy library" << std::endl;
     // initialize numpy array library
-    init_numpy();
+    import_array1();
     
     std::cout << "Loading python module" << std::endl;
     PyObject* pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
