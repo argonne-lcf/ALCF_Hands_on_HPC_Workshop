@@ -30,7 +30,7 @@ except:
         def size(self,):
             return 1
     hvd=Hvd()
-import time
+import time,os
 t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow CIFAR10 Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -75,7 +75,7 @@ opt = tf.optimizers.Adam(args.lr * hvd.size())
 cifar10_model = tf.keras.applications.DenseNet121(include_top=False,
     input_tensor=None, input_shape=(32, 32, 3),
     pooling=None, classes=10)
-checkpoint_dir = './checkpoints/tf2_cifar10'
+checkpoint_dir = os.path.join(args.logdir,'checkpoints')
 checkpoint = tf.train.Checkpoint(model=cifar10_model, optimizer=opt)
 
 
