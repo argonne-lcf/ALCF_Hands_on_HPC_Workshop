@@ -3,6 +3,9 @@
 *Contact:*
 
 - Sam Foreman (foremans@anl.gov)
+- Kyle Felker (felker@anl.gov)
+- Romit Maulik (rmaulik@anl.gov)
+- Misha Salim (msalim@anl.gov)
 
 **TODO**: 
 
