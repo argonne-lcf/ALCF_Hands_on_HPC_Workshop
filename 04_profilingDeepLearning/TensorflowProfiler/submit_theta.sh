@@ -18,5 +18,5 @@ export OMP_NUM_THREADS=32
 export KMP_BLOCKTIME=0
 export HDF5_USE_FILE_LOCKING='FALSE'
 aprun -n $(($COBALT_JOBSIZE*$PROC_PER_NODE)) -N $PROC_PER_NODE -cc none \
-    python tensorflow2_cifar10.py  --epochs 8 --logdir logdir/$COBALT_JOBID --num_inter $OMP_NUM_THREADS --num_intra $OMP_NUM_THREADS
+    python tensorflow2_cifar10.py  --epochs 1 --logdir logdir/$COBALT_JOBID --num_inter $OMP_NUM_THREADS --num_intra $OMP_NUM_THREADS
 
