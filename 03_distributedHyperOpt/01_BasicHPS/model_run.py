@@ -16,29 +16,18 @@ layers = tf.keras.layers
 
 HISTORY = None
 
-POINT = {
-    'epochs': 2,
-    'units1': 8,
-    'units2': 16,
-    'dropout1': 0.,
-    'dropout2': 0.,
-    'batch_size': 16,
-    'activation': 'relu',
-    'optimizer': 'SGD',
-}
-
-
 # pylint:disable=redefined-outer-name, too-many-locals
 def run(point: dict = None):
     """Run the model at a "point" in hyperparameter space. Returns accuracy.
 
     point is expected to have the following keys:
-     - units: list containing the number of units in each hidden layer
-     - activations: list containing activations of each hidden layer
-     - dropout_prob: dropout probability. If set to 0 no dropout layer used.
-     - batch_size: int
-     - epochs: number of epochs
-     - optimizer: `keras.optimizers.Optimizer`
+     - units (list): containing the number of units in each hidden layer
+     - activations (list): containing activations of each hidden layer
+     - dropout_prob (float): dropout probability; if set to 0 no dropout layer used.
+     - batch_size (int): batch size to use
+     - learning_rate (float): Learning rate to use for training
+     - optimizer (str): `keras.optimizers.Optimizer`
+     - epochs (int): number of epochs
     """
     global HISTORY  # pylint:disable=global-statement
     if point is None:
@@ -54,7 +43,8 @@ def run(point: dict = None):
     x_train = x_train[:-10000]
     y_train = y_train[:-10000]
 
-    epochs = point.get('epochs', None)
+    epochs = 10
+    #  epochs = point.get('epochs', None)
     optimizer = point.get('optimizer', None)
     batch_size = point.get('batch_size', None)
     activation = point.get('activation', None)
@@ -100,7 +90,3 @@ if __name__ == "__main__":
 
     point = Problem.starting_point_asdict[0]
     run(point)
-
-
-
-
