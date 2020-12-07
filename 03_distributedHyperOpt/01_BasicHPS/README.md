@@ -1,8 +1,8 @@
-# Hyperparameter Search for Deep Learning
+# Hyperparameter Search U
 
 **TODO**: 
 
-- [ ] Include instructions for port-forwarding to connect to jupyter from local machine
+- [x] Include instructions for port-forwarding to connect to jupyter from local machine
 
 - [x] Include code from `load_data.py` and explain
 
@@ -14,7 +14,7 @@
 
 - [ ] Include more detail throughout, walk through code blocks
 
-- [ ] Explain the hyperparameters in `problem.py`
+- [x] Explain the hyperparameters in `problem.py`
 
 - [x] Include section that tests each of the `load_data.py`, `model_run.py`, and `problem.py` scripts individually to make sure they run
 - [ ] Remove `model_run.py` test (tensorflow isn't supposed to run on login nodes??)
@@ -44,7 +44,7 @@ Every DeepHyper search requires at least 2 Python objects as input:
 
 We will illustrate DeepHyper HPS for the MNIST dataset, with a goal of tuning the hyperparameters to maximize the classification accuracy.
 
-## Environment setup on `Theta` @ALCF:
+## Environment setup on [`Theta`](https://www.alcf.anl.gov/support-center/theta) at [ALCF](https://www.alcf.anl.gov):
 
 To start on Theta, let's set up  a clean workspace for the HPS:
 
@@ -149,15 +149,17 @@ def run(point: dict = None):
     y_train = y_train[:-10000]
 
     epochs = 10  # Fixed num of epochs (for now)
-    optimizer = point.get('optimizer', None)
-    batch_size = point.get('batch_size', None)
-    activation = point.get('activation', None)
 
-    units1 = point.get('units1', None)
-    units2 = point.get('units2', None)
-    dropout1 = point.get('dropout1', None)
-    dropout2 = point.get('dropout2', None)
+    # Get hyperparameters from `point`
+    optimizer = point.get('optimizer', None)    # Optimizer to use for training
+    batch_size = point.get('batch_size', None)  # Batch size
+    activation = point.get('activation', None)  # Activation fn to use
+    units1 = point.get('units1', None)  		# Number of units in 1st hidden layer
+    units2 = point.get('units2', None) 			# Number of units in 2nd hidden layer
+    dropout1 = point.get('dropout1', None)	 	# dropout ratio in 1st hidden layer
+    dropout2 = point.get('dropout2', None)		# dropout ratio in 2nd hidden layer
 
+    # Build & compile model for training
     model = tf.keras.Sequential([
         layers.Dense(units1, activation=activation),
         layers.Dropout(dropout1),
@@ -225,8 +227,6 @@ Epoch 5/5
 test_loss, test_accuracy: 2.301095485687256, 0.11349999904632568
 ```
 
-
-
 ### Defining the Search Space
 
 
@@ -289,12 +289,12 @@ Notice the objective value in the second-to-last column of the `results.csv` fil
 
 ```bash
  balsam ls --wf mnist-demo
- ```
+```
  ```bash
                               job_id |       name |   workflow | application |   state
 --------------------------------------------------------------------------------------
 b1dd0a04-dbd5-4601-9295-7465abe6b794 | mnist-demo | mnist-demo | AMBS        | CREATED
-```
+ ```
 ```bash
 # We can jump directly to the working directory containing the DeepHyper log
 . bcd b1dd  # Note: 'b1dd' is the prefix of the `job_id` above; yours will be different
@@ -302,14 +302,377 @@ b1dd0a04-dbd5-4601-9295-7465abe6b794 | mnist-demo | mnist-demo | AMBS        | C
 
 ### DeepHyper analytics
 
-Run:
+We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyter Notebook` via `ssh`.
 
-```bash
-deephyper-analytics hps -p results.csv
+1. First, we generate the analysis by running (from the directory containing the `results.csv` file containing the results of our HPS:
+
+   ```bash
+   deephyper-analytics hps -p results.csv
+   ```
+
+   This should generate a `dh-analytics-hps.ipynb` notebook file that we can run to gain insight into our HPS results.
+
+2. Next we start a `jupyter notebook` (still from `thetalogin` node) via:
+
+   ```bash
+   jupyter notebook --no-browser --port=8888
+   ```
+
+3. Open another terminal on your local machine, which we will use for connecting to the remote jupyter session:
+
+   ```bash
+   ssh -NL localhost:1234:localhost:8888 username@theta.alcf.anl.gov
+   ```
+
+   This will listen on port 1234 (**you can change this number**) on your local machin,e which is forwarded from port 8888 of the remote machine.
+
+4. Open a browser on your local machine, input `localhost:1234`, and copy the token from step 1.
+
+   1. *Note*: If you would rather use a password, set a password instead using `jupyter notebook password`.
+
+5. Open the `dh-analytics-hps.ipynb` notebook file.
+
+## Deephyper analytics - hyperparameter search study
+
+**path to data file**: /lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist_hps_2020-12-06/mnist_hps_2020-12-06_f18954a8/results.csv
+
+for customization please see: https://matplotlib.org/api/matplotlib_configuration_api.html
+
+## Setup & Data loading
+
+
+```python
+path_to_data_file = '/lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist_hps_2020-12-06/mnist_hps_2020-12-06_f18954a8/results.csv'
 ```
 
-We can open a jupyter notebook on a `thetalogin` node 
 
-```bash
-jupyter notebook
+```python
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from pprint import pprint
+from datetime import datetime
+from tqdm import tqdm
+from IPython.display import display, Markdown
+
+width = 21
+height = width/1.618
+
+matplotlib.rcParams.update({
+    'font.size': 21,
+    'figure.figsize': (width, height), 
+    'figure.facecolor': 'white', 
+    'savefig.dpi': 72, 
+    'figure.subplot.bottom': 0.125, 
+    'figure.edgecolor': 'white',
+    'xtick.labelsize': 21,
+    'ytick.labelsize': 21})
+
+df = pd.read_csv(path_to_data_file)
+
+display(Markdown(f'The search did _{df.count()[0]}_ **evaluations**.'))
+
+df.head()
 ```
+
+
+The search did _83_ **evaluations**.
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+</style>
+</div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>activation</th>
+      <th>batch_size</th>
+      <th>dropout1</th>
+      <th>dropout2</th>
+      <th>learning_rate</th>
+      <th>optimizer</th>
+      <th>units1</th>
+      <th>units2</th>
+      <th>objective</th>
+      <th>elapsed_sec</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>relu</td>
+      <td>16</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.001000</td>
+      <td>SGD</td>
+      <td>16</td>
+      <td>32</td>
+      <td>0.9482</td>
+      <td>232.342371</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>elu</td>
+      <td>476</td>
+      <td>0.948959</td>
+      <td>0.009631</td>
+      <td>0.571907</td>
+      <td>Adam</td>
+      <td>18</td>
+      <td>33</td>
+      <td>0.6079</td>
+      <td>86.468845</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>selu</td>
+      <td>408</td>
+      <td>0.976134</td>
+      <td>0.118996</td>
+      <td>0.397005</td>
+      <td>RMSprop</td>
+      <td>42</td>
+      <td>51</td>
+      <td>0.5027</td>
+      <td>86.495200</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>elu</td>
+      <td>50</td>
+      <td>0.320273</td>
+      <td>0.890479</td>
+      <td>0.016656</td>
+      <td>RMSprop</td>
+      <td>21</td>
+      <td>4</td>
+      <td>0.5742</td>
+      <td>227.137991</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>elu</td>
+      <td>443</td>
+      <td>0.094276</td>
+      <td>0.247923</td>
+      <td>0.059827</td>
+      <td>SGD</td>
+      <td>27</td>
+      <td>1</td>
+      <td>0.2288</td>
+      <td>172.484504</td>
+    </tr>
+  </tbody>
+</table>
+
+## Statistical summary
+
+
+```python
+df.describe()
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>batch_size</th>
+      <th>dropout1</th>
+      <th>dropout2</th>
+      <th>learning_rate</th>
+      <th>units1</th>
+      <th>units2</th>
+      <th>objective</th>
+      <th>elapsed_sec</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>83.000000</td>
+      <td>83.000000</td>
+      <td>83.000000</td>
+      <td>83.000000</td>
+      <td>83.000000</td>
+      <td>83.000000</td>
+      <td>83.000000</td>
+      <td>83.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>308.759036</td>
+      <td>0.244743</td>
+      <td>0.287357</td>
+      <td>0.424286</td>
+      <td>36.578313</td>
+      <td>31.060241</td>
+      <td>0.867855</td>
+      <td>1564.597181</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>163.412063</td>
+      <td>0.256170</td>
+      <td>0.262193</td>
+      <td>0.311332</td>
+      <td>17.364191</td>
+      <td>18.795659</td>
+      <td>0.163094</td>
+      <td>970.251081</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>12.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.001000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.228800</td>
+      <td>86.468845</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>173.500000</td>
+      <td>0.086972</td>
+      <td>0.067248</td>
+      <td>0.119295</td>
+      <td>20.000000</td>
+      <td>12.000000</td>
+      <td>0.876850</td>
+      <td>741.168682</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>369.000000</td>
+      <td>0.145273</td>
+      <td>0.184196</td>
+      <td>0.397005</td>
+      <td>41.000000</td>
+      <td>32.000000</td>
+      <td>0.931900</td>
+      <td>1424.819762</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>451.000000</td>
+      <td>0.264550</td>
+      <td>0.442151</td>
+      <td>0.663753</td>
+      <td>51.000000</td>
+      <td>48.500000</td>
+      <td>0.950200</td>
+      <td>2392.833136</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>498.000000</td>
+      <td>0.976134</td>
+      <td>0.957236</td>
+      <td>0.992267</td>
+      <td>64.000000</td>
+      <td>61.000000</td>
+      <td>0.971200</td>
+      <td>3355.353517</td>
+    </tr>
+  </tbody>
+</table>
+
+## Search trajectory
+
+
+```python
+fig = plt.figure()
+fig, ax = plt.subplots()
+ax.plot(df.elapsed_sec, df.objective)
+ax.set_ylabel('Objective')
+ax.set_xlabel('Time (s.)')
+ax.set_xlim(0)
+ax.grid()
+fig.show()
+```
+
+![png](assets/output_6_1.png)
+
+## Pairplots
+
+
+```python
+not_include = ['elapsed_sec']
+sns.pairplot(df.loc[:, filter(lambda n: n not in not_include, df.columns)],
+                diag_kind="kde", markers="o",
+                plot_kws=dict(s=50, edgecolor="b", linewidth=1),
+                diag_kws=dict(shade=True))
+plt.show()
+```
+
+
+​    ![png](assets/output_8_0.png)
+​    
+
+```python
+fig = plt.figure()
+fig, ax = plt.subplots()
+corr = df.loc[:, filter(lambda n: n not in not_include, df.columns)].corr()
+sns.heatmap(corr, xticklabels=corr.columns, yticklabels=corr.columns, cmap=sns.diverging_palette(220, 10, as_cmap=True), ax=ax)
+ax.set_yticklabels(corr.columns, va='center')
+plt.show()
+```
+
+![png](assets/output_9_1.png)
+
+    ## Best objective
+
+
+```python
+i_max = df.objective.idxmax()
+df.iloc[i_max]
+```
+
+
+    activation            elu
+    batch_size             17
+    dropout1         0.211211
+    dropout2         0.305783
+    learning_rate    0.112262
+    optimizer           Nadam
+    units1                 50
+    units2                 59
+    objective          0.9712
+    elapsed_sec       3240.46
+    Name: 77, dtype: object
+
+
+```python
+dict(df.iloc[i_max])
+```
+
+
+    {'activation': 'elu',
+     'batch_size': 17,
+     'dropout1': 0.21121146317655534,
+     'dropout2': 0.3057825612653313,
+     'learning_rate': 0.1122622086373296,
+     'optimizer': 'Nadam',
+     'units1': 50,
+     'units2': 59,
+     'objective': 0.9711999893188475,
+     'elapsed_sec': 3240.456234931946}
+
+---
+
