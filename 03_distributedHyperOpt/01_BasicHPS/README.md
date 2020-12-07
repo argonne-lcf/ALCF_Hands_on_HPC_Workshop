@@ -1,4 +1,8 @@
-# Hyperparameter Search U
+# Hyperparameter Search Using DeepHyper on Theta
+
+*Contact:*
+
+- Sam Foreman (foremans@anl.gov)
 
 **TODO**: 
 
@@ -334,7 +338,7 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
 
 ## Deephyper analytics - hyperparameter search study
 
-**path to data file**: /lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist_hps_2020-12-06/mnist_hps_2020-12-06_f18954a8/results.csv
+**path to data file**: /lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist-demo/mnist-demo_f18954a8/results.csv
 
 for customization please see: https://matplotlib.org/api/matplotlib_configuration_api.html
 
@@ -342,7 +346,7 @@ for customization please see: https://matplotlib.org/api/matplotlib_configuratio
 
 
 ```python
-path_to_data_file = '/lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist_hps_2020-12-06/mnist_hps_2020-12-06_f18954a8/results.csv'
+path_to_data_file = '/lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist-demo/mnist-demo_f18954a8/results.csv'
 ```
 
 
