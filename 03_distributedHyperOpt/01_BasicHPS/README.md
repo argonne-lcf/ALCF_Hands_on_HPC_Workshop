@@ -137,25 +137,7 @@ from load_data import load_data
 keras = tf.keras
 layers = tf.keras.layers
 
-HISTORY = None
-
-# Define default values of hyperparameters to use if None are specified
-POINT = { 
-    'epochs': 2,      			# Number of training epochs
-    'units1': 8,				# Number of units in first hidden layer
-    'units2': 16,				# Number of units in second hidden layer
-    'dropout1': 0.,				# Dropout prob. following first hidden layer
-    'dropout2': 0.,				# Dropout pro. following second hidden layer
-    'batch_size': 16,			# Batch size to use
-    'activation': 'relu',		# Activation function for hidden layers
-    'optimizer': 'SGD',			# Optimizer to use
-}
-
 def run(point: dict = None):
-    global HISTORY
-    if point is None:
-        point = POINT
-        
     print(point)
     
     (x_train, y_train), (x_test, y_test) = load_data()
@@ -166,39 +148,46 @@ def run(point: dict = None):
     x_train = x_train[:-10000]
     y_train = y_train[:-10000]
 
+    epochs = 10  # Fixed num of epochs (for now)
+    optimizer = point.get('optimizer', None)
+    batch_size = point.get('batch_size', None)
+    activation = point.get('activation', None)
+
+    units1 = point.get('units1', None)
+    units2 = point.get('units2', None)
+    dropout1 = point.get('dropout1', None)
+    dropout2 = point.get('dropout2', None)
+
     model = tf.keras.Sequential([
-        layers.Dense(point['units1'], activation=point['activation']),
-        layers.Dropout(point['dropout1']),
-        layers.Dense(point['units2'], activation=point['activation']),
-        layers.Dropout(point['dropout2']),
-        layers.Dense(10),
+        layers.Dense(units1, activation=activation),
+        layers.Dropout(dropout1),
+        layers.Dense(units2, activation=activation),
+        layers.Dropout(dropout2),
+        layers.Dense(10)
     ])
-    
+
     model.compile(
-        optimizer=point['optimizer'],
+        optimizer=optimizer,
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=['accuracy'],
     )
-    
-    # Train the model
+
     _ = model.fit(
         x_train,
         y_train,
-        batch_size=point['batch_size'],
-        epochs=point['epochs'],
+        batch_size=batch_size,
+        epochs=epochs,
         verbose=1,
-        callbacks=[keras.callbacks.EarlyStopping(monitor='loss', verbose=1)],
-        # We need to pass some validation data
-        # for monitoring the validation loss and metrics
+        # We need to pass some validation for
+        # monitoring validation loss and metrics
         # at the end of each epoch
         validation_data=(x_val, y_val),
     )
-    
-    # Evaluate the trained model on the test set
     score = model.evaluate(x_test, y_test, verbose=2)
     print(f'test_loss, test_accuracy: {score[0]}, {score[1]}')
-    
+
     return score[1]
+
 
 if __name__ == '__main__':
     from problem import Problem
@@ -250,7 +239,38 @@ We define acceptable ranges for these hyperparameters with the `Problem` object 
 - Continuous prarameters are generated from  a tuple `(lower: float, upper: float)`
 - Categorical or nonordinal hyperparameter ranges can be given as a list of possible values `[val1, val2, ...]`
 
+#### Problem definition
 
+We include below the complete problem definition from [`problem.py`](problem.py) which is responsible for defining the search space in terms of the hyperparameter regions.
+
+```python
+from deephyper.problem import HpProblem
+
+Problem = HpProblem()
+Problem.add_dim('units1', (1, 64))
+Problem.add_dim('units2', (1, 64))
+Problem.add_dim('dropout1', (0.0, 1.0))
+Problem.add_dim('dropout2', (0.0, 1.0))
+Problem.add_dim('batch_size', (5, 500))
+Problem.add_dim('learning_rate', (0.0, 1.0))
+Problem.add_dim('activation', ['relu', 'elu', 'selu', 'tanh'])
+Problem.add_dim('optimizer', ['Adam', 'RMSprop', 'SGD', 'Nadam', 'Adagrad'])
+
+Problem.add_starting_point(
+    units1=16,
+    units2=32,
+    dropout1=0.0,
+    dropout2=0.0,
+    batch_size=16,
+    activation='relu',
+    optimizer='SGD',
+    learning_rate=0.001,
+)
+
+
+if __name__ == "__main__":
+    print(Problem)
+```
 
 ## Launch an Experiment
 
@@ -258,7 +278,7 @@ The deephyper Theta module has a convenience script included for quick generatio
 
 ```bash
 deephyper balsam-submit hps mnist-demo -p problem.py -r model_run.py \
-    -t 20 -q debug-cache-quad -n 2 -A datascience -j serial
+    -t 20 -q debug-cache-quad -n 2 -A datascience -j mpi
 ```
 
 ### Monitor Execution and Check Results
