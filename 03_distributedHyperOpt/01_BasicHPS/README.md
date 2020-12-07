@@ -66,15 +66,16 @@ cd sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS
 git pull  # make sure you're up to date
 ```
 
-We can now our search scaled to run parallel model evaluations across multiple nodes of Theta.
 
-First, create a Balsam database:
+We can now setup our search to run model evaluations in parallel across multiple nodes of Theta. The most scalable way of accomplishing this with DeepHyper is through the project's coupling to the [Balsam](https://balsam.readthedocs.io/en/latest/) service, which is an HPC-focused workflow managment system (WMS).
+
+First, create a new Balsam database named `db`:
 
 ```bas
 balsam init db
 ```
 
-Start and connecto to the `db` database:
+Start the Balsam server process and connect to the `db` database:
 
 ```bash
 source balsamactivate db
@@ -461,6 +462,7 @@ The search did _83_ **evaluations**.
     </tr>
   </tbody>
 </table>
+
 ### Statistical summary
 
 
@@ -574,6 +576,7 @@ df.describe()
     </tr>
   </tbody>
 </table>
+
 ### Search trajectory
 
 
