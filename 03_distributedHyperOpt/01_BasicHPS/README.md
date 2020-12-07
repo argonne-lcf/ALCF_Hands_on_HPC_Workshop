@@ -289,10 +289,14 @@ Notice the objective value in the second-to-last column of the `results.csv` fil
 
 ```bash
  balsam ls --wf mnist-demo
+ ```
+ ```bash
                               job_id |       name |   workflow | application |   state
 --------------------------------------------------------------------------------------
 b1dd0a04-dbd5-4601-9295-7465abe6b794 | mnist-demo | mnist-demo | AMBS        | CREATED
-
+```
+```bash
+# We can jump directly to the working directory containing the DeepHyper log
 . bcd b1dd  # Note: 'b1dd' is the prefix of the `job_id` above; yours will be different
 ```
 
