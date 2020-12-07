@@ -2,9 +2,9 @@
 
 This section of the workshop will introduce to you the methods we use to run distributed deep learning training on ALCF resources like Theta and ThetaGPU.
 
-We show distributed training using two frameworks: Horovod (for TensorFlow and PyTorch),
-and `DistributedDataParallel (DDP)` (for PyTorch only).
-
+We show distributed training using two frameworks: 
+1. [Horovod] (Horovod/) (for [TensorFlow](tensorflow.org) and [PyTorch](pytorch.org)), and
+2. [DistributedDataParallel](DDP/) (DDP) (for PyTorch only).
 
 Some instructions on Data Parallel Training can be found here:
 
