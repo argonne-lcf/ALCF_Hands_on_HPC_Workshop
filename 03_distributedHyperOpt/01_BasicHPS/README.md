@@ -40,7 +40,7 @@ Every DeepHyper search requires at least 2 Python objects as input:
 - `run`: a Python function representing your "black-box" function, which returns the real-valued objective to be maximized
 - `Problem`: a Python class instance of `deephyper.problem.BaseProblem` which defines the search space of input parameters to `run`.
 
-We will demonstrate DeepHyper's HPS capabilities applied to the MNIST dataset, with the goal of tuning the hyperparameters to maximize the classification accuracy. This walkthrough will exclusively use TensorFlow's Keras API for defining the neural network; refer back to [`tensorflow2_keras_mnist.py`](../../tensorflow2_keras_mnist.py).
+We will demonstrate DeepHyper's HPS capabilities applied to the MNIST dataset, with the goal of tuning the hyperparameters to maximize the classification accuracy. This walkthrough will exclusively use TensorFlow's Keras API for defining the neural network; refer back to [`tensorflow2_keras_mnist.py`](../../01_distributedDeepLearning/Horovod/tensorflow2_keras_mnist.py).
 
 ## Environment setup on [`Theta`](https://www.alcf.anl.gov/support-center/theta) at [ALCF](https://www.alcf.anl.gov):
 
