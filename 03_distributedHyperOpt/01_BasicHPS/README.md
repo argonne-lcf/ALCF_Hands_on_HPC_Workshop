@@ -338,7 +338,7 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
 
 for customization please see: https://matplotlib.org/api/matplotlib_configuration_api.html
 
-## Setup & Data loading
+### Setup & Data loading
 
 
 ```python
@@ -465,7 +465,7 @@ The search did _83_ **evaluations**.
     </tr>
   </tbody>
 </table>
-## Statistical summary
+### Statistical summary
 
 
 ```python
@@ -578,8 +578,7 @@ df.describe()
     </tr>
   </tbody>
 </table>
-
-## Search trajectory
+### Search trajectory
 
 
 ```python
@@ -595,7 +594,7 @@ fig.show()
 
 ![png](assets/output_6_1.png)
 
-## Pairplots
+### Pairplots
 
 
 ```python
@@ -606,7 +605,6 @@ sns.pairplot(df.loc[:, filter(lambda n: n not in not_include, df.columns)],
                 diag_kws=dict(shade=True))
 plt.show()
 ```
-
 
 ​    ![png](assets/output_8_0.png)
 ​    
@@ -622,7 +620,7 @@ plt.show()
 
 ![png](assets/output_9_1.png)
 
-    ## Best objective
+### Best objective
 
 
 ```python
@@ -659,6 +657,3 @@ dict(df.iloc[i_max])
      'units2': 59,
      'objective': 0.9711999893188475,
      'elapsed_sec': 3240.456234931946}
-
----
-
