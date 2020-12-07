@@ -380,13 +380,6 @@ df.head()
 
 The search did _83_ **evaluations**.
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-</style>
-</div>
 
 <table border="1" class="dataframe">
   <thead>
@@ -472,7 +465,6 @@ The search did _83_ **evaluations**.
     </tr>
   </tbody>
 </table>
-
 ## Statistical summary
 
 
@@ -480,12 +472,6 @@ The search did _83_ **evaluations**.
 df.describe()
 ```
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
 <table border="1" class="dataframe">
   <thead>
