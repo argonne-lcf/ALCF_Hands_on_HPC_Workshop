@@ -8,15 +8,6 @@
 - Misha Salim (msalim@anl.gov)
 
 **TODO**: 
-
-- [x] Include instructions for port-forwarding to connect to jupyter from local machine
-
-- [x] Include code from `load_data.py` and explain
-
-- [x] Include code from `model_run.py` and explain
-
-- [x] Include code from `problem.py` and explain
-
 - [ ] Include links to `DeepHyper`, `Balsam` (github + documentation)
 
 - [ ] Include more detail throughout, walk through code blocks
@@ -24,10 +15,10 @@
 - [x] Explain the hyperparameters in `problem.py`
 
 - [x] Include section that tests each of the `load_data.py`, `model_run.py`, and `problem.py` scripts individually to make sure they run
-- [ ] Remove `model_run.py` test (tensorflow isn't supposed to run on login nodes??)
+- [ ] Remove `model_run.py` test (TensorFlow isn't supposed to run on login nodes??)
 
 - [ ] The `deephyper/0.2.1` module seems broken somehow, workaround for now:
-  - [ ] Issues encountered when trying to install deephyper with horovod, but should run without issue using analytics and balsam.
+  - [ ] Issues encountered when trying to install deephyper with Horovod, but should run without issue using analytics and balsam.
 
 ```bash
 module load postgresql
@@ -46,14 +37,14 @@ pip install deephyper[analytics,hvd,balsam]
 
 Every DeepHyper search requires at least 2 Python objects as input:
 
-- `run`: Your "black-box" function returning the objective value to be maximized
-- `Problem`: an instance of `deephyper.problem.BaseProblem` which defines the search space of input parameters to `run`.
+- `run`: a Python function representing your "black-box" function, which returns the real-valued objective to be maximized
+- `Problem`: a Python class instance of `deephyper.problem.BaseProblem` which defines the search space of input parameters to `run`.
 
-We will illustrate DeepHyper HPS for the MNIST dataset, with a goal of tuning the hyperparameters to maximize the classification accuracy.
+We will demonstrate DeepHyper's HPS capabilities applied to the MNIST dataset, with the goal of tuning the hyperparameters to maximize the classification accuracy. This walkthrough will exclusively use TensorFlow's Keras API for defining the neural network; refer back to [`tensorflow2_keras_mnist.py`](../../tensorflow2_keras_mnist.py).
 
 ## Environment setup on [`Theta`](https://www.alcf.anl.gov/support-center/theta) at [ALCF](https://www.alcf.anl.gov):
 
-To start on Theta, let's set up  a clean workspace for the HPS:
+To start on Theta, let's set up a clean workspace for the HPS:
 
 ```bash
 # Create a new workspace with Balsam DB
@@ -68,14 +59,12 @@ If you haven't already:
 git clone https://github.com/argonne-lcf/sdl_ai_workshop
 ```
 
-Navigate into the BasicHPS directory:
+Navigate into the `BasicHPS/` directory:
 
 ```bash
 cd sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS
 git pull  # make sure you're up to date
 ```
-
-
 
 We can now our search scaled to run parallel model evaluations across multiple nodes of Theta.
 
