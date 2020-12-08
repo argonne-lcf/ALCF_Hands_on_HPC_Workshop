@@ -11,6 +11,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 source /lus/theta-fs0/projects/datascience/parton/thetagpu/pt-build/pt-intall/mconda3/setup.sh
 
+COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 # Notice that we have 8 gpu per node
 ng=$((COBALT_JOBSIZE*8))
 echo "Running job on ${COBALT_JOBSIZE} nodes"

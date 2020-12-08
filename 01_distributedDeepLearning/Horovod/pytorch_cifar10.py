@@ -5,22 +5,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.utils.data.distributed
-try:
-    import horovod.torch as hvd
-    with_hvd=True
-except:
-    with_hvd=False
-    class Hvd:
-        def init():
-            print("I could not find Horovod package, will do things sequentially")
-        def rank():
-            return 0
-        def size():
-            return 1
-    hvd=Hvd; 
+#Horovod: import horovod
+import horovod.torch as hvd
 import time
 
-t0 = time.time()
+
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -136,9 +125,8 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr * hvd.size(),
                       momentum=args.momentum)
 
 # Horovod: broadcast parameters & optimizer state.
-if (with_hvd):
-    hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-    hvd.broadcast_optimizer_state(optimizer, root_rank=0)
+hvd.broadcast_parameters(model.state_dict(), root_rank=0)
+hvd.broadcast_optimizer_state(optimizer, root_rank=0)
 
 # Horovod: (optional) compression algorithm.
 if (with_hvd):
@@ -147,10 +135,9 @@ else:
     compression = False
 
 # Horovod: wrap optimizer with DistributedOptimizer.
-if (with_hvd):
-    optimizer = hvd.DistributedOptimizer(optimizer,
-                                         named_parameters=model.named_parameters(),
-                                         compression=compression)
+optimizer = hvd.DistributedOptimizer(optimizer,
+									 named_parameters=model.named_parameters(),
+									 compression=compression)
 
 
 def train(epoch):
@@ -221,7 +208,7 @@ def test():
         print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
 
-
+t0 = time.time()
 for epoch in range(1, args.epochs + 1):
     train(epoch)
     test()

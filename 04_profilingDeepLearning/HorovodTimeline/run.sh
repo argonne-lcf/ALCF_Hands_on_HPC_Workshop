@@ -1,6 +1,7 @@
 #!/bin/sh
 #COBALT -q full-node -A SDL_Workshop -n 1 -t 3:00:00 -O HorovodTimeline
 #Setup the Python environment to include TensorFlow, Keras, PyTorch and Horovod
+
 source /lus/theta-fs0/software/datascience/thetagpu/anaconda3/setup.sh
 #
 cd cpu

@@ -15,21 +15,9 @@
 
 import tensorflow as tf
 import argparse
-try:
-    import horovod.tensorflow as hvd
-except:
-    class Hvd:
-        def __init__(self, ):
-            print("No horovod")
-        def init(self, ):
-            return 0
-        def rank(self, ):
-            return 0
-        def local_rank(self, ):
-            return 0
-        def size(self, ):
-            return 1
-    hvd=Hvd()
+#Horovod: import horovod module 
+
+import horovod.tensorflow as hvd
 import time
 t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow MNIST Example')
@@ -45,11 +33,11 @@ parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
 
 args = parser.parse_args()
-
     
 # Horovod: initialize Horovod.
 hvd.init()
 print("I am rank %s of %s" %(hvd.rank(), hvd.size()))
+
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
 if args.device == 'cpu':
     tf.config.threading.set_intra_op_parallelism_threads(args.num_intra)
@@ -98,10 +86,7 @@ def training_step(images, labels, first_batch):
         loss_value = loss(labels, probs)
 
     # Horovod: add Horovod Distributed GradientTape.
-    try:
-        tape = hvd.DistributedGradientTape(tape)
-    except:
-        print("No horovod")
+    tape = hvd.DistributedGradientTape(tape)
 
     grads = tape.gradient(loss_value, mnist_model.trainable_variables)
     opt.apply_gradients(zip(grads, mnist_model.trainable_variables))
@@ -113,11 +98,8 @@ def training_step(images, labels, first_batch):
     # Note: broadcast should be done after the first gradient step to ensure optimizer
     # initialization.
     if first_batch:
-        try:
-            hvd.broadcast_variables(mnist_model.variables, root_rank=0)
-            hvd.broadcast_variables(opt.variables(), root_rank=0)
-        except:
-            print("No horovod")
+        hvd.broadcast_variables(mnist_model.variables, root_rank=0)
+        hvd.broadcast_variables(opt.variables(), root_rank=0)
 
     return loss_value
 
