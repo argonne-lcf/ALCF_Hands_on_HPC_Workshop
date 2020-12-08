@@ -45,7 +45,7 @@ def run(point: dict):
         - activation (str): Activation function to use
         - dropout_prob (float): Dropout probability; if set to 0 no dropout
         - batch_size (int): Batch size to use
-        - learning_rate (float): Learning rate to use for training
+        - log10_learning_rate (float): log(Learning rate) to use for training
         - optimizer (str): ['Adam', 'SGD', 'RMSprop', 'Adagrad', 'Nadam']
         - momentum (float): Momentum to use; ONLY for SGD optimizer
 
@@ -72,7 +72,10 @@ def run(point: dict):
 
     opt_id = point.get('optimizer', None)
     momentum = point.get('momentum', None)
-    learning_rate = point.get('learning_rate', None)
+    log10_learning_rate = point.get('log10_learning_rate', None)
+    learning_rate = None
+    if log10_learning_rate is not None:
+        learning_rate = 10.0**log10_learning_rate
 
     # the 'optimizer' is stored as a string in `point`,
     # we can get the actual optimizer using the `get_optimizer` fn

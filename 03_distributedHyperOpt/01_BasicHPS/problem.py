@@ -13,7 +13,7 @@ Problem.add_dim('units2', (1, 64))            # int in range 1-64
 Problem.add_dim('dropout1', (0.0, 1.0))       # float in range 0-1
 Problem.add_dim('dropout2', (0.0, 1.0))  	  # float in range 0-1
 Problem.add_dim('batch_size', (5, 500)) 	  # int in range 5-500
-Problem.add_dim('learning_rate', (0.0, 1.0))  # float in range 0-1
+Problem.add_dim('log10_learning_rate', (-5.0, 0.0))  # float lr range from 10^-5 to 1
 
 # one of ['relu', ..., ]
 Problem.add_dim('activation', ['relu', 'elu', 'selu', 'tanh'])
@@ -35,7 +35,7 @@ Problem.add_starting_point(
     batch_size=16,
     activation='relu',
     optimizer='SGD',
-    learning_rate=0.001,
+    log10_learning_rate=-3.0,
     momentum=0.5,
 )
 
