@@ -318,13 +318,15 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
 
    ```bash
    jupyter notebook --no-browser --port=1234  # you can change this number
+   # Make a note of the current login hostname (e.g. thetalogin6)
    ```
 
 3. Open another terminal on your local machine, which we will use for connecting to the remote jupyter session:
 
    ```bash
    # Using the number you used in the `--port` argument above
-   ssh -L 1234:localhost:1234 username@theta.alcf.anl.gov
+   # the hostname (thetaloginN) *MUST* match the login node hostname from above
+   ssh -L 1234:localhost:1234 username@thetaloginN.alcf.anl.gov
    ```
 
    This will listen on port 1234 (**you can change this number**) on your local machine, which is forwarded from port 1234 of the remote machine.
