@@ -1,5 +1,6 @@
 # Hyperparameter Search Using DeepHyper on Theta
 
+<!---
 **TODO**:
 
 - [ ] The `deephyper/0.2.1` module seems broken somehow, workaround for now:
@@ -17,11 +18,10 @@ pip install 'deephyper[analytics,balsam]'
 # or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
 pip install 'deephyper[analytics,hvd,balsam]'
 ```
+--->
 <!--- pip install 'package[extras]'      must be quoted for Zsh, since square brackets are used for globbing ---> 
 
 <!--- "module load miniconda-3" step currently incompatible with Zsh. Use: eval "$(/soft/datascience/conda/miniconda3/2020-12/condabin/conda shell.zsh hook)" --->
-
----
 
 *Contact:*
 
