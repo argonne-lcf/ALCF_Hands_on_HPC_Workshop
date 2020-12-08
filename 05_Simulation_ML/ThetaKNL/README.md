@@ -6,7 +6,7 @@ We assume that you have cloned the repo to a suitable location. These are the st
 
 1. Request an interactive session on Theta
 ```
-qsub -n 1 -q debug-cache-quad -A SDL_Workshop -I -t 1:00:00
+qsub -n 1 -q training -A SDL_Workshop -I -t 1:00:00
 ```
 2. From within the cloned repo, setup the Python environment to include TensorFlow
 ```

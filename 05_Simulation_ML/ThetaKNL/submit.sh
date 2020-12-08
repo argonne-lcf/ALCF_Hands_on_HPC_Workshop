@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 00:60:00
-#COBALT -q debug-cache-quad 
+#COBALT -q training 
 #COBALT -A SDL_Workshop
 
 echo "Running Cobalt Job $COBALT_JOBID."
