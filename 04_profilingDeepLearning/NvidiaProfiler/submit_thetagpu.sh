@@ -1,6 +1,6 @@
 #!/bin/bash
 #COBALT -n 1
-#COBALT -t 1:00:00 -q full-node
+#COBALT -t 1:00:00 -q training
 #COBALT -A SDL_Workshop
 
 echo "Running Cobalt Job $COBALT_JOBID."
