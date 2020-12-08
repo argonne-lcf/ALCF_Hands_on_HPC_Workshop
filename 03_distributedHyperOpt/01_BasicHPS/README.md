@@ -1,21 +1,6 @@
 # Hyperparameter Search Using DeepHyper on Theta
 
-*Contact:*
-
-- Sam Foreman (foremans@anl.gov)
-- Kyle Felker (felker@anl.gov)
-- Romit Maulik (rmaulik@anl.gov)
-- Misha Salim (msalim@anl.gov)
-
-**TODO**: 
-- [ ] Include links to `DeepHyper`, `Balsam` (github + documentation)
-
-- [ ] Include more detail throughout, walk through code blocks
-
-- [x] Explain the hyperparameters in `problem.py`
-
-- [x] Include section that tests each of the `load_data.py`, `model_run.py`, and `problem.py` scripts individually to make sure they run
-- [ ] Remove `model_run.py` test (TensorFlow isn't supposed to run on login nodes??)
+**TODO**:
 
 - [ ] The `deephyper/0.2.1` module seems broken somehow, workaround for now:
   - [ ] Issues encountered when trying to install deephyper with Horovod, but should run without issue using analytics and balsam.
@@ -35,10 +20,20 @@ pip install deephyper[analytics,hvd,balsam]
 
 ---
 
+*Contact:*
+
+- Sam Foreman (foremans@anl.gov)
+- Kyle Felker (felker@anl.gov)
+- Romit Maulik (rmaulik@anl.gov)
+- Misha Salim (msalim@anl.gov)
+
+---
+
 Every DeepHyper search requires at least 2 Python objects as input:
 
-- `run`: a Python function representing your "black-box" function, which returns the real-valued objective to be maximized
-- `Problem`: a Python class instance of `deephyper.problem.BaseProblem` which defines the search space of input parameters to `run`.
+1. `run`: Python function representing your "black-box" function, which returns the real-valued objective to be maximized.
+
+2. `Problem`: a Python class instance of `deephyper.problem.BaseProblem` which defines the search space of input parameters to `run`.
 
 We will demonstrate DeepHyper's HPS capabilities applied to the MNIST dataset, with the goal of tuning the hyperparameters to maximize the classification accuracy. This walkthrough will exclusively use TensorFlow's Keras API for defining the neural network; refer back to [`tensorflow2_keras_mnist.py`](../../01_distributedDeepLearning/Horovod/tensorflow2_keras_mnist.py).
 
@@ -194,39 +189,9 @@ if __name__ == '__main__':
     run(point)
 ```
 
-We can test that our environment is setup correctly by trying to run this script:
 
-```bash
-python3 model_run.py
-```
-
-Should output:
-
-```bash
-{'activation': 'relu', 'batch_size': 8, 'dropout1': 0.0, 'dropout2': 0.0, 'epochs': 5, 'optimizer': 'SGD', 'units1': 1, 'units2': 2}
-(x_train, y_train): ((60000, 784), (60000,))
-(x_test, y_test): ((10000, 784), (10000,))
-2020-12-06 14:45:45.323672: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2020-12-06 14:45:45.337630: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x7fb2d7f26e80 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
-2020-12-06 14:45:45.337647: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
-Epoch 1/5
-6250/6250 [==============================] - 3s 545us/step - loss: 2.3015 - accuracy: 0.1131 - val_loss: 2.3021 - val_accuracy: 0.1064
-Epoch 2/5
-6250/6250 [==============================] - 3s 547us/step - loss: 2.3013 - accuracy: 0.1136 - val_loss: 2.3025 - val_accuracy: 0.1064
-Epoch 3/5
-6250/6250 [==============================] - 3s 549us/step - loss: 2.3014 - accuracy: 0.1136 - val_loss: 2.3023 - val_accuracy: 0.1064
-Epoch 4/5
-6250/6250 [==============================] - 3s 550us/step - loss: 2.3014 - accuracy: 0.1136 - val_loss: 2.3027 - val_accuracy: 0.1064
-Epoch 5/5
-6250/6250 [==============================] - 3s 545us/step - loss: 2.3014 - accuracy: 0.1136 - val_loss: 2.3020 - val_accuracy: 0.1064
-313/313 - 0s - loss: 2.3011 - accuracy: 0.1135
-test_loss, test_accuracy: 2.301095485687256, 0.11349999904632568
-```
 
 ### Defining the Search Space
-
-
 
 The `run` function shown below expects a hyperparameter dictionary with keys shown in `POINT` below.
 
@@ -240,19 +205,36 @@ We define acceptable ranges for these hyperparameters with the `Problem` object 
 
 We include below the complete problem definition from [`problem.py`](problem.py) which is responsible for defining the search space in terms of the hyperparameter regions.
 
+To make things a little more interesting, we provide an example illustrating how [`ConfigSpace`](https://automl.github.io/ConfigSpace/master/) can be used to  include [conditional hyperparameters](https://automl.github.io/ConfigSpace/master/API-Doc.html#conditions)) (= hyperparameters that are sampled only if a specific condition is met), adding an additional layer of customization to our search problem.
+
+Explicitly, we introduce the `momentum` hyperparameter which can be used to tune the `SGD` optimizer. Since the effects of varying this hyperparameter only impact the model performance when using the `SGD` optimizer, we add it as a conditional hyperparameter to our `Problem`.
+
+Note that this is a simple example of what can be achieved using `ConfigSpace`, additional information can be found in the documentation [`user-guide`](https://automl.github.io/ConfigSpace/master/User-Guide.html)
+
 ```python
+import ConfigSpace as cs
 from deephyper.problem import HpProblem
 
 Problem = HpProblem()
-Problem.add_dim('units1', (1, 64))
-Problem.add_dim('units2', (1, 64))
-Problem.add_dim('dropout1', (0.0, 1.0))
-Problem.add_dim('dropout2', (0.0, 1.0))
-Problem.add_dim('batch_size', (5, 500))
-Problem.add_dim('learning_rate', (0.0, 1.0))
-Problem.add_dim('activation', ['relu', 'elu', 'selu', 'tanh'])
-Problem.add_dim('optimizer', ['Adam', 'RMSprop', 'SGD', 'Nadam', 'Adagrad'])
 
+# call signature: Problem.add_dim(name, value)
+Problem.add_dim('units1', (1, 64))            #  int in range 1-64
+Problem.add_dim('units2', (1, 64))            #  int in range 1-64
+Problem.add_dim('dropout1', (0.0, 1.0))       #  float in range 0-1
+Problem.add_dim('dropout2', (0.0, 1.0))  	  #  float in range 0-1
+Problem.add_dim('batch_size', (5, 500)) 	  #	 int in range 5-500
+Problem.add_dim('learning_rate', (0.0, 1.0))  #  float in range 0-1
+Problem.add_dim('activation', ['relu', 'elu', 'selu', 'tanh'])
+
+optimizer = Problem.add_dim('optimizer', [
+    'Adam', 'RMSprop', 'SGD', 'Nadam', 'Adagrad'
+])
+
+# Only vary momentum if optimizer is SGD
+momentum = Problem.add_hyperparameter("momentum", value=(0.5, 0.9))
+Problem.add_condition(cs.EqualsCondition(momentum, optimizer, "SGD"))
+
+# Add a starting point to try first
 Problem.add_starting_point(
     units1=16,
     units2=32,
@@ -294,6 +276,7 @@ b1dd0a04-dbd5-4601-9295-7465abe6b794 | mnist-demo | mnist-demo | AMBS        | C
  ```
 ```bash
 # We can jump directly to the working directory containing the DeepHyper log
+# using the `bcd` command-line tool
 . bcd b1dd  # Note: 'b1dd' is the prefix of the `job_id` above; yours will be different
 ```
 
@@ -312,16 +295,17 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
 2. Next we start a `jupyter notebook` (still from `thetalogin` node) via:
 
    ```bash
-   jupyter notebook --no-browser --port=8888
+   jupyter notebook --no-browser --port=1234  # you can change this number
    ```
 
 3. Open another terminal on your local machine, which we will use for connecting to the remote jupyter session:
 
    ```bash
-   ssh -NL localhost:1234:localhost:8888 username@theta.alcf.anl.gov
+   # Using the number you used in the `--port` argument above
+   ssh -L 1234:localhost:1234 username@theta.alcf.anl.gov
    ```
 
-   This will listen on port 1234 (**you can change this number**) on your local machin,e which is forwarded from port 8888 of the remote machine.
+   This will listen on port 1234 (**you can change this number**) on your local machine, which is forwarded from port 1234 of the remote machine.
 
 4. Open a browser on your local machine, input `localhost:1234`, and copy the token from step 1.
 
