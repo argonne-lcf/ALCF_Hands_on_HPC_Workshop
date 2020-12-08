@@ -13,8 +13,6 @@ Led by Huihuo Zheng from ALCF (<huihuo.zheng@anl.gov>)
 * How to instrument TensorFlow or PyTorch codes with Horovod
 * Hands on examples
 
-
-
 ## Model Parallelism and Data Parallelism
 
 1. **Model parallelization**: in this scheme, disjoint subsets of a neural network are assigned to different devices. Therefore, all the computations associated to the subsets are distributed. Communication happens between devices whenever there is dataflow between two subsets. Model parallelization is suitable when the model is too large to be fitted into a single device (CPU/GPU) because of the memory capacity. However, partitioning the model into different subsets is not an easy task, and there might potentially introduce load imbalance issues limiting the scaling efficiency.  
