@@ -7,7 +7,7 @@ ssh -CY user@theta.alcf.anl.gov
 # Login to ThetaGPU login node
 ssh -CY thetagpusn1 
 # Requesting 1 node 
-qsub -n 1 -q full-node -A SDL_Workshop -I -t 2:00:00
+qsub -n 1 -q training -A SDL_Workshop -I -t 2:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
