@@ -6,6 +6,12 @@ ssh user@theta.alcf.anl.gov
 qsub -n 4 -q training -A SDL_Workshop -I -t 1:00:00
 ```
 
+Copy the dataset to your working directory in case there is any dataset issue.
+```
+rm -r dl_ai_workshop/01_distributedDeepLearning/Horovod/datasets # modify your path
+cp -r /lus/theta-fs0/projects/SDL_Workshop/sdl_ai_workshop/01_distributedDeepLearning/Horovod/datasets sdl_ai_workshop/01_distributedDeepLearning/Horovod/
+```
+
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
 ```bash
 module load datascience/pytorch-1.7
