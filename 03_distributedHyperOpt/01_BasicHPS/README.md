@@ -13,9 +13,9 @@ conda activate dh-env
 conda install -y gxx_linux-64 gcc_linux-64
 conda install -y tensorflow -c intel
 # DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks)
-pip install deephyper[analytics,balsam]
+pip install "deephyper[analytics,balsam]"
 # or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
-pip install deephyper[analytics,hvd,balsam]
+pip install "deephyper[analytics,hvd,balsam]"
 ```
 
 ---
