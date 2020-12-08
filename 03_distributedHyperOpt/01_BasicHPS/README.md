@@ -8,10 +8,10 @@
 ```bash
 module load postgresql
 module load miniconda-3
-conda create -p dh-env
+conda create -n dh-env
 conda activate dh-env
-conda install gxx_linux-64 gcc_linux-64
-conda install tensorflow -c intel
+conda install -y gxx_linux-64 gcc_linux-64
+conda install -y tensorflow -c intel
 # DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks)
 pip install deephyper[analytics,balsam]
 # or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
