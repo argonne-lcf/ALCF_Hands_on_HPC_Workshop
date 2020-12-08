@@ -14,27 +14,44 @@ from load_data import load_data
 keras = tf.keras
 layers = tf.keras.layers
 
-HISTORY = None
+OPTIMIZERS = {
+    'Adam': tf.keras.optimizers.Adam,
+    'Nadam': tf.keras.optimizers.Nadam,
+    'Adagrad': tf.keras.optimizers.Adagrad,
+    'RMSprop': tf.keras.optimizers.RMSprop,
+}
+
+
+def get_optimizer(
+        opt_id: str,
+        learning_rate: float = None,
+        momentum: float = None,
+):
+    """Returns the optimizer conditioned on `opt_id`."""
+    if opt_id == 'SGD':
+       return tf.keras.optimizers.SGD(learning_rate=learning_rate,
+                                      momentum=momentum)
+
+    return OPTIMIZERS[str(opt_id)](learning_rate=learning_rate)
+
 
 # pylint:disable=redefined-outer-name, too-many-locals
-def run(point: dict = None):
-    """Run the model at a "point" in hyperparameter space. Returns accuracy.
+def run(point: dict):
+    """Run the model at a point in hyperparameter space.
 
-    point is expected to have the following keys:
-     - units (list): containing the number of units in each hidden layer
-     - activations (list): containing activations of each hidden layer
-     - dropout_prob (float): dropout probability; if set to 0 no dropout layer used.
-     - batch_size (int): batch size to use
-     - learning_rate (float): Learning rate to use for training
-     - optimizer (str): `keras.optimizers.Optimizer`
-     - epochs (int): number of epochs
+    `point` is expected to have the following keys:
+        - units1 (int): Number of units in first hidden layer
+        - units2 (int): Number of units in second hidden layer
+        - activation (str): Activation function to use
+        - dropout_prob (float): Dropout probability; if set to 0 no dropout
+        - batch_size (int): Batch size to use
+        - learning_rate (float): Learning rate to use for training
+        - optimizer (str): ['Adam', 'SGD', 'RMSprop', 'Adagrad', 'Nadam']
+        - momentum (float): Momentum to use; ONLY for SGD optimizer
+
+    Returns:
+        - accuracy (float): The real-valued objective to be maximized.
     """
-    global HISTORY  # pylint:disable=global-statement
-    if point is None:
-        point = POINT
-
-    print(point)
-
     (x_train, y_train), (x_test, y_test) = load_data()
 
     # Reserve 10,000 samples for validation
@@ -44,8 +61,7 @@ def run(point: dict = None):
     y_train = y_train[:-10000]
 
     epochs = 10
-    #  epochs = point.get('epochs', None)
-    optimizer = point.get('optimizer', None)
+    # Parse hyperparameters from `point`
     batch_size = point.get('batch_size', None)
     activation = point.get('activation', None)
 
@@ -54,6 +70,17 @@ def run(point: dict = None):
     dropout1 = point.get('dropout1', None)
     dropout2 = point.get('dropout2', None)
 
+    opt_id = point.get('optimizer', None)
+    momentum = point.get('momentum', None)
+    learning_rate = point.get('learning_rate', None)
+
+    # the 'optimizer' is stored as a string in `point`,
+    # we can get the actual optimizer using the `get_optimizer` fn
+    optimizer = get_optimizer(opt_id=opt_id,
+                              learning_rate=learning_rate,
+                              momentum=momentum)
+
+    # Build the model
     model = tf.keras.Sequential([
         layers.Dense(units1, activation=activation),
         layers.Dropout(dropout1),

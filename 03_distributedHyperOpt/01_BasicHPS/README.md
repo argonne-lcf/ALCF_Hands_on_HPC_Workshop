@@ -13,10 +13,13 @@ conda activate dh-env
 conda install -y gxx_linux-64 gcc_linux-64
 conda install -y tensorflow -c intel
 # DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks)
-pip install "deephyper[analytics,balsam]"
+pip install 'deephyper[analytics,balsam]'
 # or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
-pip install "deephyper[analytics,hvd,balsam]"
+pip install 'deephyper[analytics,hvd,balsam]'
 ```
+<!--- pip install 'package[extras]'      must be quoted for Zsh, since square brackets are used for globbing ---> 
+
+<!--- "module load miniconda-3" step currently incompatible with Zsh. Use: eval "$(/soft/datascience/conda/miniconda3/2020-12/condabin/conda shell.zsh hook)" --->
 
 ---
 
@@ -205,11 +208,11 @@ We define acceptable ranges for these hyperparameters with the `Problem` object 
 
 We include below the complete problem definition from [`problem.py`](problem.py) which is responsible for defining the search space in terms of the hyperparameter regions.
 
-To make things a little more interesting, we provide an example illustrating how [`ConfigSpace`](https://automl.github.io/ConfigSpace/master/) can be used to  include [conditional hyperparameters](https://automl.github.io/ConfigSpace/master/API-Doc.html#conditions)) (= hyperparameters that are sampled only if a specific condition is met), adding an additional layer of customization to our search problem.
+To make things a little more interesting, we provide an example illustrating how [`ConfigSpace`](https://automl.github.io/ConfigSpace/master/) can be used to  include [conditional hyperparameters](https://automl.github.io/ConfigSpace/master/API-Doc.html#conditions) (hyperparameters that are sampled only if a specific condition is met), adding an additional layer of customization to our search problem.
 
-Explicitly, we introduce the `momentum` hyperparameter which can be used to tune the `SGD` optimizer. Since the effects of varying this hyperparameter only impact the model performance when using the `SGD` optimizer, we add it as a conditional hyperparameter to our `Problem`.
+Specifically, we introduce the `momentum` hyperparameter which is an optional parameter for the `SGD` optimizer defined in Keras. Since the effects of varying this hyperparameter only impact the model performance when using the `SGD` optimizer, we add it as a conditional hyperparameter to our `Problem`.
 
-Note that this is a simple example of what can be achieved using `ConfigSpace`, additional information can be found in the documentation [`user-guide`](https://automl.github.io/ConfigSpace/master/User-Guide.html)
+Note that this is a simple example of what can be achieved using the `ConfigSpace` module; additional information can be found in the documentation [`user-guide`](https://automl.github.io/ConfigSpace/master/User-Guide.html)
 
 ```python
 import ConfigSpace as cs
@@ -253,11 +256,11 @@ if __name__ == "__main__":
 
 ## Launch an Experiment
 
-The deephyper Theta module has a convenience script included for quick generation of DeepHyper Async Bayesian Model Search (AMBS) search jobs. Simply pass the paths to the `model_run.py` script (containing the `run()` function), and the `problem.py` file (containing the `HpProblem`) as follows:
+The `deephyper` module on Theta has a convenience script included for quick generation of Async Bayesian Model Search (AMBS) search jobs. Simply pass the paths to the `model_run.py` script (containing the `run()` function), and the `problem.py` file (containing the `HpProblem`) as follows:
 
 ```bash
 deephyper balsam-submit hps mnist-demo -p problem.py -r model_run.py \
-    -t 20 -q debug-cache-quad -n 2 -A datascience -j mpi
+    -t 20 -q training -n 2 -A SDL_Workshop -j mpi
 ```
 
 ### Monitor Execution and Check Results
@@ -315,11 +318,11 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
 
 ## Deephyper analytics - hyperparameter search study
 
-**path to data file**: /lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist-demo/mnist-demo_f18954a8/results.csv
+**Path to data file**: `/lus/theta-fs0/projects/datascience/foremans/sdl_workshop/sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist-demo/mnist-demo_f18954a8/results.csv`
 
-for customization please see: https://matplotlib.org/api/matplotlib_configuration_api.html
+For customization, please see: https://matplotlib.org/api/matplotlib_configuration_api.html
 
-### Setup & Data loading
+### Setup & data loading
 
 
 ```python

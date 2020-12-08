@@ -23,7 +23,7 @@ optimizer = Problem.add_dim('optimizer', [
 ])
 
 # Only vary momentum if optimizer is SGD
-momentum = Problem.add_hyperparameter("momentum", value=(0.5, 0.9))
+momentum = Problem.add_dim("momentum", (0.5, 0.9))
 Problem.add_condition(cs.EqualsCondition(momentum, optimizer, "SGD"))
 
 # Add a starting point to try first
@@ -36,6 +36,7 @@ Problem.add_starting_point(
     activation='relu',
     optimizer='SGD',
     learning_rate=0.001,
+    momentum=0.5,
 )
 
 
