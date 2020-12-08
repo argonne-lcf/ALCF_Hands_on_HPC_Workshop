@@ -146,10 +146,10 @@ def run(point: dict = None):
     optimizer = point.get('optimizer', None)    # Optimizer to use for training
     batch_size = point.get('batch_size', None)  # Batch size
     activation = point.get('activation', None)  # Activation fn to use
-    units1 = point.get('units1', None)  		# Number of units in 1st hidden layer
-    units2 = point.get('units2', None) 			# Number of units in 2nd hidden layer
-    dropout1 = point.get('dropout1', None)	 	# dropout ratio in 1st hidden layer
-    dropout2 = point.get('dropout2', None)		# dropout ratio in 2nd hidden layer
+    units1 = point.get('units1', None)          # Number of units in 1st hidden layer
+    units2 = point.get('units2', None)          # Number of units in 2nd hidden layer
+    dropout1 = point.get('dropout1', None)      # dropout ratio in 1st hidden layer
+    dropout2 = point.get('dropout2', None)      # dropout ratio in 2nd hidden layer
 
     # Build & compile model for training
     model = tf.keras.Sequential([
@@ -221,8 +221,8 @@ Problem = HpProblem()
 Problem.add_dim('units1', (1, 64))            #  int in range 1-64
 Problem.add_dim('units2', (1, 64))            #  int in range 1-64
 Problem.add_dim('dropout1', (0.0, 1.0))       #  float in range 0-1
-Problem.add_dim('dropout2', (0.0, 1.0))  	  #  float in range 0-1
-Problem.add_dim('batch_size', (5, 500)) 	  #	 int in range 5-500
+Problem.add_dim('dropout2', (0.0, 1.0))       #  float in range 0-1
+Problem.add_dim('batch_size', (5, 500))       #	 int in range 5-500
 Problem.add_dim('learning_rate', (0.0, 1.0))  #  float in range 0-1
 Problem.add_dim('activation', ['relu', 'elu', 'selu', 'tanh'])
 
