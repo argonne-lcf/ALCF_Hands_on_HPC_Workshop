@@ -2,7 +2,7 @@
 
 1. Request an interactive session on Theta:
 ```bash
-qsub -n 4 -q debug-cache-quad -A SDL_Workshop -I -t 1:00:00
+qsub -n 4 -q training -A SDL_Workshop -I -t 1:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:

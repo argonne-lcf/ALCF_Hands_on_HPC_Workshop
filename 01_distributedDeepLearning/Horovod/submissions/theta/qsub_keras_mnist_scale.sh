@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 128
 #COBALT -t 1:00:00
-#COBALT -q default --attrs mcdram=cache:numa=quad
+#COBALT -q training --attrs mcdram=cache:numa=quad
 #COBALT -A SDL_Workshop -O results/theta/$jobid.tensorflow2_keras_mnist_scale
 
 #submisstion script for running tensorflow2_keras_mnist with horovod
