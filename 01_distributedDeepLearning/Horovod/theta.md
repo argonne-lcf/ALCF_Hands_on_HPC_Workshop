@@ -1,7 +1,8 @@
 # Hands on for Data Parallel Deep Learning on Theta (CPU)
 
-1. Request an interactive session on Theta:
+1. SSH to Theta and request an interactive session on Theta on the Theta login node:
 ```bash
+ssh user@theta.alcf.anl.gov
 qsub -n 4 -q training -A SDL_Workshop -I -t 1:00:00
 ```
 
