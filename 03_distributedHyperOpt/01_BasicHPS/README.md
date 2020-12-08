@@ -133,29 +133,75 @@ from load_data import load_data
 keras = tf.keras
 layers = tf.keras.layers
 
+OPTIMIZERS = {
+    'Adam': tf.keras.optimizers.Adam,
+    'Nadam': tf.keras.optimizers.Nadam,
+    'Adagrad': tf.keras.optimizers.Adagrad,
+    'RMSprop': tf.keras.optimizers.RMSprop,
+}
+
+
+def get_optimizer(
+        opt_id: str,
+        learning_rate: float = None,
+        momentum: float = None,
+):
+    """Returns the optimizer conditioned on `opt_id`."""
+    if opt_id == 'SGD':
+       return tf.keras.optimizers.SGD(learning_rate=learning_rate,
+                                      momentum=momentum)
+
+    return OPTIMIZERS[str(opt_id)](learning_rate=learning_rate)
+
 def run(point: dict = None):
-    print(point)
-    
+    """
+    Run the model at a point in hyperparameter space.
+
+    `point` is expected to have the following keys:
+        - units1 (int): Number of units in first hidden layer
+        - units2 (int): Number of units in second hidden layer
+        - activation (str): Activation function to use
+        - dropout_prob (float): Dropout probability; if set to 0 no dropout
+        - batch_size (int): Batch size to use
+        - log10_learning_rate (float): log(Learning rate) to use for training
+        - optimizer (str): ['Adam', 'SGD', 'RMSprop', 'Adagrad', 'Nadam']
+        - momentum (float): Momentum to use; ONLY for SGD optimizer
+
+    Returns:
+        - accuracy (float): The real-valued objective to be maximized.
+    """
     (x_train, y_train), (x_test, y_test) = load_data()
-    
+
     # Reserve 10,000 samples for validation
     x_val = x_train[-10000:]
     y_val = y_train[-10000:]
     x_train = x_train[:-10000]
     y_train = y_train[:-10000]
 
-    epochs = 10  # Fixed num of epochs (for now)
+    epochs = 10
+    # Parse hyperparameters from `point`
+    batch_size = point.get('batch_size', None)
+    activation = point.get('activation', None)
 
-    # Get hyperparameters from `point`
-    optimizer = point.get('optimizer', None)    # Optimizer to use for training
-    batch_size = point.get('batch_size', None)  # Batch size
-    activation = point.get('activation', None)  # Activation fn to use
-    units1 = point.get('units1', None)          # Number of units in 1st hidden layer
-    units2 = point.get('units2', None)          # Number of units in 2nd hidden layer
-    dropout1 = point.get('dropout1', None)      # dropout ratio in 1st hidden layer
-    dropout2 = point.get('dropout2', None)      # dropout ratio in 2nd hidden layer
+    units1 = point.get('units1', None)
+    units2 = point.get('units2', None)
+    dropout1 = point.get('dropout1', None)
+    dropout2 = point.get('dropout2', None)
 
-    # Build & compile model for training
+    opt_id = point.get('optimizer', None)
+    momentum = point.get('momentum', None)
+    log10_learning_rate = point.get('log10_learning_rate', None)
+    learning_rate = None
+    if log10_learning_rate is not None:
+        learning_rate = 10.0**log10_learning_rate
+
+    # the 'optimizer' is stored as a string in `point`,
+    # we can get the actual optimizer using the `get_optimizer` fn
+    optimizer = get_optimizer(opt_id=opt_id,
+                              learning_rate=learning_rate,
+                              momentum=momentum)
+
+    # Build the model
     model = tf.keras.Sequential([
         layers.Dense(units1, activation=activation),
         layers.Dropout(dropout1),
@@ -185,7 +231,6 @@ def run(point: dict = None):
     print(f'test_loss, test_accuracy: {score[0]}, {score[1]}')
 
     return score[1]
-
 
 if __name__ == '__main__':
     from problem import Problem
@@ -217,17 +262,20 @@ Note that this is a simple example of what can be achieved using the `ConfigSpac
 
 ```python
 import ConfigSpace as cs
+
 from deephyper.problem import HpProblem
 
 Problem = HpProblem()
 
 # call signature: Problem.add_dim(name, value)
-Problem.add_dim('units1', (1, 64))            #  int in range 1-64
-Problem.add_dim('units2', (1, 64))            #  int in range 1-64
-Problem.add_dim('dropout1', (0.0, 1.0))       #  float in range 0-1
-Problem.add_dim('dropout2', (0.0, 1.0))       #  float in range 0-1
-Problem.add_dim('batch_size', (5, 500))       #	 int in range 5-500
-Problem.add_dim('learning_rate', (0.0, 1.0))  #  float in range 0-1
+Problem.add_dim('units1', (1, 64))            # int in range 1-64
+Problem.add_dim('units2', (1, 64))            # int in range 1-64
+Problem.add_dim('dropout1', (0.0, 1.0))       # float in range 0-1
+Problem.add_dim('dropout2', (0.0, 1.0))  	  # float in range 0-1
+Problem.add_dim('batch_size', (5, 500)) 	  # int in range 5-500
+Problem.add_dim('log10_learning_rate', (-5.0, 0.0))  # float lr range from 10^-5 to 1
+
+# one of ['relu', ..., ]
 Problem.add_dim('activation', ['relu', 'elu', 'selu', 'tanh'])
 
 optimizer = Problem.add_dim('optimizer', [
@@ -235,7 +283,7 @@ optimizer = Problem.add_dim('optimizer', [
 ])
 
 # Only vary momentum if optimizer is SGD
-momentum = Problem.add_hyperparameter("momentum", value=(0.5, 0.9))
+momentum = Problem.add_dim("momentum", (0.5, 0.9))
 Problem.add_condition(cs.EqualsCondition(momentum, optimizer, "SGD"))
 
 # Add a starting point to try first
@@ -247,7 +295,8 @@ Problem.add_starting_point(
     batch_size=16,
     activation='relu',
     optimizer='SGD',
-    learning_rate=0.001,
+    log10_learning_rate=-3.0,
+    momentum=0.5,
 )
 
 
