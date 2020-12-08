@@ -107,6 +107,7 @@ if __name__ == '__main__':
 Running this interactively should produce:
 
 ```bash
+export TF_CPP_MIN_LOG_LEVEL=2  # Avoid excessive noisy logs from tensorflow
 python3 load_data.py
 ```
 
@@ -265,23 +266,41 @@ deephyper balsam-submit hps mnist-demo -p problem.py -r model_run.py \
 
 ### Monitor Execution and Check Results
 
-You can use Balsam to watch when the experiement starts running and track how many models are running in realtime. Once the ambs task is RUNNING, the `bcd` command line tool provides a convenient way to jump to the working directory, which will contain the DeepHyper log and search results in CSV or JSON format.
-
-Notice the objective value in the second-to-last column of the `results.csv` file:
+You can use `balsam ls` to watch when the experiement starts running and track how many models are running in realtime. 
 
 ```bash
  balsam ls --wf mnist-demo
 ```
- ```bash
-                              job_id |       name |   workflow | application |   state
---------------------------------------------------------------------------------------
-b1dd0a04-dbd5-4601-9295-7465abe6b794 | mnist-demo | mnist-demo | AMBS        | CREATED
- ```
 ```bash
-# We can jump directly to the working directory containing the DeepHyper log
-# using the `bcd` command-line tool
-. bcd b1dd  # Note: 'b1dd' is the prefix of the `job_id` above; yours will be different
+                              job_id |       name |   workflow |   application |   state
+----------------------------------------------------------------------------------------
+06a696e9-3568-4ff7-88c9-8b50227a9dcc | mnist-demo | mnist-demo | AMBS          | RUNNING
+08edd976-eefc-49b8-95e7-21550eb0fcad | task0      | mnist-demo | model_run.run | RUNNING
 ```
+
+Here, we see a job named `mnist-demo` running the `AMBS` (Asynchronous Model-Based Search) application, which drives the hyperparameter search.
+We added this job to the database from the commandline by running the `deephyper balsam-submit` command.
+Furthermore, the `run()` function defined in `model_run.py` was registered as a Balsam application named `model_run.run`.
+The second Balsam job shows that one instance of the `model_run.run` app, named `task0`, is running.  Every time the `AMBS` app chooses a new
+hyperparameter configuration to evaluate, a task is pushed into the Balsam database to begin the evaluation.
+
+Once the AMBS application is in the `RUNNING` state, the `bcd` command line tool provides a convenient way to jump into its working directory, which will contain the DeepHyper log and search results in CSV or JSON format.
+
+```bash
+# We can jump directly to the working directory of a Balsam job
+# using the `bcd` command-line tool
+$ . bcd 06a69  # Note: '06a69' is the prefix of the `job_id` above; yours will be different
+$ ls
+deephyper.log  mnist-demo.out  results.csv
+```
+
+Notice the objective value in the second-to-last column of the `results.csv` file:
+```
+$ cat results.csv
+activation,batch_size,dropout1,dropout2,learning_rate,optimizer,units1,units2,momentum,objective,elapsed_sec
+relu,16,0.0,0.0,0.001,SGD,16,32,0.5,0.9277999997138977,280.6156659126282
+```
+
 
 ### DeepHyper analytics
 
