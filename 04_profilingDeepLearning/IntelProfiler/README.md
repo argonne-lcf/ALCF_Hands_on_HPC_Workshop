@@ -22,7 +22,7 @@ Produce text and html reports:
 $ aprun -report ./aps_result_ ….
 ```
 A snapshot of the APS result is
-
+![Alt text](./Intel-VTune-APS-Pytorch_cifar10.png?raw=true)
 
 VTune Profiler:
 
