@@ -9,8 +9,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
-
+source /lus/theta-fs0/software/thetagpu/conda/tf_master/2020-11-11/mconda3/setup.sh
 
 COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 
