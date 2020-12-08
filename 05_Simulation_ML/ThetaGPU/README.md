@@ -7,7 +7,7 @@ ssh thetagpusn1
 ```
 2. Request an interactive session on an A100 GPU
 ```
-qsub -n 1 -q default -A datascience -I -t 1:00:00
+qsub -n 1 -q default -A SDL_Workshop -I -t 1:00:00
 ```
 Following this, we need to execute a few commands to get setup with an appropriately optimized tensorflow. These are:
 

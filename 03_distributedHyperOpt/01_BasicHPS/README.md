@@ -260,7 +260,7 @@ The deephyper Theta module has a convenience script included for quick generatio
 
 ```bash
 deephyper balsam-submit hps mnist-demo -p problem.py -r model_run.py \
-    -t 20 -q debug-cache-quad -n 2 -A datascience -j mpi
+    -t 20 -q training -n 2 -A datascience -j mpi
 ```
 
 ### Monitor Execution and Check Results

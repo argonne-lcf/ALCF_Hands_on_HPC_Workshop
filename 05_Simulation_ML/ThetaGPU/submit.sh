@@ -2,7 +2,7 @@
 #COBALT -n 1
 #COBALT -t 00:10:00
 #COBALT -q full-node
-#COBALT -A datascience
+#COBALT -A SDL_Workshop
 
 CONTAINER=/lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif
 SCRIPT=/home/rmaulik/sdl_ai_workshop/05_Simulation_ML/ThetaGPU/queue_submission.sh
