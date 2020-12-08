@@ -8,13 +8,14 @@
 echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
+source /lus/theta-fs0/software/thetagpu/conda/pt_master/2020-11-25/mconda3/setup.sh
 
-source /lus/theta-fs0/projects/datascience/parton/thetagpu/pt-build/pt-intall/mconda3/setup.sh
 
 COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 # Notice that we have 8 gpu per node
 ng=$((COBALT_JOBSIZE*8))
 echo "Running job on ${COBALT_JOBSIZE} nodes"
+
 if (( ${COBALT_JOBSIZE} > 1 ))
 then
     # multiple nodes
