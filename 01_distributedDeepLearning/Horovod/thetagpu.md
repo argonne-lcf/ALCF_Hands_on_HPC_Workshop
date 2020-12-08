@@ -11,15 +11,15 @@ qsub -n 1 -q full-node -A SDL_Workshop -I -t 2:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
-	- **For PyTorch**
-```bash
-source /lus/theta-fs0/projects/datascience/parton/thetagpu/pt-build/pt-intall/mconda3/setup.sh
-```
+   - **For PyTorch**
+   ```bash
+   source /lus/theta-fs0/software/thetagpu/conda/pt_master/2020-11-25/mconda3/setup.sh
+   ```
 
-	- **For TensorFlow**
-```bash
-source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
-```
+   - **For TensorFlow**
+   ```bash
+   source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
+   ```
 
 3. Run examples on a single node
    - PyTorch MNIST - 8 GPUs
