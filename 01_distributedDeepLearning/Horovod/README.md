@@ -6,7 +6,17 @@ Led by Huihuo Zheng from ALCF <huihuo.zheng@anl.gov>
 1. **Model parallelization**: in this scheme, disjoint subsets of a neural network are assigned to different devices. Therefore, all the computations associated to the subsets are distributed. Communication happens between devices whenever there is dataflow between two subsets. Model parallelization is suitable when the model is too large to be fitted into a single device (CPU/GPU) because of the memory capacity. However, partitioning the model into different subsets is not an easy task, and there might potentially introduce load imbalance issues limiting the scaling efficiency.  
 2. **Data parallelization**: in this scheme, all the workers own a replica of the model. The global batch of data is split into multiple minibatches, and processed by different workers. Each worker computes the corresponding loss and gradients with respect to the data it posseses. Before the updating of the parameters at each epoch, the loss and gradients are averaged among all the workers through a collective operation. This scheme is relatively simple to implement. MPI_Allreduce is the only commu
 
+![acc](./distributed.png)
+
 Our recent presentation about the data parallel training can be found here: https://youtu.be/930yrXjNkgM
+
+## Horovod Data Parallel Frameworks
+![Horovod](./Horovod.png)
+Reference: https://horovod.readthedocs.io/en/stable/
+1. Sergeev, A., Del Balso, M. (2017) Meet Horovod: Uber’s Open Source Distributed Deep Learning Framework for TensorFlow. Retrieved from https://eng.uber.com/horovod/
+2. Sergeev, A. (2017) Horovod - Distributed TensorFlow Made Easy. Retrieved from https://www.slideshare.net/AlexanderSergeev4/horovod-distributed-tensorflow-made-easy
+
+3. Sergeev, A., Del Balso, M. (2018) Horovod: fast and easy distributed deep learning in TensorFlow. Retrieved from arXiv:1802.05799
 
 ## TensorFlow with Horovod
 1) **Initialize Horovod**
@@ -102,7 +112,7 @@ optimizer = hvd.DistributedOptimizer(optimizer, named_parameters=model.named_par
 
 5) **Broadcast the model from rank 0**
 This is to make sure that all the workers will have the same starting point.
-```
+```python
 hvd.broadcast_parameters(model.state_dict(), root_rank=0)
 hvd.broadcast_optimizer_state(optimizer, root_rank=0)
 ```
@@ -140,9 +150,9 @@ We provided some examples in: [Horovod](Horovod/)
 
 
 ## Handson
-* On Theta KNL CPU (run the examples with ```--device cpu``` option)
-[theta.md](theta.md)
-* On ThetaGPU (run the examples with ```--device gpu``` option)
-[thetagpu.md](thetagpu.md) 
+* [thetagpu.md](thetagpu.md) ThetaGPU (run the examples with ```--device gpu``` option)
+* [theta.md](theta.md): running on Theta KNL CPU (with ```--device cpu``` option)
 
-For submitting jobs in the script (non-interactive) job mode, consult the submission scripts in the [submission](./submission/) folder. 
+
+
+For submitting jobs in the script (non-interactive) job mode, consult the submission scripts in the [submissions](./submission/) folder. 

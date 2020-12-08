@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 2
 #COBALT -t 1:00:00 -q full-node
-#COBALT -A SDL_Workshop -O results/thetagpu/$jobid.tensorflow_cifar10
+#COBALT -A SDL_Workshop -O results/thetagpu/$jobid.tensorflow2_cifar10
 
 #submisstion script for running tensorflow_mnist with horovod
 
@@ -12,14 +12,21 @@ echo "Running Cobalt Job $COBALT_JOBID."
 #source /lus/theta-fs0/software/datascience/thetagpu/anaconda3/setup.sh
 source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
 
-mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np 16 --hostfile $COBALT_NODEFILE  -npernode 8 $(which python) tensorflow2_cifar10.py --device gpu --epochs 16 >& results/thetagpu/tensorflow2_cifar10.n16.out
+COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 
-# scaling  study 
-#
-#for n in 1 2 4 8
-#do
-#    mpirun -np $n python tensorflow2_cifar10.py --device gpu --epochs 16 >& results/thetagpu/tensorflow2_cifar10.n$n.out & 
-#done
-#wait
+echo "Running job on ${COBALT_JOBSIZE} nodes"
+ng=$((COBALT_JOBSIZE*8))
+if (( ${COBALT_JOBSIZE} > 1 ))
+then
+    # multiple nodes
+    mpirun -x LD_LIBRARY_PATH -x PATH -x PYTHONPATH -np $ng -npernode 8 --hostfile $COBALT_NODEFILE python tensorflow2_cifar10.py --device gpu --epochs 32 >& results/thetagpu/tensorflow2_cifar10.n$ng.out
+else
+    # Single node
+    for n in 1 2 4 8
+    do
+	mpirun -np $n python tensorflow2_cifar10.py --device gpu --epochs 32 >& results/thetagpu/tensorflow2_cifar10.n$n.out
+    done
+fi
+
 
 

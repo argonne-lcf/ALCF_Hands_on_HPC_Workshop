@@ -88,7 +88,7 @@ def training_step(images, labels, first_batch):
     # Note: broadcast should be done after the first gradient step to ensure optimizer
     # initialization.
     if first_batch:
-		hvd.broadcast_variables(cifar10_model.variables, root_rank=0)
+        hvd.broadcast_variables(cifar10_model.variables, root_rank=0)
         hvd.broadcast_variables(opt.variables(), root_rank=0)
     return loss_value
 

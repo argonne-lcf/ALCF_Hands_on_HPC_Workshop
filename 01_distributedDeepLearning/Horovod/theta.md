@@ -44,5 +44,3 @@ module load datascience/tensorflow-2.3
 5. Try using warmup epochs
 
     We could use a small learning rate (do not scale by the number of workers) in the begining 1 or 2 epochs, and see whether that improve the training results at large scale.
-	
-	  

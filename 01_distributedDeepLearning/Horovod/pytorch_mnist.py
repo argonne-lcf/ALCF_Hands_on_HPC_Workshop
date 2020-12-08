@@ -154,10 +154,7 @@ def train(epoch):
 
 def metric_average(val, name):
     tensor = torch.tensor(val)
-    if (with_hvd):
-        avg_tensor = hvd.allreduce(tensor, name=name)
-    else:
-        avg_tensor = tensor
+    avg_tensor = hvd.allreduce(tensor, name=name)
     return avg_tensor.item()
 
 
