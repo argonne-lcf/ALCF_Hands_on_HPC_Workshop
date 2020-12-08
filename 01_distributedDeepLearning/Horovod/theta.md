@@ -29,10 +29,16 @@ module load datascience/tensorflow-2.3
 
 4. Test scaling and investigate the issue of large batch size training
 
-    Note, this requires a new job allocation to a separate job queue. The following script performes a simple scaling test with the MNIST dataset and a PyTorch model:
+    Note, this requires a new job allocation to a separate job queue. The following script performes a simple scaling test with the MNIST dataset
+	* PyTorch model -  [sumissions/theta/qsub_pytorch_mnist_scale.sh](sumissions/theta/qsub_pytorch_mnist_scale.sh):
     ```bash
     qsub -O pytorch_mnist_scale -n 128 -q default -A SDL_Workhop sumissions/theta/qsub_pytorch_mnist_scale.sh
     ```
+	* TensorFlow with Keras API - [sumissions/theta/qsub_keras_mnist_scale.sh](sumissions/theta/qsub_keras_mnist_scale.sh): 
+	```bash
+    qsub -O pytorch_mnist_scale -n 128 -q default -A SDL_Workhop sumissions/theta/qsub_keras_mnist_scale.sh
+    ```
+
     You can check the test accuracy and the timing for different scales. 
 	
 	In this case, we run for 32 epochs. The time to solution decreases linearly as we increase the number of processes. The communication overhead is not significant. 
@@ -41,6 +47,6 @@ module load datascience/tensorflow-2.3
 	However the training accuracy and test accuracy decreases as we increase the number of worker. As we can see upto 128 processes, the training accuracy and test accuracy is \~10\%, which means that the training does not converge to a local mimimum at all. The reason is that when we the learning rate is scaled as 128*0.01 = 1.28 which might be too large in the beginning. One solution is to use several warm up epochs in which the learning rate remains as 0.01. 
 	![acc](./results/theta/pytorch_mnist_acc.png)
 
-5. Try using warmup epochs
+5. The impact of warmup epochs
 
     We could use a small learning rate (do not scale by the number of workers) in the begining 1 or 2 epochs, and see whether that improve the training results at large scale.

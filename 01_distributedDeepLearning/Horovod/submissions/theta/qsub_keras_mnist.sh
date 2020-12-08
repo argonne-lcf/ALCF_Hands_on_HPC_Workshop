@@ -18,5 +18,5 @@ aprun -n $(($COBALT_JOBSIZE*$PROC_PER_NODE)) -N $PROC_PER_NODE \
     -j 2 -d 32 -cc depth \
     -e OMP_NUM_THREADS=32 \
     -e KMP_BLOCKTIME=0 \
-    python tensorflow2_keras_mnist.py --num_threads=32 --device cpu --epochs 32 >& results/theta/tensorflow2_keras_mnist.out 
+    python tensorflow2_keras_mnist.py --device cpu --epochs 32 >& results/theta/tensorflow2_keras_mnist.out 
 

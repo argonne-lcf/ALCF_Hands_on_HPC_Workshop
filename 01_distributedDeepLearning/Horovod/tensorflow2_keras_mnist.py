@@ -46,7 +46,7 @@ parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
-
+parser.add_argument('--warmup_epochs', default=3, help='number of warmup epochs', type=int)
 args = parser.parse_args()
 
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
@@ -113,7 +113,7 @@ if (with_hvd):
         # Horovod: using `lr = 1.0 * hvd.size()` from the very beginning leads to worse final
         # accuracy. Scale the learning rate `lr = 1.0` ---> `lr = 1.0 * hvd.size()` during
         # the first three epochs. See https://arxiv.org/abs/1706.02677 for details.
-        hvd.callbacks.LearningRateWarmupCallback(warmup_epochs=3, verbose=1),
+        hvd.callbacks.LearningRateWarmupCallback(warmup_epochs=warmup_epochs, verbose=1),
     ]
 else:
     callbacks=[]
