@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 30
-#COBALT -q debug-flat-quad
+#COBALT -q training
 #COBALT -A SDL_Workshop
 #COBALT -O logdir/$COBALT_JOBID
 

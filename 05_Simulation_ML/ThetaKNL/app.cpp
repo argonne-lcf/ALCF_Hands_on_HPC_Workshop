@@ -145,33 +145,21 @@ void collect_data(PyObject *pcollection_func, double *u)
 
 void analyse_data(PyObject *panalyses_func, double *u)
 {
-  PyObject* pArgs = PyTuple_New(1);
-  
-  //Numpy array dimensions
-  npy_intp dim[] = {NX+2};
-
-  // create a new Python array that is a wrapper around u (not a copy) and put it in tuple pArgs
-  PyObject* array_1d = PyArray_SimpleNewFromData(1, dim, NPY_FLOAT64, u);
-  PyTuple_SetItem(pArgs, 0, array_1d);
-
-  // pass array into our Python function and cast result to PyArrayObject
-  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, pArgs);
+  // panalsyses_func doesn't require an argument so pass nullptr 
+  PyArrayObject* pValue = (PyArrayObject*)PyObject_CallObject(panalyses_func, nullptr);
   std::cout << "Called python analyses function successfully"<<std::endl;
 
-  Py_DECREF(pArgs);
-  // We don't need to decref array_1d because PyTuple_SetItem steals a reference 
-
   // Printing out values of the SVD eigenvectors of the first and second modes for each field DOF
-  // PyArray_DATA gives pointer to buffer (not a copy), which we know is double 
-  double* c_out = reinterpret_cast<double*>(PyArray_DATA(pValue));
-  for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
+  for (int i = 0; i < 10; ++i) 
   {
-    std::cout << "First mode value: " << c_out[i] << std::endl;
+    double* current = (double*) PyArray_GETPTR2(pValue, 0, i); // row 0, column i
+    std::cout << "First mode value: " << *current << std::endl;
   }
 
-  for (int i = 0; i < 10; ++i) // Only printing 10 out of NX for checking the order of allocation in arrays
+  for (int i = 0; i < 10; ++i)
   {
-    std::cout << "Second mode value: " << c_out[NX+i] << std::endl;
+    double* current = (double*) PyArray_GETPTR2(pValue, 1, i); // row 1, column i
+    std::cout << "Second mode value: " << *current << std::endl;
   }
 
   Py_DECREF(pValue);

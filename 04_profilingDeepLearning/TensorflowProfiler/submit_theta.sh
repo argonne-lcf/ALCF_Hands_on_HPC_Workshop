@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 2
 #COBALT -t 1:00:00
-#COBALT -q debug-cache-quad --attrs mcdram=cache:numa=quad
+#COBALT -q training
 #COBALT -A SDL_Workshop
 #COBALT -O logdir/$COBALT_JOBID
 

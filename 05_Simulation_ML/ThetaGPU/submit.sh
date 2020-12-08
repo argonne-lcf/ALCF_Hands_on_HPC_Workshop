@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 00:10:00
-#COBALT -q full-node
+#COBALT -q training
 #COBALT -A SDL_Workshop
 
 CONTAINER=/lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif
