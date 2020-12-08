@@ -1,6 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 10
+#COBALT -q training
 #COBALT -A SDL_Workshop
 #COBALT -O logdir/$COBALT_JOBID
 
