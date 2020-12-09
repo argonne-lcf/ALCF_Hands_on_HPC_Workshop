@@ -12,10 +12,6 @@ $ nsys profile python myapp.py
 This generates profile file in ‘report.qdrep’ which can be imported to view with Nsight Systems UI. It is recommended to run the script to generate the profile file
 on the compute node and copy it to local machine with Nvidia Nsight tools installed to import the profile and view the analysis.
 
-To profile with Nsight Compute (refer to Step B in the ```submit_thetagpu.sh``` script). This is invoked by
-```
-$ ncu profile python myapp.py
-```
 
 To view the profiling results in GUI, follow the commands in the section "Steps to visualize results (Step C)" in the script.
 
@@ -28,7 +24,7 @@ Nsight Compute (https://developer.nvidia.com/nsight-compute) is an interactive k
 
 The command used to profile using Nsight Compute is 
 ```
-ncu  python myapp.py
+ncu python myapp.py
 ```
 
 Usually, this method incurs lot of overhead in collecting the performance metrics. To help minimize, we opt for selective profiling where we profile only selected kernels. For example, if we want to profile kernels that perform gemm operations, we use
