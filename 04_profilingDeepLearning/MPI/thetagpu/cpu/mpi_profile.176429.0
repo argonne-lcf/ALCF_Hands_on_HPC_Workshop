@@ -1,0 +1,82 @@
+Data for MPI rank 0 of 8:
+Times and statistics from MPI_Init() to MPI_Finalize().
+-----------------------------------------------------------------------
+MPI Routine                        #calls     avg. bytes      time(sec)
+-----------------------------------------------------------------------
+MPI_Comm_rank                           5            0.0          0.000
+MPI_Comm_size                           3            0.0          0.000
+MPI_Bcast                              91      2046004.3          0.136
+MPI_Allreduce                      123445       739019.0        109.085
+MPI_Gather                             27            4.0          0.001
+MPI_Gatherv                            27            0.0          0.000
+MPI_Allgather                           2            4.0          0.000
+-----------------------------------------------------------------
+MPI task 0 of 8 had the median communication time.
+total communication time = 109.223 seconds.
+total elapsed time       = 671.970 seconds.
+user cpu time            = 883.652 seconds.
+system time              = 583.520 seconds.
+max resident set size    = 820.883 MBytes.
+
+Rank 2 reported the largest memory utilization : 839.72 MBytes
+Rank 2 reported the largest elapsed time : 671.97 sec
+
+-----------------------------------------------------------------
+Message size distributions:
+
+MPI_Bcast                 #calls    avg. bytes      time(sec)
+                              32           4.0          0.000
+                              12          25.0          0.000
+                               2          40.0          0.000
+                              15         219.5          0.000
+                               6         938.7          0.000
+                               2        1536.0          0.000
+                               2        2525.0          0.000
+                               2        6912.0          0.000
+                               4       16384.0          0.002
+                               2      163840.0          0.001
+                               2      442368.0          0.001
+                               6     2850816.0          0.024
+                               2    16777216.0          0.023
+                               2    67108864.0          0.084
+
+MPI_Allreduce             #calls    avg. bytes      time(sec)
+                              40           4.0          0.000
+                          115190           8.0         12.123
+                              24          40.0          0.000
+                               6         256.0          0.000
+                              18        1024.0          0.000
+                               9        1536.0          0.000
+                             648        7181.0          0.030
+                             980       16384.0          0.081
+                             980      163879.0          0.319
+                             980      445554.2          0.640
+                            2610     2914170.0          9.014
+                             980    17588391.2         17.817
+                             980    67108864.0         69.061
+
+MPI_Gather                #calls    avg. bytes      time(sec)
+                              27           4.0          0.001
+
+MPI_Allgather             #calls    avg. bytes      time(sec)
+                               2           4.0          0.000
+
+-----------------------------------------------------------------
+
+Communication summary for all tasks:
+
+  minimum communication time = 104.230 sec for task 3
+  median  communication time = 109.223 sec for task 0
+  maximum communication time = 121.394 sec for task 5
+
+
+MPI timing summary for all ranks:
+taskid       hostname     comm(s)  elapsed(s)     user(s)   system(s)    size(MB)    switches
+     0     thetagpu19     109.22      671.97      883.65      583.52      820.88      119064
+     1     thetagpu19     117.35      671.97      779.92       23.45      831.04      113425
+     2     thetagpu19     108.66      671.97      769.31       25.20      839.72      113800
+     3     thetagpu19     104.23      671.97      766.26       24.07      824.12      113777
+     4     thetagpu19     108.71      671.97      770.44       24.09      833.25      114417
+     5     thetagpu19     121.39      671.97      785.47       21.82      831.12      113672
+     6     thetagpu19     116.40      671.97      780.10       22.18      822.11      113822
+     7     thetagpu19     113.92      671.97      776.08       23.81      831.37      113475
