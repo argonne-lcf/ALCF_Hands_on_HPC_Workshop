@@ -1,27 +1,5 @@
 # Hyperparameter Search Using DeepHyper on Theta
 
-<!---
-**TODO**:
-
-- [ ] The `deephyper/0.2.1` module seems broken somehow, workaround for now:
-  - [ ] Issues encountered when trying to install deephyper with Horovod, but should run without issue using analytics and balsam.
-
-```bash
-module load postgresql
-module load miniconda-3
-conda create -n dh-env
-conda activate dh-env
-conda install -y gxx_linux-64 gcc_linux-64
-conda install -y tensorflow -c intel
-# DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks)
-pip install 'deephyper[analytics,balsam]'
-# or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
-pip install 'deephyper[analytics,hvd,balsam]'
-```
---->
-<!--- pip install 'package[extras]'      must be quoted for Zsh, since square brackets are used for globbing ---> 
-
-<!--- "module load miniconda-3" step currently incompatible with Zsh. Use: eval "$(/soft/datascience/conda/miniconda3/2020-12/condabin/conda shell.zsh hook)" --->
 
 *Contact:*
 
@@ -32,6 +10,8 @@ pip install 'deephyper[analytics,hvd,balsam]'
 
 
 **NOTE:** This tutorial is designed exclusively for Theta (KNL). Stable support for DeepHyper on ThetaGPU is coming soon. Be sure that you begin this tutorial from a Theta (KNL) login node, e.g. `thetaloginX`.
+
+
 ---
 
 Every DeepHyper search requires at least 2 Python objects as input:
@@ -53,7 +33,7 @@ module load deephyper/0.2.1  # Includes Balsam, TensorFlow, Keras, etc...
 rm -r ~/.balsam  # reset default settings (for now)
 ```
 
-The `deephyper/0.2.1` module contains all of the requisite dependencies for this tutorial; however, the module is currently built via pip and uses TensorFlow, etc. packages **without** optimizations for Intel hardware. Therefore, the TensorFlow performance will be much worse than the performance observed in `01_distributedDeepLearning` using the `datascience/tensorflow-2.3` module, e.g. This choice was made for simplicity and stability of the more complicated programming environment and package dependencies for DeepHyper.
+The `deephyper/0.2.1` module contains all of the requisite dependencies for this tutorial; however, the module is currently built via pip and uses TensorFlow, etc. packages **without** optimizations for Intel hardware. Therefore, the TensorFlow performance will be much worse than the performance observed in `01_distributedDeepLearning` using the `datascience/tensorflow-2.3` module, e.g. This choice was made for simplicity and stability of the more complicated programming environment and package dependencies for DeepHyper. Refer to the Appendix at the bottom of this document for an example of custom building a Conda environment as an alternative to the module.
 
 If you haven't already cloned this repository, change directories to your home directory and execute:
 ```bash
@@ -728,3 +708,24 @@ dict(df.iloc[i_max])
      'units2': 59,
      'objective': 0.9711999893188475,
      'elapsed_sec': 3240.456234931946}
+
+## Appendix: alternative to `deephyper` module
+
+
+```bash
+module load postgresql
+module load miniconda-3
+conda create -n dh-env
+conda activate dh-env
+conda install -y gxx_linux-64 gcc_linux-64
+conda install -y tensorflow -c intel
+# DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks)
+pip install 'deephyper[analytics,balsam]'
+# or DeepHyper + Analytics Tools (Parsing logs, Plots, Notebooks) + Horovod
+pip install 'deephyper[analytics,hvd,balsam]'
+```
+
+Note, non-Bash users may encounter issues during the `module load miniconda-3` step. 
+<!--- pip install 'package[extras]'      must be quoted for Zsh, since square brackets are used for globbing ---> 
+
+<!--- "module load miniconda-3" step currently incompatible with Zsh. Use: eval "$(/soft/datascience/conda/miniconda3/2020-12/condabin/conda shell.zsh hook)" --->
