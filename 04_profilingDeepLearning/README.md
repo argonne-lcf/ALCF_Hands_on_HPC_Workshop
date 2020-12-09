@@ -1,5 +1,5 @@
 # Profiling Deep Learning frameworks
-Contacts: Huihuo Zhang, Taylor Childers
+Led by: Huihuo Zhang, Murali Emani, Taylor Childers
 
 ## Communication profiling
 We introduce two profiling tools for understanding the communication in distributed deep learning. 

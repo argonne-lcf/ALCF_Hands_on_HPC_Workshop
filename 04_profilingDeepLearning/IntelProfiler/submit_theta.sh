@@ -10,7 +10,12 @@ echo "Running Cobalt Job $COBALT_JOBID."
 module load datascience/pytorch-1.4
 module load vtune
 
+## Set libraries
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/soft/compilers/intel/19.0.3.199/vtune_amplifier/lib64/
+
+## set proxies
+export https_proxy=http://proxy.tmi.alcf.anl.gov:3128
+export http_proxy=http://proxy.tmi.alcf.anl.gov:3128
 
 ## run the job
 PROC_PER_NODE=1
