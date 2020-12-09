@@ -1,7 +1,9 @@
 #!/bin/bash
 #COBALT -n 1
-#COBALT -t 1:00:00 -q training
+#COBALT -t 1:00:00 
+#COBALT -q training
 #COBALT -A SDL_Workshop
+#COBALT --attrs pubnet=true
 
 echo "Running Cobalt Job $COBALT_JOBID."
 
@@ -9,6 +11,10 @@ IMG=/lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif
 
 ## set library path
 export SINGULARITYENV_LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+## set proxies
+export https_proxy=http://proxy.tmi.alcf.anl.gov:3128
+export http_proxy=http://proxy.tmi.alcf.anl.gov:3128
 
 ## the following steps can be run
 ## (A) get flat profile that shows all kernels and time consumed using nsight systems
