@@ -3,11 +3,13 @@
 #COBALT -t 1:00:00 
 #COBALT -q training
 #COBALT -A SDL_Workshop
-#COBALT --attrs pubnet=true
+#COBALT --attrs=pubnet
+
 
 echo "Running Cobalt Job $COBALT_JOBID."
 
-IMG=/lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif
+## container
+IMG=/lus/theta-fs0/software/thetagpu/nvidia-containers/tensorflow2/tf2_20.08-py3.sif
 
 ## set library path
 export SINGULARITYENV_LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
