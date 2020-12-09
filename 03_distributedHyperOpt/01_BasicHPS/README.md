@@ -51,6 +51,8 @@ module load deephyper/0.2.1  # Includes Balsam, TensorFlow, Keras, etc...
 rm -r ~/.balsam  # reset default settings (for now)
 ```
 
+The `deephyper/0.2.1` module contains all of the requisite dependencies for this tutorial; however, the module is currently built via pip and uses TensorFlow, etc. packages **without** optimizations for Intel hardware. Therefore, the TensorFlow performance will be much worse than the performance observed in `01_distributedDeepLearning` using the `datascience/tensorflow-2.3` module, e.g. This choice was made for simplicity and stability of the more complicated programming environment and package dependencies for DeepHyper.
+
 If you haven't already:
 
 ```bash
