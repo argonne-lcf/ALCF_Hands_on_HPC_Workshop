@@ -20,7 +20,7 @@ except:
     hvd=Hvd; 
 import time
 
-t0 = time.time()
+
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -221,10 +221,16 @@ def test():
         print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
 
-
+t0 = time.time()
 for epoch in range(1, args.epochs + 1):
+    t01 = time.time()
     train(epoch)
+    t02 = time.time()
     test()
+    t03 = time.time()
+    if hvd.rank()==0:
+        print('Epoch %d:  training %s(s) - testing %s(s)'%(epoch, t02 - t01, t03 - t02))
+    
 t1 = time.time()
 if hvd.rank()==0:
     print("Total training time: %s seconds" %(t1 - t0))
