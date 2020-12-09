@@ -48,7 +48,7 @@ Single node (8GPU)
 
 
 4 nodes 32 GPU
-![ThetaGPUHorovodTimeline4](ThetaGPUHorovodTimeline.png)
+![ThetaGPUHorovodTimeline4](ThetaGPUHorovodTimeline4.png)
 
 We find that there is a large portion of Negotiation all reduce in the beginning. Let us check the timing for each epoch. 
 
