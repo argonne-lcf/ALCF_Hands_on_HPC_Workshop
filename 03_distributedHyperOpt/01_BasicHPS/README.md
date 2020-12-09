@@ -30,6 +30,8 @@ pip install 'deephyper[analytics,hvd,balsam]'
 - Romit Maulik (rmaulik@anl.gov)
 - Misha Salim (msalim@anl.gov)
 
+
+**NOTE:** This tutorial is designed exclusively for Theta (KNL). Stable support for DeepHyper on ThetaGPU is coming soon. Be sure that you begin this tutorial from a Theta (KNL) login node, e.g. `thetaloginX`.
 ---
 
 Every DeepHyper search requires at least 2 Python objects as input:
@@ -53,13 +55,12 @@ rm -r ~/.balsam  # reset default settings (for now)
 
 The `deephyper/0.2.1` module contains all of the requisite dependencies for this tutorial; however, the module is currently built via pip and uses TensorFlow, etc. packages **without** optimizations for Intel hardware. Therefore, the TensorFlow performance will be much worse than the performance observed in `01_distributedDeepLearning` using the `datascience/tensorflow-2.3` module, e.g. This choice was made for simplicity and stability of the more complicated programming environment and package dependencies for DeepHyper.
 
-If you haven't already:
-
+If you haven't already cloned this repository, change directories to your home directory and execute:
 ```bash
 git clone https://github.com/argonne-lcf/sdl_ai_workshop
 ```
 
-Navigate into the `BasicHPS/` directory:
+Navigate into the `01_BasicHPS/` subdirectory:
 
 ```bash
 cd sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS
@@ -355,7 +356,7 @@ relu,16,0.0,0.0,0.001,SGD,16,32,0.5,0.9277999997138977,280.6156659126282
 
 ### DeepHyper analytics
 
-We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyter Notebook` via `ssh`.
+We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyter Notebook` running on the ALCF [Jupyter Hub](https://www.alcf.anl.gov/support-center/theta/jupyter-hub) or on Theta but viewed locally via `ssh`.
 
 1. First, we generate the analysis by running (from the directory containing the `results.csv` file containing the results of our HPS:
 
@@ -364,15 +365,27 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
    ```
 
    This should generate a `dh-analytics-hps.ipynb` notebook file that we can run to gain insight into our HPS results.
+   
+#### ALCF Jupyter Hub
 
-2. Next we start a `jupyter notebook` (still from `thetalogin` node) via:
+1. Navigate a browser on your local machine to https://jupyter.alcf.anl.gov/theta/hub/login
+
+2. Login using your ALCF username and OTP
+
+3. Select "Login Theta"
+
+4. You will see a Jupyter Notebook file browser rooted in your home directory on Theta. Navigate to `./sdl_ai_workshop/03_distributedHyperOpt/01_BasicHPS/db/data/mnist-demo/mnist-demo_f18954a8/` and open `dh-analytics-hps.ipynb`.
+
+#### SSH Tunneling
+
+2. Start a `jupyter notebook` (still from `thetalogin` node) via:
 
    ```bash
    jupyter notebook --no-browser --port=1234  # you can change this number
    # Make a note of the current login hostname (e.g. thetalogin6)
    ```
 
-3. Open another terminal on your local machine, which we will use for connecting to the remote jupyter session:
+3. Open another terminal on your local machine, which we will use for connecting to the remote Jupyter session:
 
    ```bash
    # Using the number you used in the `--port` argument above
@@ -380,11 +393,11 @@ We will now perform an analysis of our HPS using `deephyper-analytics` + `Jupyte
    ssh -L 1234:localhost:1234 username@thetaloginN.alcf.anl.gov
    ```
 
-   This will listen on port 1234 (**you can change this number**) on your local machine, which is forwarded from port 1234 of the remote machine.
+   This will listen on port 1234 (you can change this number) on your local machine, which is forwarded from port 1234 of the remote machine.
 
-4. Open a browser on your local machine, input `localhost:1234`, and copy the token from step 1.
+4. Open a browser on your local machine, input `localhost:1234`, and copy the token from the server-side output of `jupyter notebook`.
 
-   1. *Note*: If you would rather use a password, set a password instead using `jupyter notebook password`.
+   1. *Note*: If you would rather use a password instead of token, you can set a password from Theta before starting the notebook using `jupyter notebook password`.
 
 5. Open the `dh-analytics-hps.ipynb` notebook file.
 
