@@ -22,7 +22,6 @@ Visualize the results using Chrome chrome://tracing/
 ![ThetaHorovodTimeline](ThetaHorovodTimeline.png)
 
 
-
 * Results on ThetaGPU
    - NEGOTIATION ALLREDUCE is taking a lot of time
    - ALLREDUCE is using NCCL_ALLREDUCE
