@@ -42,4 +42,9 @@ For the code ```tensorflow2_cifar10.py```, the profile from Nsight Compute yield
 ![Alt text](./Nsight-compute.png?raw=true)
 
 
+Try varying batch size with --batch_size parameter and observe the difference in metrics. For batch sizes 4 and 512, these are
+
+![Alt text](./ncu-comparison.jpg?raw=true)
+
+
 
