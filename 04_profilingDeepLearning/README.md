@@ -1,5 +1,5 @@
 # Profiling Deep Learning frameworks
-Led by: Huihuo Zhang, Murali Emani, Taylor Childers
+Led by: Huihuo Zheng, Murali Emani, Taylor Childers
 
 ## Communication profiling
 We introduce two profiling tools for understanding the communication in distributed deep learning. 
@@ -19,7 +19,17 @@ We introduce two profiling tools for understanding the communication in distribu
   This file is only recorded on rank 0, but it contains information about activity of all workers. You can then open the timeline file using the `chrome://tracing` facility of the Chrome browser.
 
 More details: https://horovod.readthedocs.io/en/stable/timeline_include.html
-
-## Tensorflow Profiler
+## Single node performance 
+### Tensorflow Profiler
 We introduce you to profiling using TensorFlow.
 [Text Here](TensorflowProfiler/)
+
+### Intel Vtune profiler
+This is for profiling on Intel architecture. 
+[IntelProfiler/](IntelProfiler/)
+
+### Nvidia Nsight profiler
+This is for profiling on Nvidia architecture. 
+[NvidaProfiler/](NvidaProfiler/)
+
+
