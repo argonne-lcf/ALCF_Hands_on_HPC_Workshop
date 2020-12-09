@@ -10,7 +10,7 @@
 echo "Running Cobalt Job $COBALT_JOBID."
 
 # Loading conda environment with Tensorflow
-source /lus/theta-fs0/software/thetagpu/conda/tf_master/latest/mconda3/setup.sh
+source /lus/theta-fs0/software/thetagpu/conda/tf_master/2020-11-11/mconda3/setup.sh
 
 export OMP_NUM_THREADS=64
 n=8
