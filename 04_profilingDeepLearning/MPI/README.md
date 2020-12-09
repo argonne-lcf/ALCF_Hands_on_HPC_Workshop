@@ -1,5 +1,6 @@
-# MPI profiling for distributed data parallel training
-Contact: Huihuo Zheng
+# MPI profiling for Data Parallel Training
+
+Contact: Huihuo Zheng <huihuo.zheng@anl.gov>
 
 In the distributed training, all the workers compute the loss and gradients with respect to the sub-minibatch of dataset. It then synchronize the loss and gradients across all the workers. This is typicall done by communication libraries such as MPI or NCCL, CCL, Gloo. 
 

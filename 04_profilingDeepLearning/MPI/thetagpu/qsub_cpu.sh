@@ -5,6 +5,8 @@ source /lus/theta-fs0/software/thetagpu/conda/pt_master/2020-11-25/mconda3/setup
 
 export LD_PRELOAD=/lus/theta-fs0/software/datascience/thetagpu/hpctw/lib/libmpitrace.so
 
+[ -e ../../../01_distributedDeepLearning/Horovod/datasets ] && ln -s ../../../01_distributedDeepLearning/Horovod/datasets datasets
+
 mpirun -np 8 python ../pytorch_cifar10.py --device cpu >& pytorch_cifar10.out.cpu
 
 

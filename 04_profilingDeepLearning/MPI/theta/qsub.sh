@@ -7,6 +7,8 @@ module load datascience/pytorch-1.7
 
 export LD_PRELOAD=/soft/perftools/hpctw/NONE/libhpmprof.so
 
+[ -e ../../../01_distributedDeepLearning/Horovod/datasets ] && ln -s ../../../01_distributedDeepLearning/Horovod/datasets datasets
+
 PROC_PER_NODE=4
 aprun -n $(($COBALT_JOBSIZE*$PROC_PER_NODE)) -N $PROC_PER_NODE \
       -j 2 -d 32 -cc depth \
