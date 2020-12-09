@@ -9,7 +9,7 @@
 echo "Running Cobalt Job $COBALT_JOBID."
 
 ## container
-IMG=/lus/theta-fs0/software/thetagpu/nvidia-containers/tensorflow2/tf2_20.08-py3.sif
+IMG=/lus/theta-fs0/software/thetagpu/nvidia-containers/tensorflow2/tf2_20.08-py3.simg
 
 ## set library path
 export SINGULARITYENV_LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
