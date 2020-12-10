@@ -74,6 +74,6 @@ Data Access
   - But always blocking one or the other
 
 ### Example Modes
-
+![Example Modes](ExampleModes.png)
 
 
