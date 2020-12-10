@@ -1,3 +1,5 @@
+Led by Romit Maulik and Bethany Lusch from ALCF
+
 Today, we're learning about coupling simulations and machine learning.
 
 1. First, [here](05_Simulation_ML/Background.md) we will talk about why we would want to couple simulations & ML and describe ways to do it.
