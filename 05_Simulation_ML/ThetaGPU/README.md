@@ -13,7 +13,7 @@ Following this, we need to execute a few commands to get setup with an appropria
 
 3. Activate the TensorFlow 2.2 singularity container:
 ```
-singularity exec -B /lus:/lus --nv /lus/theta-fs0/projects/datascience/thetaGPU/containers/tf2_20.08-py3.sif bash
+singularity exec -B /lus:/lus --nv /lus/theta-fs0/software/thetagpu/nvidia-containers/tensorflow2/tf2_20.08-py3.simg bash
 ```
 4. Setup access to the internet
 ```
