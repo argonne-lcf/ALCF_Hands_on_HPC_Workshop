@@ -17,19 +17,21 @@ singularity exec -B /lus:/lus --nv /lus/theta-fs0/software/thetagpu/nvidia-conta
 ```
 4. Setup access to the internet
 ```
-export HTTP_PROXY=http://theta-proxy.tmi.alcf.anl.gov:3128
-export HTTPS_PROXY=https://theta-proxy.tmi.alcf.anl.gov:3128
+export http_proxy=http://theta-proxy.tmi.alcf.anl.gov:3128
+export https_proxy=https://theta-proxy.tmi.alcf.anl.gov:3128
 ```
 Now that we can access the internet, we need to set up a virtual environment in Python (these commands should only be run the first time)
 ```
 python -m pip install --user virtualenv
-export VENV_LOCATION=/home/rmaulik/THETAGPU_TF_ENV # Add your path here
+export VENV_LOCATION=/home/$USER/THETAGPU_TF_ENV # Add your path here
 python -m virtualenv --system-site-packages $VENV_LOCATION
 source $VENV_LOCATION/bin/activate
 python -m pip install cmake
 python -m pip install matplotlib
 python -m pip install sklearn
 ```
+If you experience SSL errors during the CMake install, you can set `export https_proxy=http://theta-proxy.tmi.alcf.anl.gov:3128` (http instead of https on the URL) and retry.
+
 In the future, you only need to reactivate the environment:
 ```
 source $VENV_LOCATION/bin/activate
