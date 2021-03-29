@@ -61,11 +61,12 @@ The following script performes a simple scaling test with the MNIST dataset and 
   ```
    You can check the test accuracy and the timing for different scales.
   
-   We prepare some submission script in ./submissions/thetagpu/qsub_*
+   We have prepared some (non-interactive) submission scripts in `./submissions/thetagpu/qsub_*`
    
-   Time for 32 epochs 
    
    **PyTorch**
+   
+   Time for 32 epochs 
    
 | GPUs | Cifar10 (s) | MNIST (s) |
 | ---- | ---------------------- | -------------------- |
