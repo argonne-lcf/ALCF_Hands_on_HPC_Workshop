@@ -31,7 +31,7 @@ except:
             return 0
         def size():
             return 1
-    hvd=Hvd; 
+    hvd=Hvd;
 
 hvd.init()
 t0 = time.time()
@@ -84,7 +84,8 @@ mnist_model = tf.keras.Sequential([
 ])
 
 # Horovod: adjust learning rate based on number of GPUs.
-opt = tf.optimizers.Adam(args.lr * hvd.size())
+scaled_lr = args.lr * hvd.size()
+opt = tf.optimizers.Adam(scaled_lr)
 
 # Horovod: add Horovod DistributedOptimizer.
 if (with_hvd):
@@ -103,17 +104,17 @@ if (with_hvd):
         # This is necessary to ensure consistent initialization of all workers when
         # training is started with random weights or restored from a checkpoint.
         hvd.callbacks.BroadcastGlobalVariablesCallback(0),
-        
+
     # Horovod: average metrics among workers at the end of every epoch.
         #
         # Note: This callback must be in the list before the ReduceLROnPlateau,
         # TensorBoard or other metrics-based callbacks.
         hvd.callbacks.MetricAverageCallback(),
-        
+
         # Horovod: using `lr = 1.0 * hvd.size()` from the very beginning leads to worse final
         # accuracy. Scale the learning rate `lr = 1.0` ---> `lr = 1.0 * hvd.size()` during
         # the first three epochs. See https://arxiv.org/abs/1706.02677 for details.
-        hvd.callbacks.LearningRateWarmupCallback(warmup_epochs=args.warmup_epochs, verbose=1),
+        hvd.callbacks.LearningRateWarmupCallback(initial_lr=scaled_lr, warmup_epochs=args.warmup_epochs, verbose=1),
     ]
 else:
     callbacks=[]
