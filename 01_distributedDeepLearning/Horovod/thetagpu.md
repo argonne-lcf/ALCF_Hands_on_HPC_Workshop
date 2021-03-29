@@ -23,7 +23,7 @@ cp -r /lus/theta-fs0/projects/SDL_Workshop/sdl_ai_workshop/01_distributedDeepLea
 
    - **For TensorFlow**
    ```bash
-   source /lus/theta-fs0/software/thetagpu/conda/tf_master/2020-11-11/mconda3/setup.sh
+   source /lus/theta-fs0/software/thetagpu/conda/tf_master/2021-03-02/mconda3/setup.sh
    ```
 
 3. Run examples on a single node
