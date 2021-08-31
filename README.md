@@ -1,6 +1,6 @@
 # ALCF: Simulation, Data, and Learning Workshop for AI
-### Dec 8 - 10, 2020
-### Agenda: https://www.alcf.anl.gov/events/2020-alcf-simulation-data-and-learning-workshop
+### October 5 - 7, 2021
+### Agenda: https://www.alcf.anl.gov/events/2021-alcf-simulation-data-and-learning-workshop
 
 The ALCF regularly hosts a simulation, data, and learning workshop to help users scale their data science workflows. This workshop focuses on AI capabilities at scale.
 
