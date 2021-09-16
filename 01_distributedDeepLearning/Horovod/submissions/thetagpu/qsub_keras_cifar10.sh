@@ -9,7 +9,8 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-source /lus/theta-fs0/software/thetagpu/conda/tf_master/2020-11-11/mconda3/setup.sh
+source /lus/theta-fs0/software/thetagpu/conda/2021-06-28/mconda3/setup.sh
+
 COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 if (( $COBALT_JOBSIZE > 1 ))
 then
