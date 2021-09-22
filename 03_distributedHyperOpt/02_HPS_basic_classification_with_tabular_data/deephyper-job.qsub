@@ -1,0 +1,13 @@
+#!/bin/bash
+#COBALT -A datascience
+#COBALT -n 1
+#COBALT -q full-node
+#COBALT -t 60
+
+
+module load ...
+
+# If you have a custom installation please uncomment the following line
+# conda activate dhgpu
+
+python model_run.py

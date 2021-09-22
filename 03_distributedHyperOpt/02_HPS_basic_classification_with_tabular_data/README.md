@@ -1,6 +1,8 @@
 # Hyperparameter search for Classification with Tabular Data
 
-In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The task is about detecting heart desease.
+In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The machine learning task is about detecting if a person has an heart desease. To do so, we will use tabular data and a binary-classification setting.
+
+To execute this tutorial it is possible to run an interactive Jupyter notebook locally or in an interactive session on ThetaGPU. For the interactive session on ThetaGPU please follow the [first section](##ssh-tunneling-for-jupyter-notebooks).
 
 ## SSH Tunneling for Jupyter Notebooks
 
@@ -34,7 +36,25 @@ $ ssh -L $PORT_NUM:localhost:8888 username@theta.alcf.anl.gov
 
 5. Navigating to `localhost:8889` (or whatever port number you chose above) on your local machine's browser should then establish a connection to the Jupyter backend!
 
+6. Finally, open the `02_HPS_basic_classification_with_tabular_data/02_HPS_basic_classification_with_tabular_data.ipynb` notebook to follow the interactive tutorial.
 
 ## Submission Script
 
-...
+Start by loading the DeepHyper module:
+
+```bash
+module load ...
+```
+
+Then submit the prepared DeepHyper job scrip:
+
+```bash
+cd 02_HPS_basic_classification_with_tabular_data/
+qsub deephyper-job.qsub
+```
+
+Once the job is over look at the results:
+
+```bash
+deephyper-analytics topk -k 3 02_HPS_basic_classification_with_tabular_data/results.csv
+```
