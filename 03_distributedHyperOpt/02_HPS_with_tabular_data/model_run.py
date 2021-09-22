@@ -1,6 +1,11 @@
+import ray
 import pandas as pd
 import tensorflow as tf
+from tensorflow.python.client import device_lib
 
+def get_available_gpus():
+    local_device_protos = device_lib.list_local_devices()
+    return [x.name for x in local_device_protos if x.device_type == "GPU"]
 
 def load_data():
     file_url = "http://storage.googleapis.com/download.tensorflow.org/data/heart.csv"
@@ -168,6 +173,14 @@ ACTIVATIONS = [
 
 if __name__ == "__main__":
 
+    n_gpus = len(get_available_gpus())
+    is_gpu_available = n_gpus > 0
+
+    if is_gpu_available:
+        print(f"{n_gpus} GPU{'s are' if n_gpus > 1 else ' is'} available.")
+    else:
+        print("No GPU available")
+
     default_config = {
         "units": 32,
         "activation": "relu",
@@ -176,7 +189,13 @@ if __name__ == "__main__":
         "batch_size": 32,
         "learning_rate": 1e-3,
     }
-    objective_default = run(default_config)
+
+    # Avoid errors when multiple processes try to access the same GPU in parallel
+    if is_gpu_available:
+        run_default = ray.remote(num_cpus=1, num_gpus=1)(run)
+    else:
+        run_default = run
+    objective_default = run_default(default_config)
     print("Accuracy Default Configuration: ", objective_default)
 
     from deephyper.problem import HpProblem

@@ -1,0 +1,9 @@
+#!/bin/bash
+#COBALT -A datascience
+#COBALT -n 1
+#COBALT -q full-node
+#COBALT -t 60
+
+conda activate dhgpu
+
+python model_run.py
