@@ -8,11 +8,7 @@
 module load conda/2021-09-22
 conda activate base
 
-jupyter notebook &
-
-# debug
-# export USER=regele
-# export HOST="thetagpu05"
+jupyter notebook | grep localhost &
 
 # User configuration
 # picking a number other than the default 8888 is recommended

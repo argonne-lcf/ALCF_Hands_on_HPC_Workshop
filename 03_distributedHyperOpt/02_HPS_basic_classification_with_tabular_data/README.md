@@ -2,59 +2,43 @@
 
 In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The machine learning task is about detecting if a person has an heart desease. To do so, we will use tabular data and a binary-classification setting.
 
-To execute this tutorial it is possible to run an interactive Jupyter notebook locally or in an interactive session on ThetaGPU. For the interactive session on ThetaGPU please follow the [first section](##ssh-tunneling-for-jupyter-notebooks).
+To execute this tutorial it is possible to run an interactive Jupyter notebook locally or in an interactive session on ThetaGPU.
 
-## SSH Tunneling for Jupyter Notebooks
+## Local execution
+
+Install DeepHyper with the `analytics` option then launch Jupyter:
+
+```console
+jupyter notebook
+```
+
+## ThetaGPU execution
 
 1. From a `thetalogin` node: `ssh thetagpusn1` to login to a ThetaGPU service node.
-2. From `thetagpusn1`, start an interactive job (make sure to note which ThetaGPU node the job gets routed to, `thetagpu21` in this example):
+2. From `thetagpusn1`, start an interactive job:
 
 ```bash
-(thetagpusn1) $ qsub -I -A datascience -n 1 -q full-node -t 01:00 --interactive
+(thetagpusn1) $ qsub -I -A datascience -n 1 -q single-gpu -t 60
 Job routed to queue "full-node".
 Wait for job 10003623 to start...
 Opening interactive session to thetagpu21
 ```
 
-3. From the ThetaGPU compute node, start a `jupyter` notebook.:
+3. From the ThetaGPU compute node, execute the `jupyter-job.qsub` script:
 
 ```bash
-(thetagpu21) $ jupyter notebook&
+(thetagpu21) $ ./jupyter-job.qsub
 ```
 
-Take note of the port number `N` that this Jupyter process starts on. By default, the port
-is 8888. But if that port is in use, or the `--port X` flag is specified, it will be
-different.
-
-4. From a new terminal (on your local machine):
+Take note of the output URL and output ssh command of the form:
 
 ```bash
-$ export PORT_NUM=8889  # port on your local machine; picking a number other than the default 8888 is recommended
-$ ssh -L $PORT_NUM:localhost:8888 username@theta.alcf.anl.gov
-(thetalogin) $ ssh -L 8888:localhost:N thetagpu21    # where N is the port number on the ThetaGPU compute node, noted in the previous step
+# URL
+http://localhost:8888/?token=df11ba29aac664173832b98d1d4b3b96ee0f050992ae6591
+# SSH Command
+ssh -tt -L 8888:localhost:8888 -L 8265:localhost:8265 regele@theta.alcf.anl.gov "ssh -L 8888:localhost:8888 -L 8265:localhost:8265 thetagpu05"
 ```
 
-5. Navigating to `localhost:8889` (or whatever port number you chose above) on your local machine's browser should then establish a connection to the Jupyter backend!
+4. Leave the iteractive session open and in a new terminal window of your laptop execute the SSH command to link local port to the ThetaGPU compute node.
 
-6. Finally, open the `02_HPS_basic_classification_with_tabular_data/02_HPS_basic_classification_with_tabular_data.ipynb` notebook to follow the interactive tutorial.
-
-## Submission Script
-
-Start by loading the DeepHyper module:
-
-```bash
-module load ...
-```
-
-Then submit the prepared DeepHyper job scrip:
-
-```bash
-cd 02_HPS_basic_classification_with_tabular_data/
-qsub deephyper-job.qsub
-```
-
-Once the job is over look at the results:
-
-```bash
-deephyper-analytics topk -k 3 02_HPS_basic_classification_with_tabular_data/results.csv
-```
+5. Open the Jupyter URL in a local browser.
