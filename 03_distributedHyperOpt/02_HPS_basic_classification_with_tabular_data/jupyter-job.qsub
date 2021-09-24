@@ -1,9 +1,8 @@
 #!/bin/bash
 #COBALT -A datascience
 #COBALT -n 1
-#COBALT -q single-node
+#COBALT -q single-gpu
 #COBALT -t 60
-#COBALT -I
 
 . /etc/profile
 module load conda/2021-09-22
@@ -22,4 +21,4 @@ export JUPYTER_PORT=8888
 export LOCAL_PORT=8888
 
 printf "\e[0;31mExecute the following command from your laptop: \e[m \n"
-printf "\e[0;32mssh -tt -L $LOCAL_PORT:localhost:8888 $USER@theta.alcf.anl.gov \"ssh -L 8888:localhost:$JUPYTER_PORT $HOST\" \e[m\n"
+printf "\e[0;32mssh -tt -L $LOCAL_PORT:localhost:8888 -L 8265:localhost:8265 $USER@theta.alcf.anl.gov \"ssh -L 8888:localhost:$JUPYTER_PORT -L 8265:localhost:8265 $HOSTNAME\"\e[m\n"
