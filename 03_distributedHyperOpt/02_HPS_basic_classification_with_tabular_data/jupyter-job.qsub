@@ -1,0 +1,25 @@
+#!/bin/bash
+#COBALT -A datascience
+#COBALT -n 1
+#COBALT -q single-node
+#COBALT -t 60
+#COBALT -I
+
+. /etc/profile
+module load conda/2021-09-22
+conda activate base
+
+jupyter notebook &
+
+# debug
+# export USER=regele
+# export HOST="thetagpu05"
+
+# User configuration
+# picking a number other than the default 8888 is recommended
+export JUPYTER_PORT=8888
+# port on your local machine
+export LOCAL_PORT=8888
+
+printf "\e[0;31mExecute the following command from your laptop: \e[m \n"
+printf "\e[0;32mssh -tt -L $LOCAL_PORT:localhost:8888 $USER@theta.alcf.anl.gov \"ssh -L 8888:localhost:$JUPYTER_PORT $HOST\" \e[m\n"
