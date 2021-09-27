@@ -6,9 +6,12 @@
 
 . /etc/profile
 module load conda/2021-09-22
-conda activate base
+conda activate /lus/grand/projects/datascience/regele/thetagpu/sdl_workshop/dhgpu
+#conda activate base
 
-jupyter notebook | grep localhost &
+jupyter notebook &
+
+sleep 10
 
 # User configuration
 # picking a number other than the default 8888 is recommended
