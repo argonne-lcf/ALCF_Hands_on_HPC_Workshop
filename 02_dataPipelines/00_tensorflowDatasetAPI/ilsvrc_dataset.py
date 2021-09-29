@@ -41,8 +41,8 @@ def get_datasets(config):
    train_filelist = config['data']['train_filelist']
    test_filelist = config['data']['test_filelist']
 
-   assert os.path.exists(train_filelist), f'{train_filelist} not found'
-   assert os.path.exists(test_filelist), f'{test_filelist} not found'
+   assert os.path.exists(train_filelist)
+   assert os.path.exists(test_filelist)
 
    # this function uses that class label from the filename path
    # and builds a map from the string labels like the above "n02537312"
