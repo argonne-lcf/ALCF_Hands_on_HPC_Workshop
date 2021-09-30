@@ -1,6 +1,6 @@
 # Hyperparameter search for Classification with Tabular Data
 
-In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The machine learning task is about detecting if a person has an heart desease. To do so, we will use tabular data and a binary-classification setting.
+In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The machine learning task is about learning and understanding the uncertainties from synthetic data.
 
 To execute this tutorial it is possible to run an interactive Jupyter notebook locally or in an interactive session on ThetaGPU.
 

@@ -12,11 +12,14 @@ In today's discussions, we will be introducing you to HPS for arbitrary data-dri
 
 ## Tutorials
 
+Two tutorials are presented.
+
+1. Hyperparamete Search for Classification with Tabular Data
+2. From Neural Architecture Search to Automated Deep Ensemble with Uncertainty Quantification
 
 ## What else?
 
 While the hands-on will be covering solely HPS today, users should also be aware of **NAS**: DeepHypers neural architecture search framework. NAS has been used to _discover_ novel neural networks for problems as diverse as predicting cancer drug synergy [2] using data from the National Cancer Institute (NCI) and for forecasting the global sea-surface temperature using satellite data from NOAA [3]. NAS interprets a neural network as a directed acyclic graph with its various nodes representing potential structural choices such as whether a skip connection should be used or if a a certain nonlinear activation should be applied. Users are encouraged to visit `https://deephyper.readthedocs.io/en/latest/tutorials/nas.html` for examples and tutorials.
-
 
 ## References
 

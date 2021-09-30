@@ -1,12 +1,6 @@
 #!/bin/bash
-#COBALT -A datascience
-#COBALT -n 1
-#COBALT -q single-gpu
-#COBALT -t 60
 
-. /etc/profile
-module load conda/2021-09-22
-conda activate base
+source init-dh-environment.sh
 
 jupyter notebook &
 
