@@ -111,8 +111,7 @@ for ep in range(args.epochs):
         loss_value = training_step(images, labels, (batch == 0) and (ep == 0))
         if hvd.rank() == 0 and batch % 10 == 0: 
             checkpoint.save(checkpoint_dir)
-            print('[%d] Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (hvd.rank(), ep, batch, nstep, loss_value))
-    print('[%d] Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (hvd.rank(), ep, batch, nstep, loss_value))
+        print('[%d] Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (hvd.rank(), ep, batch, nstep, loss_value))
 
 # Horovod: save checkpoints only on worker 0 to prevent other workers from
 # corrupting it.
