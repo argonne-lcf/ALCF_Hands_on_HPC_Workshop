@@ -2,24 +2,38 @@
 
 # Scalable Neural Architecture and Hyperparameter Search for Deep Neural Networks
 
-DeepHyper is a scalable automated machine learning (AutoML) package for developing deep neural networks for scientific applications. It comprises two components:
+DeepHyper is a distributed machine learning (AutoML) package for automating the developement of deep neural networks for scientific applications. It can run on a single laptop as well as on 1,000 of nodes.
 
-1. Hyperparameter Search (HPS): optimizing hyperparameters for a given reference model
+It comprises different tools such as:
 
-2. Neural Architecture Search (NAS): fully-automated search for high-performing deep neural network architectures
+* Optimizing hyper-parameters for a given black-box function.
+* Neural architecture search to discover high-performing deep neural network with variable operations and connections.
+* Automated machine learning, to easily experiment many learning algorithms from Scikit-Learn.
 
-In today's discussions, we will be introducing you to HPS for arbitrary data-driven modeling tasks ranging from simple linear and tree-based models to full-blown deep learning frameworks.
+DeepHyper provides an infrastructure that targets experimental research in NAS and HPS methods, scalability, and portability across diverse infrastructures (cloud, laptop, supercomputers). It comprises three main modules:
+
+* `deephyper.problem`: Tools for defining neural architecture and hyper-parameter search problems.
+* `deephyper.evaluator`: A simple interface to dispatch model evaluation tasks. Implementations range from subprocess for laptop experiments to ray for large-scale runs on HPC systems.
+* `deephyper.search`: Search methods for NAS and HPS. By extending the generic Search class, one can easily add new NAS or HPS methods to DeepHyper.
+
+Today, we will be introducing you to some of these features.
 
 ## Tutorials
 
-Two tutorials are presented.
+Two tutorials are presented during this workshop:
 
-1. Hyperparamete Search for Classification with Tabular Data
+1. Hyperparameter Search for Classification with Tabular Data
 2. From Neural Architecture Search to Automated Deep Ensemble with Uncertainty Quantification
+
+The first one is very light in computations, it can be executed in a few minutes from a local laptop and can also be tested on the ThetaGPU system. The second tutorial is more heavy in computation and provides some of our latest research.
 
 ## What else?
 
-While the hands-on will be covering solely HPS today, users should also be aware of **NAS**: DeepHypers neural architecture search framework. NAS has been used to _discover_ novel neural networks for problems as diverse as predicting cancer drug synergy [2] using data from the National Cancer Institute (NCI) and for forecasting the global sea-surface temperature using satellite data from NOAA [3]. NAS interprets a neural network as a directed acyclic graph with its various nodes representing potential structural choices such as whether a skip connection should be used or if a a certain nonlinear activation should be applied. Users are encouraged to visit `https://deephyper.readthedocs.io/en/latest/tutorials/nas.html` for examples and tutorials.
+While the hands-on will be covering a few features on small scale problems, users should also be aware of the different applications on which DeepHyper was used. For example, neural architecture search has been used to _discover_ novel neural networks for problems as diverse as predicting cancer drug synergy [2] using data from the National Cancer Institute (NCI) and for forecasting the global sea-surface temperature using satellite data from NOAA [3].
+
+The [DeepHyper documentation](https://deephyper.readthedocs.io/) can also be accessed to learn more about the software.
+
+Do not hesitate to contact us and join our Slack workspace if you need more guidance.
 
 ## References
 

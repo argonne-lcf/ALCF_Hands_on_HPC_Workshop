@@ -1,4 +1,4 @@
-# Hyperparameter search for Classification with Tabular Data
+# Hyperparameter Search for Classification with Tabular Data
 
 In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The machine learning task is about detecting if a person has an heart desease. To do so, we will use tabular data and a binary-classification setting.
 
@@ -39,6 +39,6 @@ http://localhost:8888/?token=df11ba29aac664173832b98d1d4b3b96ee0f050992ae6591
 ssh -tt -L 8888:localhost:8888 -L 8265:localhost:8265 regele@theta.alcf.anl.gov "ssh -L 8888:localhost:8888 -L 8265:localhost:8265 thetagpu05"
 ```
 
-4. Leave the iteractive session open and in a new terminal window of your laptop execute the SSH command to link local port to the ThetaGPU compute node.
+4. Leave the interactive session open and in a new terminal window of your laptop execute the SSH command to link local port to the ThetaGPU compute node.
 
 5. Open the Jupyter URL in a local browser.

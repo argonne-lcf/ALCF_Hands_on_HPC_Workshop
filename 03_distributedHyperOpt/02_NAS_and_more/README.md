@@ -1,6 +1,6 @@
-# Hyperparameter search for Classification with Tabular Data
+# From Neural Architecture Search to Automated Deep Ensemble with Uncertainty Quantification
 
-In this tutorial we will present how to run an hyperparameter search with DeepHyper on the **ThetaGPU** system. The machine learning task is about learning and understanding the uncertainties from synthetic data.
+In this tutorial we will present how to run neural architecture search, joint hyperparameter and neural architecture search, and deep ensemble with DeepHyper on the **ThetaGPU** system. The machine learning task is about learning and understanding the uncertainties from synthetic data.
 
 To execute this tutorial it is possible to run an interactive Jupyter notebook locally or in an interactive session on ThetaGPU.
 
@@ -18,7 +18,7 @@ jupyter notebook
 2. From `thetagpusn1`, start an interactive job:
 
 ```bash
-(thetagpusn1) $ qsub -I -A datascience -n 1 -q single-gpu -t 60
+(thetagpusn1) $ qsub -I -A datascience -n 1 -q full-node -t 120
 Job routed to queue "full-node".
 Wait for job 10003623 to start...
 Opening interactive session to thetagpu21
@@ -39,6 +39,6 @@ http://localhost:8888/?token=df11ba29aac664173832b98d1d4b3b96ee0f050992ae6591
 ssh -tt -L 8888:localhost:8888 -L 8265:localhost:8265 regele@theta.alcf.anl.gov "ssh -L 8888:localhost:8888 -L 8265:localhost:8265 thetagpu05"
 ```
 
-4. Leave the iteractive session open and in a new terminal window of your laptop execute the SSH command to link local port to the ThetaGPU compute node.
+4. Leave the interactive session open and in a new terminal window of your laptop execute the SSH command to link local port to the ThetaGPU compute node.
 
 5. Open the Jupyter URL in a local browser.
