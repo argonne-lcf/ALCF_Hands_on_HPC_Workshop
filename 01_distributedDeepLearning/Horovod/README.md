@@ -2,16 +2,15 @@
 Led by Huihuo Zheng from ALCF (<huihuo.zheng@anl.gov>)
 
 **Goal of this tutorial**
-* Know how to run jobs on Theta / ThetaGPU
-* Get familiar with the software frameworks on Theta / ThetaGPU
-* Understand data parallelism (scaling efficiency, warmup, etc)
+* Understand model parallelism and data parallelism
 * Know how to modify your code with Horovod
+* Know how to run distributed training on supercomputer
+* Understand data parallelism (scaling efficiency, warmup, etc)
 
-**Table of contents**
-* Model parallelism and Data Parallelism
-* Horovod Data Parallel Framework
-* How to instrument TensorFlow or PyTorch codes with Horovod
-* Hands on examples
+## Introduction to distributed Deep Learning
+The goal for train the model at large scale is to reduce the time-to-solution to reasonable amount. By using training the model in parallel, it reduces the total training time from weeks to minutes.
+![acc](./images/resnet50.png)
+
 
 ## Model Parallelism and Data Parallelism
 
@@ -22,13 +21,23 @@ Led by Huihuo Zheng from ALCF (<huihuo.zheng@anl.gov>)
 
 Our recent presentation about the data parallel training can be found here: https://youtu.be/930yrXjNkgM
 
-## Horovod Data Parallel Frameworks
+## Horovod Data Parallel Framework
 ![Horovod](./images/Horovod.png)
 Reference: https://horovod.readthedocs.io/en/stable/
 1. Sergeev, A., Del Balso, M. (2017) Meet Horovod: Uber’s Open Source Distributed Deep Learning Framework for TensorFlow. Retrieved from https://eng.uber.com/horovod/
 2. Sergeev, A. (2017) Horovod - Distributed TensorFlow Made Easy. Retrieved from https://www.slideshare.net/AlexanderSergeev4/horovod-distributed-tensorflow-made-easy
 
 3. Sergeev, A., Del Balso, M. (2018) Horovod: fast and easy distributed deep learning in TensorFlow. Retrieved from arXiv:1802.05799
+
+**Steps to modify your code with Horovod**:
+  1. Initialize Horovod
+  2. Pin GPU to each process
+  3. Scale the learning rate
+  4. Set distributed optimizer / gradient tape
+  5. Broadcast the model & optimizer parameters to other rank
+  6. Checking pointing on rank 0
+  7. Adjusting dataset loading: number of steps (or batches) per epoch, dataset sharding, etc.
+
 
 ## TensorFlow with Horovod
 1) **Initialize Horovod**
