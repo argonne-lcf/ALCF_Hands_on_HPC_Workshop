@@ -9,7 +9,9 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-source /lus/theta-fs0/software/thetagpu/conda/pt_master/2020-11-25/mconda3/setup.sh
+. /etc/profile.d/z00_lmod.sh
+module load conda
+conda activate
 
 COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 

@@ -17,9 +17,11 @@ cp -r /lus/theta-fs0/projects/SDL_Workshop/sdl_ai_workshop/01_distributedDeepLea
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
    ```bash
-   source /lus/theta-fs0/software/thetagpu/conda/2021-06-28/mconda3/setup.sh 
+   . /etc/profile.d/z00_lmod.sh
+   module load conda
+   conda activate
    ```
-
+   Notice that the first line is needed if you are setting up the environment in a submission script. It is not needed if you are running in interactive mode. 
 3. Run examples on a single node
    - PyTorch MNIST - 8 GPUs
      ```bash
