@@ -199,12 +199,17 @@ if __name__ == '__main__':
                        help='log output directory',default='logdir')
     parser.add_argument('-n','--nsteps', dest='nsteps',
                        help='number of steps to run',default=10,type=int)
-    parser.add_argument('-t', '--nthreads',help='number of threads',default=8,type=int)
+    parser.add_argument('-t', '--nthreads',help='number of threads, if set overrides config file',default=0,type=int)
     args = parser.parse_args()
 
     # parse config file
     config = json.load(open(args.config_filename))
-    config['hvd'] = None
+    if args.nthreads > 0:
+        config['data']['num_parallel_readers'] = args.nthreads
+
+    logger.info('configruation file settings: \n %s',json.dumps(config,indent=4, sort_keys=True))
+
+    # these would be set by horovod if run in a parallel setup
     rank = 0
     num_ranks = 1
 
