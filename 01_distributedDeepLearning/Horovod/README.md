@@ -76,6 +76,7 @@ This is to make sure that all the workers will have the same starting point.
 hvd.broadcast_variables(model.variables, root_rank=0)
 hvd.broadcast_variables(opt.variables(), root_rank=0)
 ```
+**Note: broadcast should be done after the first gradient step to ensure optimizer initialization.**
 
 6) **Checkpointing on root rank**
 
