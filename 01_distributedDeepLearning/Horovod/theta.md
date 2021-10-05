@@ -3,13 +3,9 @@
 1. SSH to Theta and request an interactive session on Theta on the Theta login node:
 ```bash
 ssh user@theta.alcf.anl.gov
-qsub -n 4 -q training -A SDL_Workshop -I -t 1:00:00
-```
-
-Copy the dataset to your working directory in case there is any dataset issue.
-```
-rm -r dl_ai_workshop/01_distributedDeepLearning/Horovod/datasets # modify your path
-cp -r /lus/theta-fs0/projects/SDL_Workshop/sdl_ai_workshop/01_distributedDeepLearning/Horovod/datasets sdl_ai_workshop/01_distributedDeepLearning/Horovod/
+# prepare dataset
+sh prepare_dataset.sh
+qsub -n 4 -q theta-knl -A SDL_Workshop -I -t 1:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
@@ -39,11 +35,11 @@ module load datascience/tensorflow-2.3
     Note, this requires a new job allocation to a separate job queue. The following script performes a simple scaling test with the MNIST dataset
 	* PyTorch model -  [submissions/theta/qsub_pytorch_mnist_scale.sh](submissions/theta/qsub_pytorch_mnist_scale.sh):
     ```bash
-    qsub -O pytorch_mnist_scale -n 128 -q training -A SDL_Workshop submissions/theta/qsub_pytorch_mnist_scale.sh
+    qsub -O pytorch_mnist_scale -n 128 -q theta-knl -A SDL_Workshop submissions/theta/qsub_pytorch_mnist_scale.sh
     ```
 	* TensorFlow with Keras API - [submissions/theta/qsub_keras_mnist_scale.sh](submissions/theta/qsub_keras_mnist_scale.sh): 
 	```bash
-    qsub -O pytorch_mnist_scale -n 128 -q training -A SDL_Workshop submissions/theta/qsub_keras_mnist_scale.sh
+    qsub -O pytorch_mnist_scale -n 128 -q theta-knl -A SDL_Workshop submissions/theta/qsub_keras_mnist_scale.sh
     ```
 
     You can check the test accuracy and the timing for different scales. 

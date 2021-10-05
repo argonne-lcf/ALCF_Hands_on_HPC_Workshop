@@ -3,16 +3,13 @@
 1. Request an interactive session on ThetaGPU:
 ```bash
 # Login to theta
-ssh -CY user@theta.alcf.anl.gov 
+ssh -CY user@theta.alcf.anl.gov
+# prepare dataset
+sh prepare_dataset.sh
 # Login to ThetaGPU login node
 ssh -CY thetagpusn1 
 # Requesting 1 node 
-qsub -n 1 -q training -A SDL_Workshop -I -t 2:00:00
-```
-Copy the datasets to your local working directory 
-```
-rm -r dl_ai_workshop/01_distributedDeepLearning/Horovod/datasets # modify your path
-cp -r /lus/theta-fs0/projects/SDL_Workshop/sdl_ai_workshop/01_distributedDeepLearning/Horovod/datasets sdl_ai_workshop/01_distributedDeepLearning/Horovod/
+qsub -n 1 -q theta-gpu -A SDL_Workshop -I -t 2:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
