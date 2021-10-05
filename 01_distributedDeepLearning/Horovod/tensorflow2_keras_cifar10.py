@@ -137,43 +137,6 @@ cifar10_model = tf.keras.Sequential([
 ])
 '''
 
-#cifar10_model = Sequential()
-
-#cifar10_model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
-#cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
-#cifar10_model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
-#cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
-#cifar10_model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
-#cifar10_model.add(MaxPooling2D(pool_size=(2, 2)))
-#cifar10_model.add(Flatten())
-#cifar10_model.add(Dense(256, activation='relu'))
-#cifar10_model.add(Dense(128, activation='relu'))
-#cifar10_model.add(Dense(num_classes, activation='softmax'))
-
-#cifar10_model = tf.keras.applications.ResNet50(include_top=False,
-#    input_tensor=None, input_shape=(32, 32, 3),
-#    classes=10)
-
-'''
-cifar10_model = tf.keras.Sequential(
-    [
-        tf.keras.layers.Conv2D(filters=96,kernel_size=(3,3),strides=(4,4),input_shape=input_shape, activation='relu'), 
-        tf.keras.layers.MaxPooling2D(pool_size=(2,2),strides=(2,2)), 
-        tf.keras.layers.Conv2D(256,(5,5),padding='same',activation='relu'), 
-        tf.keras.layers.MaxPooling2D(pool_size=(2,2),strides=(2,2)), 
-        tf.keras.layers.Conv2D(384,(3,3),padding='same',activation='relu'), 
-        tf.keras.layers.Conv2D(384,(3,3),padding='same',activation='relu'), 
-        tf.keras.layers.Conv2D(256,(3,3),padding='same',activation='relu'), 
-        tf.keras.layers.MaxPooling2D(pool_size=(2,2),strides=(2,2)), 
-        tf.keras.layers.Flatten(), 
-        tf.keras.layers.Dense(4096, activation='relu'), 
-        tf.keras.layers.Dropout(0.4), 
-        tf.keras.layers.Dense(4096, activation='relu'), 
-        tf.keras.layers.Dropout(0.4), 
-        tf.keras.layers.Dense(num_classes,activation='softmax'), ]
-)
-'''
-
 # Horovod: Specify `experimental_run_tf_function=False` to ensure TensorFlow
 # uses hvd.DistributedOptimizer() to compute gradients.
 cifar10_model = tf.keras.applications.resnet50.ResNet50(include_top=True,
