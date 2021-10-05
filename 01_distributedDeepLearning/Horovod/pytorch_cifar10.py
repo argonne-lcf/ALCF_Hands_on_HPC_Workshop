@@ -133,8 +133,8 @@ compression = hvd.Compression.fp16 if args.fp16_allreduce else hvd.Compression.n
 
 # Horovod: wrap optimizer with DistributedOptimizer.
 optimizer = hvd.DistributedOptimizer(optimizer,
-									 named_parameters=model.named_parameters(),
-									 compression=compression)
+				     named_parameters=model.named_parameters(),
+				     compression=compression)
 
 
 def train(epoch):
@@ -204,8 +204,13 @@ def test():
 
 t0 = time.time()
 for epoch in range(1, args.epochs + 1):
+    tt0 = time.time()
     train(epoch)
     test()
+    tt1 = time.time()
+    if hvd.rank()==0:
+        print("Epoch - %d time: %s seconds" %(epoch, tt1 - tt0))
+    
 t1 = time.time()
 if hvd.rank()==0:
     print("Total training time: %s seconds" %(t1 - t0))

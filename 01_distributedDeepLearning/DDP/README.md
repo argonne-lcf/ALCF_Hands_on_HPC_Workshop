@@ -1,4 +1,4 @@
-# Distributed training with PyTorch DDT
+# Distributed training with PyTorch DDP
 
 Author: Corey Adams corey.adams@anl.gov
 

@@ -15,7 +15,6 @@ import torch.utils.data.distributed
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
-print("Starting Script")
 # Set global variables for rank, local_rank, world size
 try:
     from mpi4py import MPI
@@ -29,7 +28,6 @@ try:
     # Pytorch will look for these:
     os.environ["RANK"] = str(rank)
     os.environ["WORLD_SIZE"] = str(size)
-    os.environ['CUDA_VISIBLE_DEVICES'] = str(local_rank)
 
     # It will want the master address too, which we'll broadcast:
     if rank == 0:
@@ -93,7 +91,7 @@ if with_ddp:
 
 if args.device == 'gpu':
     # DDP: pin GPU to local rank.
-    # torch.cuda.set_device(int(local_rank))
+    torch.cuda.set_device(int(local_rank))
     torch.cuda.manual_seed(args.seed)
 
 if (args.num_threads!=0):

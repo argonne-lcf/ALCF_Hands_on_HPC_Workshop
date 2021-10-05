@@ -1,0 +1,26 @@
+#!/bin/bash -l
+#COBALT -n 1
+#COBALT -t 0:20:00 -A SDL_Workshop
+#COBALT -q training-gpu
+#COBALT --attrs=pubnet
+#COBALT -O mnist_1node_8gpus
+
+#submisstion script for running pytorch_mnist with DDP
+
+echo "Running Cobalt Job $COBALT_JOBID."
+
+module load conda
+conda activate
+
+
+N_NODES=$(cat $COBALT_NODEFILE | wc -l)
+RANKS_PER_NODE=8
+let N_RANKS=${RANKS_PER_NODE}*${N_NODES}
+
+echo "Current Directory: "
+pwd
+
+
+# Here's the MPI Command, using a heredoc to encapsulate the venv setup:
+mpirun -n $N_RANKS -hostfile ${COBALT_NODEFILE} -map-by node \
+python pytorch_mnist.py --device gpu --epochs 32

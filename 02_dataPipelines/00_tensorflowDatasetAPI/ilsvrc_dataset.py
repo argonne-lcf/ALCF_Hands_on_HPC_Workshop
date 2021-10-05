@@ -16,7 +16,7 @@
 # questions? Taylor Childers, jchilders@anl.gov
 
 import tensorflow as tf
-import logging,os,glob
+import logging,os,glob,time
 import numpy as np
 import xml.etree.ElementTree as ET
 logger = logging.getLogger(__name__)
@@ -41,8 +41,8 @@ def get_datasets(config):
    train_filelist = config['data']['train_filelist']
    test_filelist = config['data']['test_filelist']
 
-   assert os.path.exists(train_filelist), f'{train_filelist} not found'
-   assert os.path.exists(test_filelist), f'{test_filelist} not found'
+   assert os.path.exists(train_filelist)
+   assert os.path.exists(test_filelist)
 
    # this function uses that class label from the filename path
    # and builds a map from the string labels like the above "n02537312"
@@ -259,6 +259,7 @@ if __name__ == '__main__':
          
          logger.info('batch_number = %s input shape = %s    labels shape = %s',i,inputs.shape,labels.shape)
          logger.info('batch_number = %s labels = %s',i,labels)
+         time.sleep(1)
       # measure performance in images per second
       duration = time.time() - start
       images = config['data']['batch_size'] * args.nsteps

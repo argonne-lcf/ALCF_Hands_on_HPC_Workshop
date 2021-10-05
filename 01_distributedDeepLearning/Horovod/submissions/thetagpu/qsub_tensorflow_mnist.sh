@@ -1,6 +1,6 @@
 #!/bin/bash
 #COBALT -n 2
-#COBALT -t 1:00:00 -q full-node
+#COBALT -t 1:00:00 -q training-gpu
 #COBALT -A SDL_Workshop -O results/thetagpu/$jobid.tensorflow2_mnist
 
 #submisstion script for running tensorflow_mnist with horovod
@@ -9,7 +9,9 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-source /lus/theta-fs0/software/thetagpu/conda/tf_master/2020-11-11/mconda3/setup.sh
+. /etc/profile.d/z00_lmod.sh
+module load conda
+conda activate
 
 COBALT_JOBSIZE=$(cat $COBALT_NODEFILE | wc -l)
 
