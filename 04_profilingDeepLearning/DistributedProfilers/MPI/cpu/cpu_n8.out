@@ -1,0 +1,85 @@
+[1633396878.050752] [thetagpu24:184448:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.407655] [thetagpu24:184447:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.569279] [thetagpu24:184449:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.671663] [thetagpu24:184452:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.671714] [thetagpu24:184453:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.671980] [thetagpu24:184451:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.672032] [thetagpu24:184450:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+[1633396878.672347] [thetagpu24:184446:0]    ucp_context.c:735  UCX  WARN  transports 'cuda_copy','cuda_ipc' are not available, please use one or more of: cma, dc, dc_mlx5, dc_x, ib, knem, mm, posix, rc, rc_mlx5, rc_v, rc_verbs, rc_x, self, shm, sm, sysv, tcp, ud, ud_mlx5, ud_v, ud_verbs, ud_x
+2021-10-04 20:21:19.791302: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.791357: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.791364: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.791433: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.791453: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.791459: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.791863: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.793086: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.793138: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.793209: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.793284: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.793303: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.793309: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.793684: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.795169: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.795229: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.795239: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.795314: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.795335: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.795360: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.795863: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.796811: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.796867: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.796893: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.796959: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.796979: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.797005: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.797403: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.800708: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.800764: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.800805: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.800868: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.800885: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.800906: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.800911: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.800919: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.800926: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.800998: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.801000: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.801019: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.801067: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.801092: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.801135: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.801155: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-10-04 20:21:19.801201: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.801213: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: thetagpu24
+2021-10-04 20:21:19.801223: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.801229: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.801220: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: thetagpu24
+2021-10-04 20:21:19.801290: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 450.142.0
+2021-10-04 20:21:19.801312: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 450.142.0
+2021-10-04 20:21:19.801318: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 450.142.0
+2021-10-04 20:21:19.801374: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.801522: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.801616: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:19.801770: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:21:21.879899: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.882610: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.886702: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.892053: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.905057: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.905582: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.911207: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:21:21.914462: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+Epoch: 0 	Loss: 58.065456 	Time/epoch: 5.63
+Epoch: 1 	Loss: 17.045328 	Time/epoch: 3.2
+Epoch: 2 	Loss: 14.354186 	Time/epoch: 3.23
+Epoch: 3 	Loss: 13.919571 	Time/epoch: 3.29
+Average epoch training time: 3.26 seconds

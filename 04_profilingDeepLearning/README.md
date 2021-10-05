@@ -1,17 +1,17 @@
 # Profiling Deep Learning frameworks
-Led by: Huihuo Zheng, Murali Emani, Taylor Childers
+Led by: Murali Emani, Denis Boyda
 
 ## Communication profiling
 We introduce two profiling tools for understanding the communication in distributed deep learning. 
 
-* MPI flat profiling using mpitrace [MPI/README.md](MPI/README.md)
+* [MPI flat profiling using mpitrace](DistributedProfilers/MPI/README.md)
   To turn on the profiling, one has to set the following environment variable ```LD_PRELOAD```. 
   ```
   export LD_PRELOAD=/lus/theta-fs0/software/datascience/thetagpu/hpctw/lib/libmpitrace.so
   ```
   Then run the application as usual. MPI profiling results will be generated after the run finishes `mpi_profile.XXXX.[rank_id]`. 
 
-* Horovod timeline [HorovodTimeline/README.md](HorovodTimeline/README.md)
+* [Horovod timeline](DistributedProfilers/HorovodTimeline/README.md)
   To perform Horovod timeline analysis, one has to set the environment variable ```HOROVOD_TIMELINE``` which specifies the file for the output. 
   ```
   export HOROVOD_TIMELINE=timeline.json

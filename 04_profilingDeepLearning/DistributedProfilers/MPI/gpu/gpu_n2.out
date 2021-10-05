@@ -1,0 +1,23 @@
+2021-10-04 20:00:11.805957: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:00:11.807564: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 20:00:12.394040: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 0, name: A100-SXM4-40GB, pci bus id: 0000:07:00.0, compute capability: 8.0
+2021-10-04 20:00:12.407434: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 1, name: A100-SXM4-40GB, pci bus id: 0000:0f:00.0, compute capability: 8.0
+2021-10-04 20:00:14.713967: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:00:15.155875: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 20:00:15.439646: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-04 20:00:15.954804: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-04 20:00:17.256320: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+2021-10-04 20:00:17.513858: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+Epoch: 0 	Loss: 127.471634 	Time/epoch: 7.33
+Epoch: 1 	Loss: 51.819202 	Time/epoch: 1.26
+Epoch: 2 	Loss: 39.196053 	Time/epoch: 1.23
+Epoch: 3 	Loss: 31.161211 	Time/epoch: 1.15
+Epoch: 4 	Loss: 28.799097 	Time/epoch: 1.19
+Epoch: 5 	Loss: 24.163507 	Time/epoch: 1.19
+Epoch: 6 	Loss: 20.842123 	Time/epoch: 1.2
+Epoch: 7 	Loss: 19.424124 	Time/epoch: 1.18
+Epoch: 8 	Loss: 19.640574 	Time/epoch: 1.2
+Epoch: 9 	Loss: 16.514265 	Time/epoch: 1.17
+Average epoch training time: 1.19 seconds
