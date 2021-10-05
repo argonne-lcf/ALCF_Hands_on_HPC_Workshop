@@ -1,0 +1,24 @@
+[thetagpu22:2518395] Warning: could not find environment variable "PYTHONPATH"
+2021-10-05 10:49:08.951842: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-05 10:49:08.976600: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-05 10:49:09.633129: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 1, name: A100-SXM4-40GB, pci bus id: 0000:0f:00.0, compute capability: 8.0
+2021-10-05 10:49:09.691371: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 0, name: A100-SXM4-40GB, pci bus id: 0000:07:00.0, compute capability: 8.0
+2021-10-05 10:49:12.493932: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-05 10:49:12.808497: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-05 10:49:13.388999: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-05 10:49:13.809806: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-05 10:49:15.288834: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+2021-10-05 10:49:15.928986: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+Epoch: 0 	Loss: 120.964 	Time/epoch: 9.96
+Epoch: 1 	Loss: 51.571 	Time/epoch: 2.37
+Epoch: 2 	Loss: 40.765 	Time/epoch: 2.38
+Epoch: 3 	Loss: 32.815 	Time/epoch: 2.29
+Epoch: 4 	Loss: 29.601 	Time/epoch: 2.34
+Epoch: 5 	Loss: 25.198 	Time/epoch: 2.37
+Epoch: 6 	Loss: 23.119 	Time/epoch: 2.36
+Epoch: 7 	Loss: 19.889 	Time/epoch: 2.33
+Epoch: 8 	Loss: 19.480 	Time/epoch: 2.67
+Epoch: 9 	Loss: 17.344 	Time/epoch: 2.44
+Average epoch training time: 2.4 seconds

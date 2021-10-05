@@ -1,0 +1,63 @@
+Data for MPI rank 0 of 8:
+Times and statistics from MPI_Init() to MPI_Finalize().
+-----------------------------------------------------------------------
+MPI Routine                        #calls     avg. bytes      time(sec)
+-----------------------------------------------------------------------
+MPI_Comm_rank                           5            0.0          0.000
+MPI_Comm_size                           3            0.0          0.000
+MPI_Bcast                              23          251.8          0.000
+MPI_Barrier                             1            0.0          0.090
+MPI_Allreduce                        9500            8.0          6.825
+MPI_Gather                             11            4.0          0.000
+MPI_Gatherv                            11            0.0          0.000
+MPI_Allgather                           2            4.0          0.000
+-----------------------------------------------------------------
+total communication time = 6.916 seconds.
+total elapsed time       = 15.692 seconds.
+user cpu time            = 14.231 seconds.
+system time              = 2.421 seconds.
+max resident set size    = 4192.230 MBytes.
+
+Rank 2 reported the largest memory utilization : 4196.71 MBytes
+Rank 5 reported the largest elapsed time : 15.82 sec
+
+-----------------------------------------------------------------
+Message size distributions:
+
+MPI_Bcast                 #calls    avg. bytes      time(sec)
+                              11           4.0          0.000
+                               7          25.0          0.000
+                               1         128.0          0.000
+                               1         185.0          0.000
+                               1         497.0          0.000
+                               1        1225.0          0.000
+                               1        3537.0          0.000
+
+MPI_Allreduce             #calls    avg. bytes      time(sec)
+                            9500           8.0          6.825
+
+MPI_Gather                #calls    avg. bytes      time(sec)
+                              11           4.0          0.000
+
+MPI_Allgather             #calls    avg. bytes      time(sec)
+                               2           4.0          0.000
+
+-----------------------------------------------------------------
+
+Communication summary for all tasks:
+
+  minimum communication time = 3.812 sec for task 3
+  median  communication time = 4.779 sec for task 7
+  maximum communication time = 7.195 sec for task 2
+
+
+MPI timing summary for all ranks:
+taskid       hostname     comm(s)  elapsed(s)     user(s)   system(s)    size(MB)    switches
+     0     thetagpu19       6.92       15.69       14.23        2.42     4192.23       42249
+     1     thetagpu19       4.24       15.81       11.46        2.57     4191.21       47138
+     2     thetagpu19       7.20       15.81       14.35        2.66     4196.71       43811
+     3     thetagpu19       3.81       15.81       11.16        2.41     4187.32       42065
+     4     thetagpu19       6.88       15.81       14.28        2.38     4187.19       40663
+     5     thetagpu19       4.30       15.82       11.65        2.53     4189.69       48213
+     6     thetagpu19       6.81       15.81       14.26        2.32     4193.04       38873
+     7     thetagpu19       4.78       15.69       11.92        2.56     4180.42       40064
