@@ -86,7 +86,7 @@ if hvd.rank() == 0:
      checkpoint.save(checkpoint_dir)
 ```
 
-7) **Loading data according to rank ID**
+7) **Loading data according to rank ID and ajusting the number of time steps**
 
 In data parallelism, we distributed the dataset to different workers. It is important to make sure different workers work on different part of the dataset, and they together can cover the entire dataset at each epoch. 
 
