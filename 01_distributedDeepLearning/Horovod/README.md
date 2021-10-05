@@ -5,7 +5,6 @@ Led by Huihuo Zheng from ALCF (<huihuo.zheng@anl.gov>)
 * Understand model parallelism and data parallelism
 * Know how to modify your code with Horovod
 * Know how to run distributed training on supercomputer
-* Understand data parallelism (scaling efficiency, warmup, etc)
 
 ## Introduction to distributed Deep Learning
 The goal for train the model at large scale is to reduce the time-to-solution to reasonable amount. By using training the model in parallel, it reduces the total training time from weeks to minutes.
