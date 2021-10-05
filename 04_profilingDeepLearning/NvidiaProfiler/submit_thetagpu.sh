@@ -1,8 +1,8 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 1:00:00 
-#COBALT -q single-gpu
-#COBALT -A training-gpu
+#COBALT -q training-gpu
+#COBALT -A SDL_Workshop
 #COBALT --attrs=pubnet
 
 
