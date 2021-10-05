@@ -9,7 +9,7 @@ sh prepare_dataset.sh
 # Login to ThetaGPU login node
 ssh -CY thetagpusn1 
 # Requesting 1 node 
-qsub -n 1 -q training-gpu -A SDL_Workshop -I -t 2:00:00
+qsub -n 1 -q training-gpu -A SDL_Workshop -I -t 1:00:00
 ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
