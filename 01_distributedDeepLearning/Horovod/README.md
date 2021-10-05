@@ -5,7 +5,6 @@ Led by Huihuo Zheng from ALCF (<huihuo.zheng@anl.gov>)
 * Understand model parallelism and data parallelism
 * Know how to modify your code with Horovod
 * Know how to run distributed training on supercomputer
-* Understand data parallelism (scaling efficiency, warmup, etc)
 
 ## Introduction to distributed Deep Learning
 The goal for train the model at large scale is to reduce the time-to-solution to reasonable amount. By using training the model in parallel, it reduces the total training time from weeks to minutes.
@@ -14,8 +13,8 @@ The goal for train the model at large scale is to reduce the time-to-solution to
 
 ## Model Parallelism and Data Parallelism
 
-1. **Model parallelization**: in this scheme, disjoint subsets of a neural network are assigned to different devices. Therefore, all the computations associated to the subsets are distributed. Communication happens between devices whenever there is dataflow between two subsets. Model parallelization is suitable when the model is too large to be fitted into a single device (CPU/GPU) because of the memory capacity. However, partitioning the model into different subsets is not an easy task, and there might potentially introduce load imbalance issues limiting the scaling efficiency.  
-2. **Data parallelization**: in this scheme, all the workers own a replica of the model. The global batch of data is split into multiple minibatches, and processed by different workers. Each worker computes the corresponding loss and gradients with respect to the data it posseses. Before the updating of the parameters at each epoch, the loss and gradients are averaged among all the workers through a collective operation. This scheme is relatively simple to implement. MPI_Allreduce is the only commu
+1. **Model parallelism**: in this scheme, disjoint subsets of a neural network are assigned to different devices. Therefore, all the computations associated to the subsets are distributed. Communication happens between devices whenever there is dataflow between two subsets. Model parallelization is suitable when the model is too large to be fitted into a single device (CPU/GPU) because of the memory capacity. However, partitioning the model into different subsets is not an easy task, and there might potentially introduce load imbalance issues limiting the scaling efficiency.  
+2. **Data parallelism**: in this scheme, all the workers own a replica of the model. The global batch of data is split into multiple minibatches, and processed by different workers. Each worker computes the corresponding loss and gradients with respect to the data it posseses. Before the updating of the parameters at each epoch, the loss and gradients are averaged among all the workers through a collective operation. This scheme is relatively simple to implement. MPI_Allreduce is the only commu
 
 ![acc](./images/distributed.png)
 
@@ -37,7 +36,7 @@ Reference: https://horovod.readthedocs.io/en/stable/
   5. Broadcast the model & optimizer parameters to other rank
   6. Checking pointing on rank 0
   7. Adjusting dataset loading: number of steps (or batches) per epoch, dataset sharding, etc.
-
+  8. Average metric across all the workers
 
 ## TensorFlow with Horovod
 1) **Initialize Horovod**
@@ -77,6 +76,7 @@ This is to make sure that all the workers will have the same starting point.
 hvd.broadcast_variables(model.variables, root_rank=0)
 hvd.broadcast_variables(opt.variables(), root_rank=0)
 ```
+**Note: broadcast should be done after the first gradient step to ensure optimizer initialization.**
 
 6) **Checkpointing on root rank**
 
@@ -86,7 +86,7 @@ if hvd.rank() == 0:
      checkpoint.save(checkpoint_dir)
 ```
 
-7) **Loading data according to rank ID**
+7) **Loading data according to rank ID and ajusting the number of time steps**
 
 In data parallelism, we distributed the dataset to different workers. It is important to make sure different workers work on different part of the dataset, and they together can cover the entire dataset at each epoch. 
 
@@ -94,15 +94,16 @@ In general, one has two ways to deal with the data loading.
 1. Each worker randomly selects one batch of data from the dataset at each step. In such case, each worker can see the entire dataset. It is important to make sure that the different worker have different random seeds so that they will get different data at each step.
 2. Each worker accesses a subset of dataset. One manually partition the entire dataset into different partions, and each rank access one of the partions. 
 
-8) **Adjusting the number of steps per epoch**
+8) **Average the metrics across all the workers**
+```python
+total_loss = hvd.allreduce(running_loss, average=True)
+total_acc = hvd.allreduce(running_acc, average=True)
+```
 
-The total number of steps per epoch is ```nsamples / hvd.size()```.
 
 
-
-We provided some examples in: [Horovod](Horovod/) 
+Example in: [Horovod](Horovod/) 
 * [tensorflow2_mnist.py](tensorflow2_mnist.py)
-* [tensorflow2_cifar10.py](tensorflow2_cifar10.py)
 
 
 ## Keras with Horovod
@@ -154,7 +155,7 @@ if hvd.rank() == 0:
     callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoints/keras_mnist-{epoch}.h5'))
 ```
 
-7) **Loading data according to rank ID**
+7) **Loading data according to rank ID and adjusting the number of steps**
 
 In data parallelism, we distributed the dataset to different workers. It is important to make sure different workers work on different part of the dataset, and they together can cover the entire dataset at each epoch. 
 
@@ -162,11 +163,11 @@ In general, one has two ways to deal with the data loading.
 1. Each worker randomly selects one batch of data from the dataset at each step. In such case, each worker can see the entire dataset. It is important to make sure that the different worker have different random seeds so that they will get different data at each step.
 2. Each worker accesses a subset of dataset. One manually partition the entire dataset into different partions, and each rank access one of the partions. 
 
-8) **Adjusting the number of steps per epoch**
-
-The total number of steps per epoch is ```nsamples / hvd.size()```.
-
-
+8) **Average the metrics across all the workers**
+```python
+total_loss = hvd.allreduce(running_loss, average=True)
+total_acc = hvd.allreduce(running_acc, average=True)
+```
 
 We provided some examples in: [Horovod](Horovod/) 
 * [tensorflow2_keras_mnist.py](tensorflow2_keras_mnist.py)

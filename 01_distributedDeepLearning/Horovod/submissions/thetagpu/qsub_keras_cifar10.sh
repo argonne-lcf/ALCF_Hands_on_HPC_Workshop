@@ -1,6 +1,6 @@
 #!/bin/bash
 #COBALT -n 2
-#COBALT -t 1:00:00 -q theta-gpu
+#COBALT -t 1:00:00 -q training-gpu
 #COBALT -A SDL_Workshop -O results/thetagpu/$jobid.keras_cifar10
 
 #submisstion script for running tensorflow_mnist with horovod

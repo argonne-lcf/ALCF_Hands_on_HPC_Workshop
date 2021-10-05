@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 128
 #COBALT -t 1:00:00
-#COBALT -q theta-knl --attrs mcdram=cache:numa=quad
+#COBALT -q training-knl --attrs mcdram=cache:numa=quad
 #COBALT -A SDL_Workshop -O results/theta/pytorch_mnist_scale
 
 #submisstion script for running tensorflow_mnist with horovod

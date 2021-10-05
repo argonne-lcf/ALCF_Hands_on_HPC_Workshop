@@ -23,7 +23,7 @@ parser.add_argument('--batch_size', type=int, default=256, metavar='N',
                     help='input batch size for training (default: 256)')
 parser.add_argument('--epochs', type=int, default=16, metavar='N',
                     help='number of epochs to train (default: 4)')
-parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
