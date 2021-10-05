@@ -1,4 +1,4 @@
-<center><img src="Figures/Deephyper.png" height="200"></center>
+<img align=right src="01_HPS_basic_classification_with_tabular_data/Figures/Deephyper_transparent.png" width=35%>
 
 # Scalable Neural Architecture and Hyperparameter Search for Deep Neural Networks
 
