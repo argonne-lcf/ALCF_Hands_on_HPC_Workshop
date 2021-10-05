@@ -18,8 +18,11 @@ echo [$SECONDS] NODES=$NODES  RANKS_PER_NODE=$RANKS_PER_NODE  RANKS=$RANKS
 
 export OMP_NUM_THREADS=64
 
-echo [$SECONDS] run example
+echo [$SECONDS] run parallel example
 python ilsvrc_dataset.py -c ilsvrc.json --interop $OMP_NUM_THREADS --intraop $OMP_NUM_THREADS \
-   --logdir logdir/$COBALT_JOBID 
+   --logdir logdir/$COBALT_JOBID
+
+echo [$SECONDS] run serial example
+python ilsvrc_dataset_serial.py -c ilsvrc.json --logdir logdir/${COBALT_JOBID}-serial
    
 echo [$SECONDS] done
