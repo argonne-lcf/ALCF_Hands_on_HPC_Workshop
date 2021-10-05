@@ -1,3 +1,0 @@
-/lus/theta-fs0/projects/datascience/rmaulik/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaGPU/app_build/CMakeFiles/rebuild_cache.dir
-/lus/theta-fs0/projects/datascience/rmaulik/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaGPU/app_build/CMakeFiles/edit_cache.dir
-/lus/theta-fs0/projects/datascience/rmaulik/SDL_Tutorial/sdl_ai_workshop/04_Simulation_ML/ThetaGPU/app_build/CMakeFiles/app.dir
