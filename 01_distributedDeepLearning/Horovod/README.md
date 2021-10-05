@@ -37,7 +37,7 @@ Reference: https://horovod.readthedocs.io/en/stable/
   5. Broadcast the model & optimizer parameters to other rank
   6. Checking pointing on rank 0
   7. Adjusting dataset loading: number of steps (or batches) per epoch, dataset sharding, etc.
-
+  8. Average metric across all the workers
 
 ## TensorFlow with Horovod
 1) **Initialize Horovod**
