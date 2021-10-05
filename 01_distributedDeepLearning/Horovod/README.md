@@ -93,9 +93,11 @@ In general, one has two ways to deal with the data loading.
 1. Each worker randomly selects one batch of data from the dataset at each step. In such case, each worker can see the entire dataset. It is important to make sure that the different worker have different random seeds so that they will get different data at each step.
 2. Each worker accesses a subset of dataset. One manually partition the entire dataset into different partions, and each rank access one of the partions. 
 
-8) **Adjusting the number of steps per epoch**
-
-The total number of steps per epoch is ```nsamples / hvd.size()```.
+8) **Average the metrics across all the workers**
+```python
+total_loss = hvd.allreduce(running_loss, average=True)
+total_acc = hvd.allreduce(running_acc, average=True)
+```
 
 
 
@@ -153,7 +155,7 @@ if hvd.rank() == 0:
     callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoints/keras_mnist-{epoch}.h5'))
 ```
 
-7) **Loading data according to rank ID**
+7) **Loading data according to rank ID and adjusting the number of steps**
 
 In data parallelism, we distributed the dataset to different workers. It is important to make sure different workers work on different part of the dataset, and they together can cover the entire dataset at each epoch. 
 
@@ -161,11 +163,11 @@ In general, one has two ways to deal with the data loading.
 1. Each worker randomly selects one batch of data from the dataset at each step. In such case, each worker can see the entire dataset. It is important to make sure that the different worker have different random seeds so that they will get different data at each step.
 2. Each worker accesses a subset of dataset. One manually partition the entire dataset into different partions, and each rank access one of the partions. 
 
-8) **Adjusting the number of steps per epoch**
-
-The total number of steps per epoch is ```nsamples / hvd.size()```.
-
-
+8) **Average the metrics across all the workers**
+```python
+total_loss = hvd.allreduce(running_loss, average=True)
+total_acc = hvd.allreduce(running_acc, average=True)
+```
 
 We provided some examples in: [Horovod](Horovod/) 
 * [tensorflow2_keras_mnist.py](tensorflow2_keras_mnist.py)
