@@ -28,5 +28,6 @@ mv *.gz datasets/MNIST/raw/
 
 
 # PyTorch cifar10 dataset
-cp ~/.keras/datasets/cifar-10-batches-py.tar.gz datasets/cifar-10-python.tar.gz
+[ -e cifar-10-python.tar.gz ] || wget https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz
+cp cifar-10-python.tar.gz datasets/cifar-10-python.tar.gz
 

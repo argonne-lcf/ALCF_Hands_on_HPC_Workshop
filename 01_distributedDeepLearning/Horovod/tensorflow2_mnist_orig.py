@@ -75,20 +75,30 @@ def training_step(images, labels):
     with tf.GradientTape() as tape:
         probs = mnist_model(images, training=True)
         loss_value = loss(labels, probs)
-
+        pred = tf.math.argmax(probs, axis=1)
+        equality = tf.math.equal(pred, labels)
+        accuracy = tf.math.reduce_mean(tf.cast(equality, tf.float32))
     grads = tape.gradient(loss_value, mnist_model.trainable_variables)
     opt.apply_gradients(zip(grads, mnist_model.trainable_variables))
-    return loss_value
+    return loss_value, accuracy
 
 from tqdm import tqdm 
 # Horovod: adjust number of steps based on number of GPUs.
-nstep = nsamples//hvd.size()//args.batch_size
+nstep = nsamples//args.batch_size
 for ep in range(args.epochs):
+    running_loss = 0.0
+    running_acc = 0.0
+    tt0 = time.time()
     for batch, (images, labels) in enumerate(dataset.take(nstep)):
-        loss_value = training_step(images, labels)
+        loss_value, acc = training_step(images, labels)
+        running_loss = running_loss + loss_value/nstep
+        running_acc += acc/nstep
         if batch % 10 == 0: 
             checkpoint.save(checkpoint_dir)
-        print('Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (ep, batch, nstep, loss_value))
+            print('Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (ep, batch, nstep, loss_value))
+    tt1 = time.time()
+    print('Epoch - %d, \tTotal Loss: %.6f, \t Accuracy: %.6f, \t Time: %.6f seconds' % (ep, running_loss, running_acc, tt1 - tt0))            
+
 checkpoint.save(checkpoint_dir)
 t1 = time.time()
 print("Total training time: %s seconds" %(t1 - t0))

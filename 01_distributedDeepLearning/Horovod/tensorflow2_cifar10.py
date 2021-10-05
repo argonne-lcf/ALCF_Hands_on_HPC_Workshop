@@ -63,19 +63,21 @@ loss = tf.losses.SparseCategoricalCrossentropy()
 
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
-cifar10_model = tf.keras.applications.DenseNet121(include_top=False,
-    input_tensor=None, input_shape=(32, 32, 3),
-    pooling=None, classes=10)
+cifar10_model = tf.keras.applications.resnet50.ResNet50(include_top=True, input_tensor=None, input_shape=(32, 32, 3), pooling=None, classes=10, weights=None)
+if (hvd.rank()==0):
+    cifar10_model.summary()
+
 checkpoint_dir = './checkpoints/tf2_cifar10'
 checkpoint = tf.train.Checkpoint(model=cifar10_model, optimizer=opt)
-
 
 @tf.function
 def training_step(images, labels, first_batch):
     with tf.GradientTape() as tape:
         probs = cifar10_model(images, training=True)
+        pred = tf.math.argmax(probs, axis=1)
         loss_value = loss(labels, probs)
-
+        equality = tf.math.equal(pred, labels)
+        accuracy = tf.math.reduce_mean(tf.cast(equality, tf.float32))
     # Horovod: add Horovod Distributed GradientTape.
     tape = hvd.DistributedGradientTape(tape)
     grads = tape.gradient(loss_value, cifar10_model.trainable_variables)
@@ -90,19 +92,28 @@ def training_step(images, labels, first_batch):
     if first_batch:
         hvd.broadcast_variables(cifar10_model.variables, root_rank=0)
         hvd.broadcast_variables(opt.variables(), root_rank=0)
-    return loss_value
+    return loss_value, accuracy
 
 
 # Horovod: adjust number of steps based on number of GPUs.
 nsteps = nsamples // hvd.size() // args.batch_size
 for ep in range(args.epochs):
-    for batch, (images, labels) in enumerate(dataset.take(nsamples // hvd.size() // args.batch_size)):
-        loss_value = training_step(images, labels, (batch == 0) and (ep == 0))
-
+    running_loss = 0.0
+    running_acc = 0.0
+    tt0 = time.time()
+    for batch, (images, labels) in enumerate(dataset.take(nsteps)):
+        loss_value, acc  = training_step(images, labels, (batch == 0) and (ep == 0))
+        running_acc += acc/nsteps
+        running_loss += loss_value/nsteps
         if batch % 10 == 0:
             print('[%d] Epoch - %d, step #%d/%d\tLoss: %.6f' % (hvd.rank(), ep, batch, nsteps, loss_value))
         if hvd.rank() == 0 and batch % 10 == 0:
             checkpoint.save(checkpoint_dir)
+    total_loss = hvd.allreduce(running_loss, average=True)
+    total_acc = hvd.allreduce(running_acc, average=True)
+    tt1 = time.time()
+    if (hvd.rank()==0):
+        print('Epoch - %d, \tTotal Loss: %.6f, \t Accuracy: %.6f, \t Time: %.6f seconds' % (ep, total_loss, total_acc, tt1 - tt0))
 
 # Horovod: save checkpoints only on worker 0 to prevent other workers from
 # corrupting it.
