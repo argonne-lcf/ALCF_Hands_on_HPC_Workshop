@@ -2,7 +2,7 @@
 
 # Scalable Neural Architecture and Hyperparameter Search for Deep Neural Networks
 
-DeepHyper is a distributed machine learning (AutoML) package for automating the developement of deep neural networks for scientific applications. It can run on a single laptop as well as on 1,000 of nodes.
+[DeepHyper](https://github.com/deephyper/deephyper) is a distributed machine learning (AutoML) package for automating the developement of deep neural networks for scientific applications. It can run on a single laptop as well as on 1,000 of nodes.
 
 It comprises different tools such as:
 
