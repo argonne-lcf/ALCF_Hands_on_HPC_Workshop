@@ -16,7 +16,7 @@
 # questions? Taylor Childers, jchilders@anl.gov
 
 import tensorflow as tf
-import logging,os,glob
+import logging,os,glob,time
 import numpy as np
 import xml.etree.ElementTree as ET
 logger = logging.getLogger(__name__)
@@ -259,6 +259,7 @@ if __name__ == '__main__':
          
          logger.info('batch_number = %s input shape = %s    labels shape = %s',i,inputs.shape,labels.shape)
          logger.info('batch_number = %s labels = %s',i,labels)
+         time.sleep(1)
       # measure performance in images per second
       duration = time.time() - start
       images = config['data']['batch_size'] * args.nsteps
