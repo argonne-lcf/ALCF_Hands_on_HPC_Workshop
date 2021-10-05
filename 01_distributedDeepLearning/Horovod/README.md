@@ -101,9 +101,8 @@ total_acc = hvd.allreduce(running_acc, average=True)
 
 
 
-We provided some examples in: [Horovod](Horovod/) 
+Example in: [Horovod](Horovod/) 
 * [tensorflow2_mnist.py](tensorflow2_mnist.py)
-* [tensorflow2_cifar10.py](tensorflow2_cifar10.py)
 
 
 ## Keras with Horovod
