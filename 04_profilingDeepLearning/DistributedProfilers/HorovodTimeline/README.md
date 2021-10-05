@@ -1,102 +1,79 @@
 # Horovod Timeline Analysis for Data Parallel Training
 
-Contact: Huihuo Zheng <huihuo.zheng@anl.gov>
+Contact: Denis Boyda <dboyda@anl.gov>
 
 This example shows the Horovod Timeline analysis. It will show the the timeline of communication in distributed training. 
 
-To perform Horovod timeline analysis, one has to set the environment variable ```HOROVOD_TIMELINE``` which specifies the file for the output. 
-  ```
-  export HOROVOD_TIMELINE=timeline.json
-  ```
-  This file is only recorded on rank 0, but it contains information about activity of all workers. You can then open the timeline file using the `chrome://tracing` facility of the Chrome browser.
+To activate Horovod timeline analysis, one has to set the environment variable ```HOROVOD_TIMELINE``` which specifies the file for the output. 
+```
+export HOROVOD_TIMELINE=timeline.json
+```
+This file is only recorded on rank 0, but it contains information about activity of all workers. You can then open the timeline file using the `chrome://tracing` facility of the Chrome browser.
+
+Horovod performs work in cycles. These cycles are used to aid [Tensor Fusion](https://github.com/horovod/horovod/blob/master/docs/tensor-fusion.rst). Horovod has the ability to record the moment when each cycle starts for debugging of Tensor Fusion. In order to enable this option one needs to define environment variable `HOROVOD_TIMELINE_MARK_CYCLES='1'`.
+
 
 More details: https://horovod.readthedocs.io/en/stable/timeline_include.html
 
-Visualize the results using Chrome chrome://tracing/
-
-## Results on Theta
-Summitting job on thetagpusn1
-```bash
-cd sdl_ai_workshop/04_profilingDeepLearning/HorovodTimeline/theta
-qsub -n $NUM_NODES qsub.sc
-```
-
-What we find: 
-
-   - NEGOTIATION ALLREDUCE is taking a lot of time
-   - ALLREDUCE is using MPI_ALLREDUCE
-   - Different tensors are reduced at different time. There is an overlap between MPI and compute
-   
-![ThetaHorovodTimeline](ThetaHorovodTimeline.png)
+Visualize the results using Chrome [chrome://tracing/](chrome://tracing/)
 
 
-
-## Results on ThetaGPU
-Summitting job on thetagpusn1
+## Timeline Analysis
+Summitting job on thetagpusn1 with `n_nodes`, where every node has eight GPUs
 
 ```bash
-cd sdl_ai_workshop/04_profilingDeepLearning/HorovodTimeline/thetagpu
-qsub -n $NUM_NODES qsub.sc
+cd sdl_ai_workshop/04_profilingDeepLearning/DistributedProfilers/timeline
+qsub -n n_nodes qsub_gpu.sh
 ```
-
-   - NEGOTIATION ALLREDUCE is taking a lot of time
-   - ALLREDUCE is using NCCL_ALLREDUCE
-   - Different tensors are reduced at different time. There is an overlap between MPI and compute
-
-Single node (8GPU)
+Other option is to request a node in interactive regime
+```bash
+qsub -A SDL_Workshop -q training-gpu -n 1 -t 60 -I
+```
+and run training with `n_gpus`
+```bash
+cd sdl_ai_workshop/04_profilingDeepLearning/DistributedProfilers/timeline
+./run_gpu.sh n_gpus
+```
+Below there are results for single node and 2 GPUs
 ![ThetaGPUHorovodTimeline](ThetaGPUHorovodTimeline.png)
+From results we can have several observations:
+   - Total communication time is 83 seconds
+   - NEGOTIATION ALLREDUCE is taking major part of the time - 64 secons
+   - There is a very long initialization
+   - There are idle cicles between communications
+   - ALLREDUCE is using NCCL_ALLREDUCE
+   - Different tensors are reduced at the same time. There is no overlap between MPI and compute
 
 
-4 nodes 32 GPU
-![ThetaGPUHorovodTimeline4](ThetaGPUHorovodTimeline4.png)
+Timeline for 8 GPUs
+![ThetaGPUHorovodTimeline8](ThetaGPUHorovodTimeline8.png)
 
-We find that there is a large portion of Negotiation all reduce in the beginning. Let us check the timing for each epoch. 
+## Optimization of Horovod communication strategies
 
-* 1 GPU
+Horovod is a great library for distributed training. It has complicated algorithms and may interleave communication and computation. Moreover, it reduces communication overhead by batching small allreduce operations to a bigger buffer which is known as [Tensor Fusion](https://github.com/horovod/horovod/blob/master/docs/tensor-fusion.rst). 
 
+Horovod comes with some "tunable" hyperparameters which configure its algorithms. By default, Horovod is tunned for some most common operations, models and hardware but in every case it is possible to boost performance up by optimizing these hyperparameters. Environment variables `HOROVOD_HIERARCHICAL_ALLREDUCE` and `HOROVOD_HIERARCHICAL_ALLGATHER` enable hierarchical collective algorithms, `HOROVOD_CYCLE_TIME` configures time for cycles used in Horovod work, `HOROVOD_CACHE_CAPACITY` define response cache, and `HOROVOD_FUSION_THRESHOLD` is used to set the buffer to Tensor Fusion.
+
+The good point is that none needs to tune these hyperparameters manually. Horovod provides a powerful engine for Bayesian optimization to intelligently search through the space of parameter combinations during training. [This mechanism is also used in DeepHyper to optimize architecture of neural network](../../../../03_distributedHyperOpt/README.md). Autotuning may be performed with defining two variables `HOROVOD_AUTOTUNE_LOG=tune_file_name` and `HOROVOD_AUTOTUNE=1`
+
+To run tuning one need to request a node in interactive regime
+```bash
+qsub -A SDL_Workshop -q training-gpu -n 1 -t 60 -I
 ```
-grep '(s)' pytorch_cifar10.out.1
-Epoch 1:  training 3.9464917182922363(s) - testing 0.2842288017272949(s)
-Epoch 2:  training 1.6418938636779785(s) - testing 0.2911264896392822(s)
-Epoch 3:  training 1.6472668647766113(s) - testing 0.28443479537963867(s)
-Epoch 4:  training 1.6244451999664307(s) - testing 0.2839221954345703(s)
-Epoch 5:  training 1.6679177284240723(s) - testing 0.28382372856140137(s)
-Epoch 6:  training 1.6592497825622559(s) - testing 0.28410863876342773(s)
-Epoch 7:  training 1.6290247440338135(s) - testing 0.2838773727416992(s)
-Epoch 8:  training 1.6339952945709229(s) - testing 0.28399038314819336(s)
-Epoch 9:  training 1.6394035816192627(s) - testing 0.29134202003479004(s)
-Epoch 10:  training 1.6315174102783203(s) - testing 0.2889261245727539(s)
+and run tuning on `n_gpus` GPUs
+```bash
+cd sdl_ai_workshop/04_profilingDeepLearning/DistributedProfilers/autotune
+./run_gpu.sh n_gpus
 ```
+After finishing tuning will create a file with tuning results with 5 hyperparameters and score (higher is better). If tunning was finalized it will write the best parameters to the last line. With the best tunned hyperparameters we can perfome timeline analysys again. 
+```bash
+cd sdl_ai_workshop/04_profilingDeepLearning/DistributedProfilers/autotune
+./run_timeline n_gpus
+```
+Timeline for 2 GPUs with tuned hyperparameters
+![ThetaGPUHorovodTimelineTunned](ThetaGPUHorovodTimelineTunned.png)
+We notice that
+   - Total communication time decreaed to 25 seconds
+   - NEGOTIATION ALLREDUCE decreased as well to 12 secons
+   - Different tensors are reduced at defferent time. There is an overlap between MPI and compute
 
-* 2 GPU
-
-```
-grep '(s)' pytorch_cifar10.out.2
-Epoch 1:  training 23.069223165512085(s) - testing 0.23567867279052734(s)
-Epoch 2:  training 0.8957064151763916(s) - testing 0.21827197074890137(s)
-Epoch 3:  training 0.6789329051971436(s) - testing 0.2231731414794922(s)
-Epoch 4:  training 0.8881678581237793(s) - testing 0.23079824447631836(s)
-Epoch 5:  training 0.8954207897186279(s) - testing 0.22843503952026367(s)
-Epoch 6:  training 0.9121780395507812(s) - testing 0.3696882724761963(s)
-Epoch 7:  training 0.9106247425079346(s) - testing 0.21846961975097656(s)
-Epoch 8:  training 0.6733551025390625(s) - testing 0.23345375061035156(s)
-Epoch 9:  training 0.893524169921875(s) - testing 0.21280503273010254(s)
-Epoch 10:  training 0.9054818153381348(s) - testing 0.23321795463562012(s)
-```
-
-* 4 GPU
-
-```
-grep '(s)' pytorch_cifar10.out.4
-Epoch 1:  training 22.359201908111572(s) - testing 0.15216565132141113(s)
-Epoch 2:  training 0.4977378845214844(s) - testing 0.15857434272766113(s)
-Epoch 3:  training 0.5023508071899414(s) - testing 0.1587541103363037(s)
-Epoch 4:  training 0.5023791790008545(s) - testing 0.15345335006713867(s)
-Epoch 5:  training 0.49753594398498535(s) - testing 0.15330028533935547(s)
-Epoch 6:  training 0.5023701190948486(s) - testing 0.15367436408996582(s)
-Epoch 7:  training 0.50240159034729(s) - testing 0.15417885780334473(s)
-Epoch 8:  training 0.502795934677124(s) - testing 0.15332627296447754(s)
-Epoch 9:  training 0.5076334476470947(s) - testing 0.1535167694091797(s)
-Epoch 10:  training 0.49743175506591797(s) - testing 0.15375328063964844(s)
-```
-We can see that the issue of the scaling is from the first epoch!!

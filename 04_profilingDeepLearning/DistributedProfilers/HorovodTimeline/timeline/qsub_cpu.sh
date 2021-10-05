@@ -1,5 +1,5 @@
 #!/bin/bash
-#COBALT -q training -A SDL_Workshop -n 1 -t 10:00 -O HorovodTimeline
+#COBALT -q training -A SDL_Workshop  -t 10:00 -O HorovodTimeline
 
 module load conda/2021-09-22
 conda activate
