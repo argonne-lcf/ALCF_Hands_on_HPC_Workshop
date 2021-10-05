@@ -19,9 +19,9 @@ import argparse
 import time
 t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow MNIST Example')
-parser.add_argument('--batch_size', type=int, default=64, metavar='N',
-                    help='input batch size for training (default: 64)')
-parser.add_argument('--epochs', type=int, default=4, metavar='N',
+parser.add_argument('--batch_size', type=int, default=256, metavar='N',
+                    help='input batch size for training (default: 256)')
+parser.add_argument('--epochs', type=int, default=16, metavar='N',
                     help='number of epochs to train (default: 4)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
@@ -41,17 +41,32 @@ else:
     for gpu in gpus:
         tf.config.experimental.set_memory_growth(gpu, True)
 
-(mnist_images, mnist_labels), _ = \
+
+#---------------------------------------------------
+# Dataset
+#---------------------------------------------------
+(mnist_images, mnist_labels), (x_test, y_test) = \
     tf.keras.datasets.mnist.load_data(path='mnist.npz')
 
 dataset = tf.data.Dataset.from_tensor_slices(
     (tf.cast(mnist_images[..., tf.newaxis] / 255.0, tf.float32),
              tf.cast(mnist_labels, tf.int64))
 )
+test_dset = tf.data.Dataset.from_tensor_slices(
+    (tf.cast(mnist_images[..., tf.newaxis] / 255.0, tf.float32),
+             tf.cast(mnist_labels, tf.int64))
+)
 
 nsamples = len(list(dataset))
+ntests = len(list(test_dset))
+
 # shuffle the dataset, with shuffle buffer to be 10000
 dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
+test_dset  = test_dset.repeat().batch(args.batch_size)
+
+#----------------------------------------------------
+# Model
+#----------------------------------------------------
 mnist_model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
     tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
@@ -69,7 +84,9 @@ opt = tf.optimizers.Adam(args.lr)
 checkpoint_dir = './checkpoints/tf2_mnist'
 checkpoint = tf.train.Checkpoint(model=mnist_model, optimizer=opt)
 
-
+#------------------------------------------------------------------
+# Training
+#------------------------------------------------------------------
 @tf.function
 def training_step(images, labels):
     with tf.GradientTape() as tape:
@@ -82,22 +99,39 @@ def training_step(images, labels):
     opt.apply_gradients(zip(grads, mnist_model.trainable_variables))
     return loss_value, accuracy
 
+@tf.function
+def validation_step(images, labels):
+    probs = mnist_model(images, training=False)
+    pred = tf.math.argmax(probs, axis=1)
+    equality = tf.math.equal(pred, labels)
+    accuracy = tf.math.reduce_mean(tf.cast(equality, tf.float32))
+    loss_value = loss(labels, probs)
+    return loss_value, accuracy
+
 from tqdm import tqdm 
-# Horovod: adjust number of steps based on number of GPUs.
+t0 = time.time()
 nstep = nsamples//args.batch_size
+ntest_step = ntests//args.batch_size
 for ep in range(args.epochs):
-    running_loss = 0.0
-    running_acc = 0.0
+    training_loss = 0.0
+    training_acc = 0.0
     tt0 = time.time()
     for batch, (images, labels) in enumerate(dataset.take(nstep)):
         loss_value, acc = training_step(images, labels)
-        running_loss = running_loss + loss_value/nstep
-        running_acc += acc/nstep
-        if batch % 10 == 0: 
+        training_loss += loss_value/nstep
+        training_acc += acc/nstep
+        if batch % 100 == 0: 
             checkpoint.save(checkpoint_dir)
             print('Epoch - %d, step #%06d/%06d\tLoss: %.6f' % (ep, batch, nstep, loss_value))
+    # Testing
+    test_acc = 0.0
+    test_loss = 0.0
+    for batch, (images, labels) in enumerate(test_dset.take(ntest_step)):
+        loss_value, acc = validation_step(images, labels)
+        test_acc += acc/ntest_step
+        test_loss += loss_value/ntest_step
     tt1 = time.time()
-    print('Epoch - %d, \tTotal Loss: %.6f, \t Accuracy: %.6f, \t Time: %.6f seconds' % (ep, running_loss, running_acc, tt1 - tt0))            
+    print('Epoch - %d, \ttrain Loss: %.6f, \t training Acc: %.6f, \tval loss: %.6f, \t val Acc: %.6f\t Time: %.6f seconds' % (ep, training_loss, training_acc, test_loss, test_acc, tt1 - tt0))
 
 checkpoint.save(checkpoint_dir)
 t1 = time.time()

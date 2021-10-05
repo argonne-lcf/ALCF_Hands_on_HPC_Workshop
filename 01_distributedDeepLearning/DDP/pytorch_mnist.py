@@ -28,7 +28,7 @@ try:
     # Pytorch will look for these:
     os.environ["RANK"] = str(rank)
     os.environ["WORLD_SIZE"] = str(size)
-    os.environ['CUDA_VISIBLE_DEVICES'] = str(local_rank)
+    # os.environ['CUDA_VISIBLE_DEVICES'] = str(local_rank)
 
     # It will want the master address too, which we'll broadcast:
     if rank == 0:
@@ -93,7 +93,7 @@ torch.manual_seed(args.seed)
 
 if args.device == 'gpu':
     # DDP: pin GPU to local rank.
-    # torch.cuda.set_device(int(local_rank))
+    torch.cuda.set_device(int(local_rank))
     torch.cuda.manual_seed(args.seed)
 
 if (args.num_threads!=0):
