@@ -1,0 +1,114 @@
+[thetagpu22:2508647] Warning: could not find environment variable "PYTHONPATH"
+2021-10-05 10:42:05.504727: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-05 10:42:05.508509: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-05 10:42:06.085314: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 0, name: A100-SXM4-40GB, pci bus id: 0000:07:00.0, compute capability: 8.0
+2021-10-05 10:42:06.100807: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 1, name: A100-SXM4-40GB, pci bus id: 0000:0f:00.0, compute capability: 8.0
+2021-10-05 10:42:08.372123: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-05 10:42:08.899968: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-05 10:42:09.098914: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-05 10:42:09.810357: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-05 10:42:10.655350: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+2021-10-05 10:42:11.660760: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+Epoch: 0 	Loss: 119.544 	Time/epoch: 8.3
+Epoch: 1 	Loss: 51.330 	Time/epoch: 1.92
+Epoch: 2 	Loss: 41.490 	Time/epoch: 1.81
+Epoch: 3 	Loss: 32.271 	Time/epoch: 1.96
+Epoch: 4 	Loss: 26.394 	Time/epoch: 1.86
+Epoch: 5 	Loss: 24.648 	Time/epoch: 1.92
+Epoch: 6 	Loss: 23.976 	Time/epoch: 1.94
+Epoch: 7 	Loss: 20.920 	Time/epoch: 2.02
+Epoch: 8 	Loss: 18.009 	Time/epoch: 1.92
+Epoch: 9 	Loss: 16.758 	Time/epoch: 1.73
+Epoch: 10 	Loss: 18.299 	Time/epoch: 1.93
+Epoch: 11 	Loss: 16.595 	Time/epoch: 1.73
+Epoch: 12 	Loss: 14.848 	Time/epoch: 1.81
+Epoch: 13 	Loss: 13.270 	Time/epoch: 1.92
+Epoch: 14 	Loss: 12.475 	Time/epoch: 1.88
+Epoch: 15 	Loss: 11.711 	Time/epoch: 1.81
+Epoch: 16 	Loss: 10.985 	Time/epoch: 1.74
+Epoch: 17 	Loss: 9.909 	Time/epoch: 1.82
+Epoch: 18 	Loss: 11.569 	Time/epoch: 1.89
+Epoch: 19 	Loss: 10.690 	Time/epoch: 1.88
+Epoch: 20 	Loss: 10.505 	Time/epoch: 2.01
+Epoch: 21 	Loss: 8.829 	Time/epoch: 1.94
+Epoch: 22 	Loss: 9.188 	Time/epoch: 1.94
+Epoch: 23 	Loss: 9.808 	Time/epoch: 1.85
+Epoch: 24 	Loss: 8.478 	Time/epoch: 2.03
+Epoch: 25 	Loss: 8.412 	Time/epoch: 1.83
+Epoch: 26 	Loss: 8.066 	Time/epoch: 1.86
+Epoch: 27 	Loss: 8.352 	Time/epoch: 1.73
+Epoch: 28 	Loss: 8.072 	Time/epoch: 1.91
+Epoch: 29 	Loss: 9.959 	Time/epoch: 1.73
+Epoch: 30 	Loss: 8.970 	Time/epoch: 1.72
+Epoch: 31 	Loss: 7.893 	Time/epoch: 1.71
+Epoch: 32 	Loss: 8.235 	Time/epoch: 1.81
+Epoch: 33 	Loss: 7.904 	Time/epoch: 1.89
+Epoch: 34 	Loss: 7.628 	Time/epoch: 1.72
+Epoch: 35 	Loss: 8.344 	Time/epoch: 2.02
+Epoch: 36 	Loss: 6.740 	Time/epoch: 1.71
+Epoch: 37 	Loss: 9.222 	Time/epoch: 1.71
+Epoch: 38 	Loss: 6.720 	Time/epoch: 1.74
+Epoch: 39 	Loss: 8.045 	Time/epoch: 2.01
+Epoch: 40 	Loss: 6.193 	Time/epoch: 1.83
+Epoch: 41 	Loss: 6.130 	Time/epoch: 1.72
+Epoch: 42 	Loss: 6.277 	Time/epoch: 1.77
+Epoch: 43 	Loss: 7.592 	Time/epoch: 1.92
+Epoch: 44 	Loss: 5.648 	Time/epoch: 1.76
+Epoch: 45 	Loss: 6.254 	Time/epoch: 1.93
+Epoch: 46 	Loss: 6.123 	Time/epoch: 1.83
+Epoch: 47 	Loss: 6.010 	Time/epoch: 1.71
+Epoch: 48 	Loss: 6.579 	Time/epoch: 1.72
+Epoch: 49 	Loss: 6.409 	Time/epoch: 2.01
+Epoch: 50 	Loss: 6.269 	Time/epoch: 2.04
+Epoch: 51 	Loss: 5.348 	Time/epoch: 1.84
+Epoch: 52 	Loss: 5.453 	Time/epoch: 1.74
+Epoch: 53 	Loss: 6.502 	Time/epoch: 2.01
+Epoch: 54 	Loss: 5.980 	Time/epoch: 1.8
+Epoch: 55 	Loss: 5.579 	Time/epoch: 1.98
+Epoch: 56 	Loss: 7.938 	Time/epoch: 1.79
+Epoch: 57 	Loss: 5.200 	Time/epoch: 1.74
+Epoch: 58 	Loss: 5.940 	Time/epoch: 2.01
+Epoch: 59 	Loss: 6.208 	Time/epoch: 1.91
+Epoch: 60 	Loss: 5.882 	Time/epoch: 1.9
+Epoch: 61 	Loss: 5.581 	Time/epoch: 1.73
+Epoch: 62 	Loss: 5.204 	Time/epoch: 1.98
+Epoch: 63 	Loss: 5.940 	Time/epoch: 1.72
+Epoch: 64 	Loss: 5.318 	Time/epoch: 1.72
+Epoch: 65 	Loss: 5.149 	Time/epoch: 1.85
+Epoch: 66 	Loss: 7.147 	Time/epoch: 1.77
+Epoch: 67 	Loss: 4.271 	Time/epoch: 1.76
+Epoch: 68 	Loss: 6.522 	Time/epoch: 1.87
+Epoch: 69 	Loss: 5.206 	Time/epoch: 1.78
+Epoch: 70 	Loss: 5.815 	Time/epoch: 1.95
+Epoch: 71 	Loss: 5.225 	Time/epoch: 1.89
+Epoch: 72 	Loss: 4.192 	Time/epoch: 1.73
+Epoch: 73 	Loss: 4.891 	Time/epoch: 1.73
+Epoch: 74 	Loss: 5.323 	Time/epoch: 1.83
+Epoch: 75 	Loss: 5.994 	Time/epoch: 1.77
+Epoch: 76 	Loss: 6.024 	Time/epoch: 1.86
+Epoch: 77 	Loss: 4.229 	Time/epoch: 1.81
+Epoch: 78 	Loss: 3.798 	Time/epoch: 1.76
+Epoch: 79 	Loss: 6.847 	Time/epoch: 1.73
+Epoch: 80 	Loss: 5.949 	Time/epoch: 1.71
+Epoch: 81 	Loss: 5.096 	Time/epoch: 1.84
+Epoch: 82 	Loss: 6.209 	Time/epoch: 1.94
+Epoch: 83 	Loss: 5.339 	Time/epoch: 2
+Epoch: 84 	Loss: 4.670 	Time/epoch: 1.94
+Epoch: 85 	Loss: 6.692 	Time/epoch: 1.76
+Epoch: 86 	Loss: 6.095 	Time/epoch: 1.75
+Epoch: 87 	Loss: 7.041 	Time/epoch: 1.73
+Epoch: 88 	Loss: 5.262 	Time/epoch: 1.81
+Epoch: 89 	Loss: 4.453 	Time/epoch: 1.72
+Epoch: 90 	Loss: 6.081 	Time/epoch: 1.86
+Epoch: 91 	Loss: 4.759 	Time/epoch: 1.71
+Epoch: 92 	Loss: 4.385 	Time/epoch: 2.03
+Epoch: 93 	Loss: 5.395 	Time/epoch: 1.97
+Epoch: 94 	Loss: 5.123 	Time/epoch: 1.99
+Epoch: 95 	Loss: 3.945 	Time/epoch: 1.94
+Epoch: 96 	Loss: 5.674 	Time/epoch: 1.9
+Epoch: 97 	Loss: 4.301 	Time/epoch: 1.96
+Epoch: 98 	Loss: 5.271 	Time/epoch: 1.85
+Epoch: 99 	Loss: 4.595 	Time/epoch: 1.71
+Average epoch training time: 1.84 seconds
