@@ -1,20 +1,20 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 1:00:00
-#COBALT -q training --attrs mcdram=cache:numa=quad
+#COBALT -q training-knl --attrs mcdram=cache:numa=quad
 #COBALT -A SDL_Workshop
 
 echo "Running Cobalt Job $COBALT_JOBID."
 
 #Load modules
 module load datascience/pytorch-1.4
-module load vtune
+module load vtune/latest
 
 ## Set libraries
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/soft/compilers/intel/19.0.3.199/vtune_amplifier/lib64/
 
 ## set proxies
-export https_proxy=http://proxy.tmi.alcf.anl.gov:3128
+export https_proxy=https://proxy.tmi.alcf.anl.gov:3128
 export http_proxy=http://proxy.tmi.alcf.anl.gov:3128
 
 ## run the job
