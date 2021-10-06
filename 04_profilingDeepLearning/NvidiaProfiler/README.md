@@ -6,7 +6,7 @@ Nsight tools can be used to profile and analyze a wide-variety of applications, 
 (1) NSight tools
 
 Nsight Systems - System-wide application algorithm tuning \
-Nsight Compute ?~@~S Debug CUDA API and optimize CUDA kernels
+Nsight Compute - Debug CUDA API and optimize CUDA kernels
 
 The script ```submit_thetagpu.sh``` provides instructions to profile ```tensorflow2_cifar10.py``` code from ```01_distributedDeepLearning``` section.
 
@@ -14,7 +14,7 @@ To profile with Nsight systems (https://developer.nvidia.com/nsight-systems) (re
 ```
 $ nsys profile python myapp.py
 ```
-This generates profile file in ?~@~Xreport.qdrep?~@~Y which can be imported to view with Nsight Systems UI. It is recommended to run the script to generate the profile file
+This generates profile file in .qdrep format which can be imported to view with Nsight Systems UI. It is recommended to run the script to generate the profile file
 on the compute node and copy it to local machine with Nvidia Nsight tools installed to import the profile and view the analysis.
 
 
@@ -53,13 +53,15 @@ Try varying batch size with --batch_size parameter and observe the difference in
 Deep Learning Profiler (DLProf) (https://docs.nvidia.com/deeplearning/frameworks/dlprof-user-guide/index.html), is a tool for profiling deep learning models to analyze and improve performance of their models visually via the DLProf Viewer or by analyzing text reports.
 
 Few important features:
-Measure if an operation can run on Tensorcores and measure their usage if kernels are running on them.
-Use NVTX Markers to profile only a portion of code,such  as dataloading stage or the training phase.
-Analyze XLA compiled TensorFlow models.
+- Measure if an operation can run on Tensorcores and measure their usage if kernels are running on them.
+- Use NVTX Markers to profile only a portion of code,such  as dataloading stage or the training phase.
+- Analyze XLA compiled TensorFlow models.
 
-To use dlprof on the example code we have, use the script with dlprof argument ```submit_thetagpu.sh dlprof```
+To use ```dlprof``` on the example code we have, use the script with dlprof argument ```submit_thetagpu.sh dlprof```
 
-This will profile the model and print out the summary in results folder in a bunch of csv files. These include 'summary, kernel, detailed_op, tensor_core, op_type, etc. For example, the ```dlprof_tensor_core.csv``` file will list out kernels that are running on tensor cores and their utilization.
+This will profile the model and print out the summary in results folder in a bunch of csv files. These include details such as summary, kernel, detailed_op, tensor_core, op_type, etc. 
+
+For example, the ```dlprof_tensor_core.csv``` file will list out kernels that are running on tensor cores and their utilization.
 
 
 Another tool ```dlprofviewer``` can also be used to visualize the results in GUI. Refer to https://docs.nvidia.com/deeplearning/frameworks/tensorboard-plugin-user-guide/index.html for more details.
