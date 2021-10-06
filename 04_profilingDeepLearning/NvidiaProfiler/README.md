@@ -1,5 +1,5 @@
 
-Example to profile DL codes on ThetaGPU using Nvidia profiler tools, namely, NSight and DLProf.
+Example to profile DL codes on ThetaGPU using Nvidia profiler tools, namely, ```NSight``` and ```DLProf```.
 
 Nsight tools can be used to profile and analyze a wide-variety of applications, while DLProf is aimed for deep learning applications.
 
