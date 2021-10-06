@@ -18,7 +18,7 @@ jupyter notebook
 2. From `thetagpusn1`, start an interactive job:
 
 ```bash
-(thetagpusn1) $ qsub -I -A datascience -n 1 -q single-gpu -t 60
+(thetagpusn1) $ qsub -I -A datascience -n 1 -q training-gpu -t 60
 Job routed to queue "full-node".
 Wait for job 10003623 to start...
 Opening interactive session to thetagpu21
