@@ -32,7 +32,11 @@ rank = comm.Get_rank()
 ##### Initialize Redis clients on each rank #####
 if (hrank == 0):
     print("\nInitializing Python clients ...")
-client = Client(cluster=False) # much change to True if running database on >1 nodes
+nnDB = 1
+if (nnDB==1):
+    client = Client(cluster=False) # must change to True if running database on >1 nodes
+else:
+    client = Client(cluster=True)
 
 
 ##### Define Dataset class #####
