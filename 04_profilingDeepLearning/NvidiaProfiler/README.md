@@ -64,6 +64,13 @@ To use ```dlprof``` on the example code we have, use the script with dlprof argu
 
 This will profile the model and print out the summary in results folder in a bunch of csv files. These include details such as summary, kernel, detailed_op, tensor_core, op_type, etc. 
 
+```        dlprof --reports=all --mode=simple --nsys_opts="-t cuda,nvtx --force-overwrite true" --output_path=./results/  python myapp.py ```
+
+```mode``` can take in options for ```simple, tensorflow1, tensorflow2 and pytorch```.
+Additional arguments to ```nsys``` can be passed with ```nsys_opts``` parameter. 
+
+To profile only portions of code,  ```nvtx``` markers can be used to select the regions of interest (refer https://github.com/NVIDIA/nvtx-plugins)
+
 For example, the ```dlprof_tensor_core.csv``` file will list out kernels that are running on tensor cores and their utilization.
 
 ![Alt text](./tc-report.png?raw=true)
