@@ -47,6 +47,7 @@ Try varying batch size with --batch_size parameter and observe the difference in
 
 ![Alt text](./ncu-comparison.jpg?raw=true)
 
+If a kernel has ```xmma``` in its name, it implies that kernel is running on tensorcores.
 
 (2) DLProf
 
