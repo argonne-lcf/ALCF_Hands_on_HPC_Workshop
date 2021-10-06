@@ -17,4 +17,4 @@ This problem can be run quickly on just a handful of nodes on ThetaKNL, however 
 
 When the example is run successfully, results similar to the ones shown below should be obtained, showing that the neural net model was trained reasonably well.
 
-![Fields](ML_Fortran_SmartSim/fig.pdf "Fields")
+![predictions](ML_Fortran_SmartSim/fig.png)

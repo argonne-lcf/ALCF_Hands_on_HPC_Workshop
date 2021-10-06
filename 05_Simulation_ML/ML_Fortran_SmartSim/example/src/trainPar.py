@@ -278,8 +278,8 @@ if (hrank == 0):
     def f(x):
         return x**2 + 3*x + 1
     plt.plot(x, f(x), '-r', label='Target')
-    plt.xlabel("f(x)")
-    plt.ylabel("x")
+    plt.ylabel("f(x)")
+    plt.xlabel("x")
     plt.legend(loc="upper left")
     plt.savefig('fig.pdf', bbox_inches='tight')
 
