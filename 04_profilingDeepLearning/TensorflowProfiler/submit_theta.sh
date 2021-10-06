@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/bash -l
 #COBALT -n 2
 #COBALT -t 1:00:00
-#COBALT -q training
+#COBALT -q training-knl
 #COBALT -A SDL_Workshop
 #COBALT -O logdir/$COBALT_JOBID
 
@@ -11,7 +11,7 @@ echo "Running Cobalt Job $COBALT_JOBID."
 
 #Loading modules
 
-module load miniconda-3/2020-12
+module load conda/2021-09-22
 
 PROC_PER_NODE=4
 export OMP_NUM_THREADS=32
