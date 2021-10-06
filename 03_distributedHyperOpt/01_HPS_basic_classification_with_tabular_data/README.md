@@ -43,7 +43,7 @@ ssh -tt -L 8888:localhost:8888 -L 8265:localhost:8265 regele@theta.alcf.anl.gov 
 5. In the new terminal window, execute the SSH command to link the local port to the ThetaGPU compute node.
 6. Open the Jupyter URL (`http:localhost:8888/?token=....`) in a local browser.
 
-## ThetaKML execution
+## ThetaKNL execution
 
 1. From a `thetalogin` start an interactive job:
 
