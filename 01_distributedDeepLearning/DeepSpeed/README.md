@@ -1,9 +1,8 @@
 # Distributed training with Microsoft DeepSpeed
 
-Author: Zhen Xie zhen.xie@anl.gov
+_Author_: Zhen Xie zhen.xie@anl.gov
 
-[DeepSpeed](https://www.deepspeed.ai/) is a deep learning optimization
-library that makes distributed training easy, efficient, and effective.
+[DeepSpeed](https://www.deepspeed.ai/) is a deep learning optimization library that makes distributed training easy, efficient, and effective.
 
 Here is the DeepSpeed implementation:
 https://github.com/microsoft/DeepSpeed
@@ -77,13 +76,13 @@ installation instructions](https://www.deepspeed.ai/tutorials/advanced-install/)
 
 ### Example
 
-There is an example deployed by DeepSpeed here, with pytorch using cifar10.
+There is an example deployed by DeepSpeed here, with PyTorch using CIFAR-10.
 
 For interactive job: 
 
 It has two steps:
 
-#Step1: "Setting up env"
+#### Step 1: "Setting up env"
 ```bash
 conda env create --name deepspeed --file /lus/theta-fs0/projects/datascience/zhen/env_deepspeed.yml //set up env and install packages
 ```
@@ -91,7 +90,7 @@ conda env create --name deepspeed --file /lus/theta-fs0/projects/datascience/zhe
 conda activate deepspeed // activate env
 ```
 
-#Step2: "Run script"
+#### Step 2: "Run script"
 ```bash
 cd /lus/theta-fs0/projects/datascience/zhen/DeepSpeed
 ```
@@ -99,4 +98,4 @@ cd /lus/theta-fs0/projects/datascience/zhen/DeepSpeed
 deepspeed cifar10_deepspeed.py --deepspeed --deepspeed_config ds_config.json $@
 ```
 
-For submitting jobs in the script (non-interactive) job mode, take a look in the `submissions` folder for more details about this.
+For submitting jobs in the script (non-interactive) job mode, take a look in the `submissions/` folder for more details about this.
