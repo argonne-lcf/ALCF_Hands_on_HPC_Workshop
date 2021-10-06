@@ -15,16 +15,16 @@ jupyter notebook
 ## ThetaGPU execution
 
 1. From a `thetalogin` node: `ssh thetagpusn1` to login to a ThetaGPU service node.
-2. From `thetagpusn1`, start an interactive job:
+2. From `thetagpusn1`, start an interactive job (**note** which `thetagpuXX` node you get placed onto will vary):
 
 ```bash
-(thetagpusn1) $ qsub -I -A datascience -n 1 -q training-gpu -t 60
+(thetagpusn1) $ qsub -I -A SDL_Workshop -n 1 -q training-gpu -t 60
 Job routed to queue "full-node".
 Wait for job 10003623 to start...
 Opening interactive session to thetagpu21
 ```
 
-3. From the ThetaGPU compute node, execute the `launch-jupyter-notebook.sh` script:
+3. From the ThetaGPU compute node (`thetagpuXX`), execute the `launch-jupyter-notebook.sh` script:
 
 ```bash
 (thetagpu21) $ ./launch-jupyter-notebook.sh
@@ -39,6 +39,6 @@ http://localhost:8888/?token=df11ba29aac664173832b98d1d4b3b96ee0f050992ae6591
 ssh -tt -L 8888:localhost:8888 -L 8265:localhost:8265 regele@theta.alcf.anl.gov "ssh -L 8888:localhost:8888 -L 8265:localhost:8265 thetagpu05"
 ```
 
-4. Leave the interactive session open and in a new terminal window of your laptop execute the SSH command to link local port to the ThetaGPU compute node.
-
-5. Open the Jupyter URL in a local browser.
+4. Leave the interactive session running and open a new terminal window on your local machine.
+5. In the new terminal window, execute the SSH command to link the local port to the ThetaGPU compute node.
+6. Open the Jupyter URL (`http:localhost:8888/?token=....`) in a local browser.
