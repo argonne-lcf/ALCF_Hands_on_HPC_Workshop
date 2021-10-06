@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 #COBALT -n 1
 #COBALT -t 10
 #COBALT -q training
@@ -10,7 +10,8 @@
 echo "Running Cobalt Job $COBALT_JOBID."
 
 # Loading conda environment with Tensorflow
-source /lus/theta-fs0/software/thetagpu/conda/tf_master/2020-11-11/mconda3/setup.sh
+module load conda/tensorflow
+conda activate
 
 export OMP_NUM_THREADS=64
 n=8
