@@ -24,10 +24,10 @@ Wait for job 10003623 to start...
 Opening interactive session to thetagpu21
 ```
 
-3. From the ThetaGPU compute node (`thetagpuXX`), execute the `launch-jupyter-notebook.sh` script:
+3. From the ThetaGPU compute node (`thetagpuXX`), execute the `launch-jupyter-notebook-thetagpu.sh` script:
 
 ```bash
-(thetagpu21) $ ./launch-jupyter-notebook.sh
+(thetagpu21) $ ./launch-jupyter-notebook-thetagpu.sh
 ```
 
 Take note of the output URL and output ssh command of the form:
