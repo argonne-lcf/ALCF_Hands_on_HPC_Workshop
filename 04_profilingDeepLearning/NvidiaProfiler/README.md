@@ -1,5 +1,5 @@
 
-Example to profile DL codes on ThetaGPU using Nvidia profiler tools, namely, ```NSight``` and ```DLProf```.
+Example to profile deep learning (DL) codes on ThetaGPU using Nvidia profiler tools, namely, ```NSight``` and ```DLProf```.
 
 Nsight tools can be used to profile and analyze a wide-variety of applications, while DLProf is aimed for deep learning applications.
 
@@ -22,7 +22,7 @@ To view the profiling results in GUI, follow the commands in the section "Steps 
 
 The profile for ```tensorflow2_cifar10.py``` looks like this. It shows the kernels generated with more details on a timeline trace.
 
-![Alt text](./nsys-trace.png?raw=true)
+![Alt text](./images/nsys-trace.png?raw=true)
 
 
 Nsight Compute (https://developer.nvidia.com/nsight-compute) is an interactive kernel profiler for CUDA applications. It provides detailed performance metrics and API debugging via a user interface and command line tool.
@@ -40,21 +40,21 @@ ncu --kernel-id ::regex:gemm: python myapp.py
 
 For the code ```tensorflow2_cifar10.py```, the profile from Nsight Compute (instructions in step B.1 in ```submit_thetagpu.sh``` script) yields the following metrics.
 
-![Alt text](./ncu-1.png?raw=true)
+![Alt text](./images/ncu-1.png?raw=true)
 
 
 Try varying batch size with --batch_size parameter and observe the difference in metrics. For batch sizes 32 and 512, these are
 
-![Alt text](./ncu-comparison.png?raw=true)
+![Alt text](./images/ncu-comparison.png?raw=true)
 
 Tensorcore: These are specialized processing units to boost performance by enabling mixed-precision computing. (image source: Nvidia)
 
 
-![Alt text](./Tensorcore.png?raw=true)
+![Alt text](./images/Tensorcore.png?raw=true)
 
 If a kernel has ```xmma``` in its name, it implies that kernel is running on tensorcores.
 
-![Alt text](./ncu-2.png?raw=true)
+![Alt text](./images/ncu-2.png?raw=true)
 
 (2) DLProf
 
@@ -78,7 +78,7 @@ To profile only portions of code,  ```nvtx``` markers can be used to select the 
 
 For example, the ```dlprof_tensor_core.csv``` file will list out kernels that are running on tensor cores and their utilization.
 
-![Alt text](./tc-report.png?raw=true)
+![Alt text](./images/tc-report.png?raw=true)
 
 
 Another tool ```dlprofviewer``` can also be used to visualize the results in GUI. Refer to https://docs.nvidia.com/deeplearning/frameworks/tensorboard-plugin-user-guide/index.html for more details.
