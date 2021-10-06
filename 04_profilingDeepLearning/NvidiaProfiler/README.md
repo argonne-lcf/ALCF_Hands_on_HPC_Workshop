@@ -38,7 +38,7 @@ Usually, this method incurs lot of overhead in collecting the performance metric
 ncu --kernel-id ::regex:gemm: python myapp.py
 ```
 
-For the code ```tensorflow2_cifar10.py```, the profile from Nsight Compute yields the following metrics.
+For the code ```tensorflow2_cifar10.py```, the profile from Nsight Compute (instructions in step B.1 in ```submit_thetagpu.sh``` script) yields the following metrics.
 
 ![Alt text](./ncu-1.png?raw=true)
 
