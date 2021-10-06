@@ -45,7 +45,7 @@ For the code ```tensorflow2_cifar10.py```, the profile from Nsight Compute (inst
 
 Try varying batch size with --batch_size parameter and observe the difference in metrics. For batch sizes 4 and 512, these are
 
-![Alt text](./ncu-comparison.jpg?raw=true)
+![Alt text](./ncu-comparison.png?raw=true)
 
 If a kernel has ```xmma``` in its name, it implies that kernel is running on tensorcores.
 
