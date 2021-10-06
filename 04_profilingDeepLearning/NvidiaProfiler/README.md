@@ -40,7 +40,7 @@ ncu --kernel-id ::regex:gemm: python myapp.py
 
 For the code ```tensorflow2_cifar10.py```, the profile from Nsight Compute yields the following metrics.
 
-![Alt text](./Nsight-compute.png?raw=true)
+![Alt text](./ncu-1.png?raw=true)
 
 
 Try varying batch size with --batch_size parameter and observe the difference in metrics. For batch sizes 4 and 512, these are
@@ -48,6 +48,8 @@ Try varying batch size with --batch_size parameter and observe the difference in
 ![Alt text](./ncu-comparison.jpg?raw=true)
 
 If a kernel has ```xmma``` in its name, it implies that kernel is running on tensorcores.
+
+![Alt text](./ncu-2.png?raw=true)
 
 (2) DLProf
 
