@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #COBALT -n 1
 #COBALT -t 10
-#COBALT -q training
+#COBALT -q training-gpu
 #COBALT -A SDL_Workshop
 #COBALT -O logdir/$COBALT_JOBID
 
