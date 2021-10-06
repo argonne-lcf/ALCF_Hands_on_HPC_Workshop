@@ -2,7 +2,7 @@
 
 source init-dh-environment.sh
 
-jupyter notebook &
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6 jupyter notebook &
 
 sleep 5
 
