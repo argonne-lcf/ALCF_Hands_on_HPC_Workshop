@@ -35,7 +35,7 @@ nsys profile --stats=true --output nsys.out python tensorflow2_cifar10.py --devi
 
 ## (B) get detailed analysis of CUDA kernels on GPU with Nsight Compute
 ## (B.1) collect overall compute, memory and I/O utilization
-# ncu python tensorflow2_cifar10.py --device gpu --epochs 5 > gpu-utilization.log 2>&1
+# ncu --kernel-id ::regex:gemm:2  python tensorflow2_cifar10.py --device gpu --epochs 5 > nsight-metrics.log 2>&1
 
 ## (B.2) collect metrics for kernels, since it is consumes lot of time for all kernels, here we get metrics for gemm kernels with "--kernel-id" parameter
 # ncu --kernel-id ::regex:gemm:2 --metrics all python tensorflow2_cifar10.py --device gpu --epochs 5 > nsight-metrics.log 2>&1
