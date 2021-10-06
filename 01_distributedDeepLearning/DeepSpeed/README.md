@@ -56,7 +56,35 @@ ds_report
 
 If you would like to pre-install any of the DeepSpeed extensions/ops (instead
 of JIT compiling) or install pre-compiled ops via PyPI please see our [advanced
-installation instructions](https://www.deepspeed.ai/tutorials/advanced-install/).
+installation instructions](https://www.deepspeed.ai/tutorials/advanced-install/)
+
+
+## Example
+
+There is an example deployed by DeepSpeed here, with PyTorch using CIFAR-10.
+
+For interactive job: 
+
+It has two steps:
+
+### Step 1: "Setting up env"
+```bash
+conda env create --name deepspeed --file /lus/theta-fs0/projects/datascience/zhen/env_deepspeed.yml //set up env and install packages
+```
+```bash
+conda activate deepspeed // activate env
+```
+
+### Step 2: "Run script"
+```bash
+cd /lus/theta-fs0/projects/datascience/zhen/DeepSpeed
+```
+```bash
+deepspeed cifar10_deepspeed.py --deepspeed --deepspeed_config ds_config.json $@
+```
+
+For submitting jobs in the script (non-interactive) job mode, take a look in the `submissions/` folder for more details about this.
+
 
 ## DeepSpeed Performance
 
@@ -72,30 +100,3 @@ installation instructions](https://www.deepspeed.ai/tutorials/advanced-install/)
 * [1-bit Adam v2: NCCL-based implementation and more](https://www.deepspeed.ai/tutorials/onebit-adam/)
 * [ZeRO-3 Offload: Scale your models to trillion parameters without code changes while leveraging both CPUs & GPUs](https://www.deepspeed.ai/news/2021/03/07/zero3-offload.html)
 * [[Hugging Face Blog] Fit More and Train Faster With ZeRO via DeepSpeed and FairScale](https://huggingface.co/blog/zero-deepspeed-fairscale)
-
-
-### Example
-
-There is an example deployed by DeepSpeed here, with PyTorch using CIFAR-10.
-
-For interactive job: 
-
-It has two steps:
-
-#### Step 1: "Setting up env"
-```bash
-conda env create --name deepspeed --file /lus/theta-fs0/projects/datascience/zhen/env_deepspeed.yml //set up env and install packages
-```
-```bash
-conda activate deepspeed // activate env
-```
-
-#### Step 2: "Run script"
-```bash
-cd /lus/theta-fs0/projects/datascience/zhen/DeepSpeed
-```
-```bash
-deepspeed cifar10_deepspeed.py --deepspeed --deepspeed_config ds_config.json $@
-```
-
-For submitting jobs in the script (non-interactive) job mode, take a look in the `submissions/` folder for more details about this.
