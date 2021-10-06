@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # change `CONDA_ENV_PREFIX` with the path to your conda environment
-CONDA_ENV_PREFIX=/projects/cfdml_aesp/ML_Theta/SDL21/test/ssim
+CONDA_ENV_PREFIX=/projects/SDL_Workshop/sdl_ai_workshop/05_Simulation_ML/ML_Fortran_SmartSim/ssim
 DRIVER=src/driver.py
 
 module swap PrgEnv-intel PrgEnv-gnu

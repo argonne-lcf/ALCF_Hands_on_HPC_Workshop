@@ -1,6 +1,6 @@
 # Description
 
-We assume that you have cloned the repo to a suitable location. These are the steps to execute this example on ThetaKNL from a script. We delay instructions on how to build the conda environment further in this file.
+We assume that you have cloned the repo to a suitable location. These are the steps to execute this example on ThetaKNL from a script. We delay instructions on how to build the conda environment further in this file. In fact, the examples are set up to run with a pre-built environment that all attendees should have acces to.
 
 1. Build the Fortran data loader and the SmartRedis Fortran client API.
 - Move to the `example/src/` directory.

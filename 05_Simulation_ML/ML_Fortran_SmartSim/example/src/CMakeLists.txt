@@ -10,18 +10,18 @@ set(CMAKE_C_STANDARD 99)
 
 find_package(MPI)
 
-find_library(SR_LIB smartredis PATHS /projects/cfdml_aesp/ML_Theta/SDL21/test/smartredis-0.2.0/install/lib NO_DEFAULT_PATH REQUIRED)
+find_library(SR_LIB smartredis PATHS /projects/SDL_Workshop/sdl_ai_workshop/05_Simulation_ML/ML_Fortran_SmartSim/smartredis-0.2.0/install/lib NO_DEFAULT_PATH REQUIRED)
 
 include_directories(SYSTEM
     /usr/local/include
     ${MPI_INCLUDE_PATH}
-    /projects/cfdml_aesp/ML_Theta/SDL21/test/smartredis-0.2.0/install/include
+    /projects/SDL_Workshop/sdl_ai_workshop/05_Simulation_ML/ML_Fortran_SmartSim/smartredis-0.2.0/install/include
 )
 
 set(ftn_client_src
-    /projects/cfdml_aesp/ML_Theta/SDL21/test/smartredis-0.2.0/src/fortran/fortran_c_interop.F90
-    /projects/cfdml_aesp/ML_Theta/SDL21/test/smartredis-0.2.0/src/fortran/dataset.F90
-    /projects/cfdml_aesp/ML_Theta/SDL21/test/smartredis-0.2.0/src/fortran/client.F90
+    /projects/SDL_Workshop/sdl_ai_workshop/05_Simulation_ML/ML_Fortran_SmartSim/smartredis-0.2.0/src/fortran/fortran_c_interop.F90
+    /projects/SDL_Workshop/sdl_ai_workshop/05_Simulation_ML/ML_Fortran_SmartSim/smartredis-0.2.0/src/fortran/dataset.F90
+    /projects/SDL_Workshop/sdl_ai_workshop/05_Simulation_ML/ML_Fortran_SmartSim/smartredis-0.2.0/src/fortran/client.F90
 )
 
 # build executables

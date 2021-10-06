@@ -5,8 +5,8 @@
 
 # set the environment
 #module swap PrgEnv-intel PrgEnv-gnu
-#module swap gcc gcc/8.3.0
-#export CRAY_CPU_TARGET=mic-knl
+module swap gcc gcc/8.3.0
+export CRAY_CPU_TARGET=mic-knl
 
 # Horovod source and version
 HOROVOD_REPO_URL=https://github.com/uber/horovod.git

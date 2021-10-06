@@ -35,3 +35,4 @@ export CXX=/opt/gcc/9.3.0/bin/g++
 make deps
 make test-deps
 make lib
+cd ..
