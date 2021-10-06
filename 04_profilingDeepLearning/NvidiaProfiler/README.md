@@ -66,5 +66,7 @@ This will profile the model and print out the summary in results folder in a bun
 
 For example, the ```dlprof_tensor_core.csv``` file will list out kernels that are running on tensor cores and their utilization.
 
+![Alt text](./tc-report.png?raw=true)
+
 
 Another tool ```dlprofviewer``` can also be used to visualize the results in GUI. Refer to https://docs.nvidia.com/deeplearning/frameworks/tensorboard-plugin-user-guide/index.html for more details.
