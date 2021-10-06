@@ -47,6 +47,11 @@ Try varying batch size with --batch_size parameter and observe the difference in
 
 ![Alt text](./ncu-comparison.png?raw=true)
 
+Tensorcore: These are specialized processing units to boost performance by enabling mixed-precision computing. (image source: Nvidia)
+<img src="./GEMM.png" width="500" height="500">
+<img src="./Tensorcore.png" width="200" height="200">
+
+
 If a kernel has ```xmma``` in its name, it implies that kernel is running on tensorcores.
 
 ![Alt text](./ncu-2.png?raw=true)
