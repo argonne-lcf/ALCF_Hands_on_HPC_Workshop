@@ -20,15 +20,15 @@ For running this mini-app on ThetaKNL/GPU, look at the scripts/README within `ML
 ## What you should see when you run this on either ThetaGPU or ThetaKNL
 
 ### Field evolution
-![Fields](ML_PythonC++_Embedding/ThetaKNL/app_build/Field_evolution.png "Fields")
+![Fields](ThetaKNL/app_build/Field_evolution.png "Fields")
 
 ### Modal decomposition
-![Modes](ML_PythonC++_Embedding/ThetaKNL/app_build/SVD_Eigenvectors.png "Modes")
+![Modes](ThetaKNL/app_build/SVD_Eigenvectors.png "Modes")
 
 ### Forecasting the modal evolution in time (still rather poor but you get the idea)
-![Forecasting Mode 0](ML_PythonC++_Embedding/ThetaKNL/app_build/Mode_0_prediction.png "Mode 0 prediction")
+![Forecasting Mode 0](ThetaKNL/app_build/Mode_0_prediction.png "Mode 0 prediction")
 
-![Forecasting Mode 1](ML_PythonC++_Embedding/ThetaKNL/app_build/Mode_1_prediction.png "Mode 1 prediction")
+![Forecasting Mode 1](ThetaKNL/app_build/Mode_1_prediction.png "Mode 1 prediction")
 
-![Forecasting Mode 2](ML_PythonC++_Embedding/ThetaKNL/app_build/Mode_2_prediction.png "Mode 2 prediction")
+![Forecasting Mode 2](ThetaKNL/app_build/Mode_2_prediction.png "Mode 2 prediction")
 
