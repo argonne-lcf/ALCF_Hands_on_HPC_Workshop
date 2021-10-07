@@ -11,8 +11,15 @@ Choose best simulations to launch
 - Ones likely to improve quantity of interest? 
 - If ML model degrading, collect more data? 
 
-Example:
-“Machine Learning Inter-Atomic Potentials Generation Driven by Active Learning” Sivaraman, et al. [paper](https://arxiv.org/abs/1910.10254), [code](https://github.com/argonne-lcf/active-learning-md)
+Examples:
+- “Machine Learning Inter-Atomic Potentials Generation Driven by Active Learning” by Sivaraman, et al. [paper](https://arxiv.org/abs/1910.10254), [code](https://github.com/argonne-lcf/active-learning-md)
+- "Coarse-Grained Density Functional Theory Predictions via Deep Kernel Learning" by Jackson and Sivaraman. [paper](https://chemrxiv.org/engage/chemrxiv/article-details/615c76ae7d3da5aa28edb9fb), [code](https://github.com/TheJacksonLab/ECG_ActiveLearning)
+
+
+### Improve sampling of space
+Examples:
+- “Deep Learning Hamiltonian Monte Carlo” by Foreman, et al.  [paper](https://arxiv.org/pdf/2105.03418.pdf), [code](https://github.com/saforem2/l2hmc-qcd)
+- “Stream-AI-MD: Streaming AI-driven Adaptive Molecular Simulations for Heterogeneous Computing Platform” by Brace, et al. [paper](https://dl.acm.org/doi/10.1145/3468267.3470578), [code](https://github.com/braceal/SC20-GB-CS1-ThetaGPU-AI-driven-MD) 
 
 
 ### Surrogate modeling
@@ -38,6 +45,7 @@ Learning and Experience Replay” by Madireddy, et al. [paper](https://doi.org/1
 ### Control Simulation with ML
 - Select simulation parameters
 - Select numerical scheme
+
 Example:
 “Distributed Deep Reinforcement Learning for Simulation Control”
 By Pawar & Maulik [paper](https://arxiv.org/pdf/2009.10306.pdf), [code](https://github.com/Romit-Maulik/RLLib_Theta/)
