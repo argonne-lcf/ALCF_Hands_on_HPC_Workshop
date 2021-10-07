@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 #COBALT -n 1
 #COBALT -t 00:10:00
 #COBALT -q training-gpu
