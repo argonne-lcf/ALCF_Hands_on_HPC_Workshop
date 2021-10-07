@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/rmaulik/sdl_ai_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU
+cd /home/$USER/sdl_ai_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU
 echo $pwd
 
 # Clean up the directory
@@ -17,7 +17,7 @@ rm -rf cmake_install.cmake
 rm -rf Makefile
 rm -rf CMakeCache.txt
 
-export VENV_LOCATION=/home/rmaulik/THETAGPU_TF_ENV
+export VENV_LOCATION=/home/$USER/THETAGPU_TF_ENV
 source $VENV_LOCATION/bin/activate
 
 cmake ../
