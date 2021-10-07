@@ -1,3 +1,5 @@
+This example was written by Romit Maulik and edited by Bethany Lusch. 
+
 # Description
 
 The purpose of this mini-application is to demonstrate how one may deploy scientific machine learning within a computational physics workflow. We claim that this code represents a *practical* deployment because it satisfies the following features:
@@ -31,4 +33,7 @@ For running this mini-app on ThetaKNL/GPU, look at the scripts/README within `ML
 ![Forecasting Mode 1](ThetaKNL/app_build/Mode_1_prediction.png "Mode 1 prediction")
 
 ![Forecasting Mode 2](ThetaKNL/app_build/Mode_2_prediction.png "Mode 2 prediction")
+
+
+In order to get good results in [our paper](https://doi.org/10.1063/5.0019884), we use more training data. The code for that paper is [here](https://github.com/rmjcs2020/NATSurrogates). 
 
