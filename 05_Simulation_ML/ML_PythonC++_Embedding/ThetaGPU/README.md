@@ -18,7 +18,7 @@ singularity exec -B /lus:/lus --nv /lus/theta-fs0/software/thetagpu/nvidia-conta
 4. Setup access to the internet
 ```
 export http_proxy=http://theta-proxy.tmi.alcf.anl.gov:3128
-export https_proxy=https://theta-proxy.tmi.alcf.anl.gov:3128
+export https_proxy=http://theta-proxy.tmi.alcf.anl.gov:3128
 ```
 Now that we can access the internet, we need to set up a virtual environment in Python (these commands should only be run the first time)
 ```
