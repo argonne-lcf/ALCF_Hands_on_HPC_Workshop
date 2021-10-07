@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/rmaulik/sdl_ai_workshop/05_Simulation_ML/ThetaGPU
+cd /home/rmaulik/sdl_ai_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU
 echo $pwd
 
 # Clean up the directory
