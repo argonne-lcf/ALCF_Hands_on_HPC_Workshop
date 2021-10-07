@@ -19,6 +19,8 @@ Here is how we connected C++ and Python:
 
 For running this mini-app on ThetaKNL/GPU, look at the scripts/README within `ML_PythonC++_Embedding/ThetaGPU/` and `ML_PythonC++_Embedding/ThetaKNL/` subdirectories.
 
+To see a similar coupling but with OpenFOAM on the C++ side (CFD software), check out our PythonFOAM work ([paper](https://arxiv.org/pdf/2103.09389.pdf), [code](https://github.com/argonne-lcf/PythonFOAM)). 
+
 ## What you should see when you run this on either ThetaGPU or ThetaKNL
 
 ### Field evolution
