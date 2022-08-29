@@ -2,7 +2,7 @@
 ### October 4 - 6, 2022
 ### Agenda: https://www.alcf.anl.gov/events/2022-alcf-simulation-data-and-learning-workshop
 
-The ALCF regularly hosts a simulation, data, and learning workshop to help users scale their applications. This workshop focuses on capabilities at scale. We are currently updating the content for the 2022 agenda.
+The ALCF regularly hosts a simulation, data, and learning workshop to help users scale their applications. We are currently updating the content for the 2022 agenda.
 
 ### The repo is divided by the workshop sessions:
    * [Introductory material (review on your own prior to workshop)](00_pre_workshop_materials)
@@ -12,7 +12,7 @@ The ALCF regularly hosts a simulation, data, and learning workshop to help users
    * [Profiling Deep Learning applications](04_profilingDeepLearning)
    * [Integrating inference in to simulation](05_Simulation_ML)
 
-Please clone the repo while on a Theta login node:
+Please clone the repo while on a Theta or Polaris login node:
 
 ```
 git clone https://github.com/argonne-lcf/sdl_workshop.git
