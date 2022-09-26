@@ -28,13 +28,14 @@ Replace part of simulation with ML surrogate model
 - Inaccurate part? 
 ML model output fed back into rest of simulation
 
-Example:
+Examples:
 “A turbulent eddy-viscosity surrogate modeling framework for RANS simulations” By Maulik, et al. [paper](https://doi.org/10.1016/j.compfluid.2020.104777), 
 [code](https://github.com/argonne-lcf/TensorFlowFoam)
+"Using machine learning at scale in HPC simulations with SmartSim: An application to ocean climate modeling" By Partee, et al. [paper](https://arxiv.org/abs/2104.09355), [code](https://github.com/CrayLabs/NCAR_ML_EKE)
 
-### Reduce I/O
-- Apply ML model to save compressed simulation results 
-- Train online during simulation (skip I/O bottleneck)
+### Reduce I/O and Disk Storage
+- Apply ML model to save compressed simulation results or checkpoints
+- Train online (in situ) during simulation (skip I/O bottleneck)
 - In situ analysis giving feedback on simulations before completed
   - Need to adjust something? 
   
