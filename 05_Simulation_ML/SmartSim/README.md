@@ -38,7 +38,7 @@ There are two main types of workflows for combining simulation and ML in situ wi
   - Simulation and model evaluation are loosely coupled -- run on separate resources but inference blocks simulation progress
 
 | ![worflows](figures/train_inf_workflows.png) |
-|:--:|
+| ---- |
 | Figure 1. Online training and inference workflows with SmartSim. |
 
 Additionally, there are two approaches to deploying the SmartSim workflow, both for training and inference: clustered and co-located.
@@ -59,9 +59,17 @@ Additionally, there are two approaches to deploying the SmartSim workflow, both 
     - Training/inference data is distributed across the various databases, accessing off-node data is non-trivial
     - This limits complexity of workflow and number of components deployed
 
-![clustered](figures/clustered_approach.png)
-![colocated](figures/colocated_approach.png)
-![scaling](figures/cl_vs_coDB_scaling.png)
+| ![clustered](figures/clustered_approach.png) |
+| ---- |
+| Figure 2. Online training and inference with the clustered approach. |
+
+| ![clustered](figures/colocated_approach.png) |
+| ---- |
+| Figure 3. Online training and inference with the co-located approach. |
+
+| ![clustered](figures/cl_vs_coDB_scaling.png) |
+| ---- |
+| Figure 4. Comparison of average data transfer cost from simulation ranks to database for the co-located approach, clustered approach with 1 database node, and clustered approach with 4 database nodes as the number of simulation nodes grow.  |
 
 
 
