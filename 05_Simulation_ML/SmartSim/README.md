@@ -5,12 +5,12 @@ Examples created by Riccardo Balin and edited by Filippo Simini at ALCF.
 ## Introduction
 
 SmartSim is an open source tool developed by the Hewlett Packard Enterprise (HPE) designed to facilitate the integration of traditional HPC simulation applications with machine learning workflows.
-There are two core components of SmartSim:
-- Infrastructure library (IL):
+There are two core components to SmartSim:
+- Infrastructure library (IL)
   - Provides API to start, stop and monitor HPC applications from Python
   - Interfaces with the scheduler launch jobs (PBSPro on Polaris and Cobalt on Theta/ThetaGPU)
   - Deploys a distributed in-memory database called the Orchestrator
-- SmartRedis client library:
+- SmartRedis client library
   - Provides clients that connect to the Orchestrator from Fortran, C, C++, Python code
   - The client API library enables data transfer to/from database and ability to load and run JIT-traced Python and ML runtimes acting on stored data
 
@@ -37,7 +37,9 @@ There are two main types of workflows for combining simulation and ML in situ wi
   - Supports both both CPU and GPU backends enabling model evaluation on GPU
   - Simulation and model evaluation are loosely coupled -- run on separate resources but inference blocks simulation progress
 
-![worflows](figures/train_inf_workflows.png)
+| ![worflows](figures/train_inf_workflows.png) |
+|:--:|
+| Figure 1. Online training and inference workflows with SmartSim. |
 
 Additionally, there are two approaches to deploying the SmartSim workflow, both for training and inference: clustered and co-located.
 - Clustered
