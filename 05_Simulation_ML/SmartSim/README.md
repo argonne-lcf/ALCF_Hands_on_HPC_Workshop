@@ -110,7 +110,7 @@ Here is some information about the example:
 - Lastly, we launch the distributed training program that train the NN model
   - This will run in parallel on another separate node
   - It will use PyTorch and Horovod to perform data-parallel distributed training on the GPU
-  - The model is a simple fully connected network with 2 hidden layers of 20 neurons, ReLU activatio functions, 1 input ($$x$$) and 1 output ($$y=f(x)$$)
+  - The model is a simple fully connected network with 2 hidden layers of 20 neurons, ReLU activatio functions, 1 input, $x$, and 1 output, $y=f(x)$
   - Training will progress until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
 
 To build the Fortran data producer, follow the instructions below: 
