@@ -114,7 +114,10 @@ Here is some information about the example:
   - Training will progress until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
 
 To build the Fortran data producer, follow the instructions below: 
-
+- Change directory to `Polaris/Fortran/train_clDB/src`
+- Make sure working directory is clean, if not run `./clean.sh`
+- Make sure the environment is already loaded, if not run `source env_Polaris.sh`
+- Build the executable with `./doConfig.sh`, which will be called `dataLoaderFtn.exe`
 
 
 ## Online Inference of Turbulence Closure Model
