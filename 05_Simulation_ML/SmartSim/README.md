@@ -74,7 +74,7 @@ Additionally, there are two approaches to deploying the SmartSim workflow, both 
 
 
 
-## Installing SmartSim on ALCF Machines 
+## Installing SmartSim on Polaris
 
 A Conda environment with the SmartSim and SmartRedis modules installed has been made available for you to use on Polaris. 
 The examples below make use of this environment. 
@@ -84,7 +84,7 @@ module load conda/2022-...
 conda activate /path/to/ssim_env
 ```
 
-Please note that this environment does not contain all the modules available with the base env from the `conda/2022-...` module, however it contains many of the essential packages, such as PyTorch, TensorFlow, Horovod, and MPI4PY.
+Please note that this environment does not contain all the modules available with the base env from the `conda/2022-09-08` module, however it contains many of the essential packages, such as PyTorch, TensorFlow, Horovod, and MPI4PY.
 If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](installation/install_ssimEnv_Polaris.sh) and executing it with the command
 ```
 source install_ssimEnv_Polaris.sh /path/to/conda/env
@@ -97,16 +97,41 @@ If you wish to use SmartSim on other ALCF systems (Theta and ThetaGPU), you can 
 
 ## Online Training of Turbulence Closure Model
 
-Train a model online, save it to file.
-Can I have a Fortran (or Python if having issues with Redis client library) that loads DNS FHIT data (this would be like loading in a checkpoint) and then goes through a loop (representing the time step loop of a simulation) sending the same data to the DB for training (same because hard to update it, but easy to imagine how this would update in a real simulation).
-This should be achievable and should train a usable model for the isotropic SGS model. 
-First step should be to load the input/output data for the model instead of having flow data and computing the inputs/outputs within the time step loop. Second step is to add that pre-processing, but this is not an important component of the example and would only make sense to people who know the topic.
+In this first hands-on example, we will perform online training of a NN model of a polynomial function $y = f(x) = x^2 + 3x + 1$ in the domain $x \in [0, 10)$.
+This example is available with both a Python and Fortran data producer, and implemented with both the clustered and co-located approaches at this [link](Polaris/).
+Today, we will go through the [clustered Fortran example](Polaris/Fortan/train_clDB/), but we encourage you to give all of them a try.
+
+Here is some information about the example:
+- A Python driver script is used to launch the components of the workflow using the SmartSim API
+- First, we launch a clustered database, which will run on one entire node
+- Second, we launch the data producer, which is a Fortran program that performs the role of the simulation
+  - This will run in parallel using MPI on a separate Polaris node. It will use the CPU of the node
+  - It will connect the SmartRedis client to the database, send some useful meta-data, and then iterate over a time step loop which generates and sends training data to the database until training is complete
+- Lastly, we launch the distributed training program that train the NN model
+  - This will run in parallel on another separate node
+  - It will use PyTorch and Horovod to perform data-parallel distributed training on the GPU
+  - The model is a simple fully connected network with 2 hidden layers of 20 neurons, ReLU activatio functions, 1 inout ($x$) and 1 output ($y=f(x)$)
+  - Training will progress until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
+
+To build the Fortran data producer, follow the instructions below:
+- 
+
 
 
 ## Online Inference of Turbulence Closure Model
 
-Take model trained above and use it for inference.
-Can I take the above SGS model, have the same simulation reproducer as above, but now I load in LES input data, go through the time step loop and do basically a priori inference on this data a few times.
-Then, I can save the predictions
+For the second hands-on example, we will perform online inference with the model for the polynomial we just trained in the previous example.
+Similarly to online training, this example is available with a Fortran and Python reproducer of a simulation and is implemented with both approaches [here](Polaris/).
+Today, we will go through the [Fortran co-located example](Polaris/Fortran/inference_coDB/).
+
+Here is some information about the example:
+- A Python driver script is used to launch the components of the workflow using the SmartSim API
+- The co-located database and simulation are launched simultaneously, each sharing CPU resources on the Polaris nodes. Inference on the GPU on Polaris is coming very soon!
+- The simulation will connect the SmartRedis client to the on-node database, upload the NN model to the database, and then iterate over a time step loop which generates inference data, sends it to the database, evaluates the model, and finally retreives the predictions
+- The predictions are saved to a file for plotting and comparison with the true polynomial values
+
+To build the Fortran simulation code, follow the build instructions from the previous example.
+
+ 
 
 
