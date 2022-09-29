@@ -80,14 +80,14 @@ A Conda environment with the SmartSim and SmartRedis modules installed has been 
 The examples below make use of this environment. 
 You can activate it by executing
 ```
-module load conda/2022-...
+module load conda/2022-09-08
 conda activate /path/to/ssim_env
 ```
 
 Please note that this environment does not contain all the modules available with the base env from the `conda/2022-09-08` module, however it contains many of the essential packages, such as PyTorch, TensorFlow, Horovod, and MPI4PY.
-If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](installation/install_ssimEnv_Polaris.sh) and executing it with the command
+If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](Polaris/Installation/build_SSIM_Polaris_SDL2022.sh) and executing it with the command
 ```
-source install_ssimEnv_Polaris.sh /path/to/conda/env
+source build_SSIM_Polaris_SDL2022.sh /path/to/conda/env
 ```
 It is recommended you build the Conda env inside a project space rather than your home space on ALCF systems because it will produce a lot of files and consume disk space.
 
@@ -99,7 +99,7 @@ If you wish to use SmartSim on other ALCF systems (Theta and ThetaGPU), you can 
 
 In this first hands-on example, we will perform online training of a NN model of a polynomial function $y = f(x) = x^2 + 3x + 1$ in the domain $x \in [0, 10)$.
 This example is available with both a Python and Fortran data producer, and implemented with both the clustered and co-located approaches at this [link](Polaris/).
-Today, we will go through the [clustered Fortran example](Polaris/Fortan/train_clDB/), but we encourage you to give all of them a try.
+Today, we will go through the [clustered Fortran example](Polaris/Fortran/train_clDB/), but we encourage you to give all of them a try.
 
 Here is some information about the example:
 - A Python driver script is used to launch the components of the workflow using the SmartSim API
