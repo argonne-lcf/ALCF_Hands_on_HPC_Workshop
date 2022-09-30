@@ -5,6 +5,9 @@
 The ALCF regularly hosts a simulation, data, and learning workshop to help users scale their applications. We are currently updating the content for the 2022 agenda.
 
 ### The repo is divided by the workshop sessions:
+Day 1 
+  * [Programming Models](programmingModels)
+
 Day 2
    * [Distributed Deep Learning](distributedDeepLearning)
    * [Building Data Pipelines](dataPipelines)
