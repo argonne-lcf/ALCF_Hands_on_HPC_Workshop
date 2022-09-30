@@ -34,6 +34,10 @@ except:
     hvd=Hvd;
 
 hvd.init()
+
+
+
+
 t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -47,11 +51,32 @@ parser.add_argument('--device', default='cpu',
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
 parser.add_argument('--warmup_epochs', default=3, help='number of warmup epochs', type=int)
+parser.add_argument('--wandb', action='store_true', 
+                    help='whether to use wandb to log data')
 args = parser.parse_args()
 
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
 
 print("I am rank %s of %s" %(hvd.rank(), hvd.size()))
+
+if args.wandb and hvd.rank()==0:
+    try:
+        import wandb
+        wandb.init(project="sdl-keras-mnist")
+    except:
+        args.wandb = False
+    config = wandb.config          # Initialize config
+    config.batch_size = args.batch_size         # input batch size for training (default: 64)
+    config.test_batch_size = args.test_batch_size    # input batch size for testing (default: 1000)
+    config.epochs = args.epochs            # number of epochs to train (default: 10)
+    config.lr = args.lr              # learning rate (default: 0.01)
+    config.device = args.device       # device defalt [cpu]
+    config.seed = args.seed            # random seed (default: 42)
+    config.log_interval = args.log_interval     # how many batches to wait before logging training status
+    config.num_workers = hvd.size()
+    config.warmup_epochs = args.warmup_epochs
+
+
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
 if args.device == 'cpu':
     tf.config.threading.set_intra_op_parallelism_threads(args.num_intra)
