@@ -1,0 +1,17 @@
+2021-10-04 19:59:38.844758: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-04 19:59:39.329253: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38427 MB memory:  -> device: 0, name: A100-SXM4-40GB, pci bus id: 0000:07:00.0, compute capability: 8.0
+2021-10-04 19:59:41.492630: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-10-04 19:59:42.195350: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8200
+2021-10-04 19:59:43.638635: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+Epoch: 0 	Loss: 186.682465 	Time/epoch: 6.46
+Epoch: 1 	Loss: 75.461815 	Time/epoch: 1.35
+Epoch: 2 	Loss: 56.376774 	Time/epoch: 1.35
+Epoch: 3 	Loss: 46.645664 	Time/epoch: 1.34
+Epoch: 4 	Loss: 40.684727 	Time/epoch: 1.34
+Epoch: 5 	Loss: 34.076298 	Time/epoch: 1.34
+Epoch: 6 	Loss: 30.651960 	Time/epoch: 1.34
+Epoch: 7 	Loss: 26.852730 	Time/epoch: 1.34
+Epoch: 8 	Loss: 24.722166 	Time/epoch: 1.34
+Epoch: 9 	Loss: 22.098801 	Time/epoch: 1.35
+Average epoch training time: 1.34 seconds
