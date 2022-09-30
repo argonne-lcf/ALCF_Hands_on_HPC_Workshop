@@ -7,7 +7,8 @@ from matplotlib import pyplot as plt
 
 # Fetch jobs and events for the Hello app
 app = models.App.objects.get(site_name="polaris_tutorial",name="Hello")
-jl = Job.objects.filter(app_id=app.id)
+jl = Job.objects.filter(app_id=app.id,tags={"workflow":"hello_deps"})
+
 events = EventLog.objects.filter(job_id=[job.id for job in jl])
 
 # Generate a throughput report

@@ -9,7 +9,7 @@ jobs = [
          tags={"workflow":"hello_multi"}, 
          node_packing_count=4,  # run 4 jobs per node
          gpus_per_rank=1)       # one GPU per rank    
-    for n in range(8)
+    for n in range(4)
 ]
 
 # Create all n jobs in one call; the list of created jobs is returned

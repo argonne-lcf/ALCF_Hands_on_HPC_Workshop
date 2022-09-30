@@ -83,25 +83,28 @@ We create a job using the command line interface, providing the say_hello_to par
 ```bash
 #!/bin/bash -x 
 
+# List apps
+balsam app ls --site polaris_tutorial
+
 # Create a Hello job
 # Note: tag it with the key-value pair workflow=hello for easy querying later
-balsam job create --site thetagpu_tutorial --app Hello --workdir=demo/hello --param say_hello_to=world --tag workflow=hello --yes
+balsam job create --site polaris_tutorial --app Hello --workdir=demo/hello --param say_hello_to=world --tag workflow=hello --yes
 
 # The job resides in the Balsam server now; list the job
 balsam job ls --tag workflow=hello
 ```
 
 ## Submit a BatchJob to run the Hello job (2_submit_batchjob.sh)
-We submit a batch job via the command line, and then list BatchJobs and the status of the job. Following a short delay, Balsam will submit the job to Cobalt, and the job will appear in the usual `qstat` output. The job status command can be run periodically to monitor the job.
+We submit a batch job via the command line, and then list BatchJobs and the status of the job. Following a short delay, Balsam will submit the job to PBS, and the job will appear in the usual `qstat` output. The job status command can be run periodically to monitor the job.
 ```bash
 #!/bin/bash
 
-# Submit a batch job to run this job on ThetaGPU
+# Submit a batch job to run this job on Polaris
 # Note: the command-line parameters are similar to scheduler command lines
 # Note: this job will run only jobs with a matching tag
 balsam queue submit \
-    -n 1 -t 10 -q training-gpu -A training-gpu \
-    --site thetagpu_tutorial \
+    -n 1 -t 10 -q SDL_Workshop -A SDL_Workshop \
+    --site polaris_tutorial \
     --tag workflow=hello \
     --job-mode mpi
   
@@ -114,26 +117,25 @@ balsam job ls --tag workflow=hello
 ```
 
 ## Create a collection of Hello jobs using the Balsam Python API (3_create_multiple_jobs.py)
-We create a collection of jobs, one per GPU on a ThetaGPU node. Though this code doesn't use the GPU, your code will; in the face of a larger collection of Balsam jobs and imbalance in runtimes, Balsam will target GPUs as they become available by setting CUDA_VISIBLE_DEVICES appropriately; the Hello app echoes this variable to illustrate GPU assignment.
+We create a collection of jobs, one per GPU on a Polaris node. Though this code doesn't use the GPU, your code will; in the face of a larger collection of Balsam jobs and imbalance in runtimes, Balsam will target GPUs as they become available by setting CUDA_VISIBLE_DEVICES appropriately; the Hello app echoes this variable to illustrate GPU assignment.
 
 ```python
 #!/usr/bin/env python
 from balsam.api import Job
 
 jobs = [
-    Job( site_name="thetagpu_tutorial", 
+    Job( site_name="polaris_tutorial", 
          app_id="Hello", 
          workdir=f"demo/hello_multi{n}", 
          parameters={"say_hello_to": f"world {n}!"},
          tags={"workflow":"hello_multi"}, 
-         node_packing_count=8,  # run 8 jobs per node
+         node_packing_count=4,  # run 4 jobs per node
          gpus_per_rank=1)       # one GPU per rank    
-    for n in range(8)
+    for n in range(4)
 ]
 
 # Create all n jobs in one call; the list of created jobs is returned
 jobs = Job.objects.bulk_create(jobs)
-
 ```
 
 ## Create a collection of Hello jobs with dependencies (4_create_multiple_jobs_with_deps.py)
@@ -145,37 +147,37 @@ from balsam.api import Job,BatchJob,Site
 
 # Create a collection of jobs, each one depending on the job before it
 n=0
-job = Job( site_name="thetagpu_tutorial",
+job = Job( site_name="polaris_tutorial",
            app_id="Hello", 
            workdir=f"demo/hello_deps{n}", 
            parameters={"say_hello_to": f"world {n}!"},
            tags={"workflow":"hello_deps"}, 
-           node_packing_count=8, 
+           node_packing_count=4, 
            gpus_per_rank=1)
 job.save()
 for n in range(1,8):
-    job = Job( site_name="thetagpu_tutorial", 
+    job = Job( site_name="polaris_tutorial", 
                app_id="Hello", 
                workdir=f"demo/hello_deps{n}", 
                parameters={"say_hello_to": f"world {n}!"},
                tags={"workflow":"hello_deps"}, 
-               node_packing_count=8, 
+               node_packing_count=4, 
                gpus_per_rank=1, 
                parent_ids=[job.id])  # Sets a dependency on the prior job
     job.save()
-    
+
 # Get the id for your site
-site = Site.objects.get("thetagpu_tutorial")
+site = Site.objects.get("polaris_tutorial")
 
 # Create a BatchJob to run jobs with the workflow=hello_deps tag
 BatchJob.objects.create(
     num_nodes=1,
     wall_time_min=10,
-    queue="training-gpu",
-    project="Comp_Perf_Workshop",
+    queue="SDL_Workshop",
+    project="SDL_Workshop",
     site_id=site.id,
     filter_tags={"workflow":"hello_deps"},
-    job_mode="mpi",
+    job_mode="mpi"
 )
 ```
 
@@ -199,7 +201,7 @@ for evt in EventLog.objects.filter(timestamp_after=yesterday):
 
 
 ## The Python API includes analytics support for utilization and throughput (6_analytics.py)
-This example will query the Hello jobs run to this point, to produce plots of utilization and throughput.
+This example will query the Hello jobs run with the tag workflow=hello_deps, to produce plots of utilization and throughput.
 
 ```python
 #!/usr/bin/env python
@@ -210,8 +212,9 @@ from balsam.analytics import utilization_report
 from matplotlib import pyplot as plt
 
 # Fetch jobs and events for the Hello app
-app = models.App.objects.get(site_name="thetagpu_tutorial",name="Hello")
-jl = Job.objects.filter(app_id=app.id)
+app = models.App.objects.get(site_name="polaris_tutorial",name="Hello")
+jl = Job.objects.filter(app_id=app.id,tags={"workflow":"hello_deps"})
+
 events = EventLog.objects.filter(job_id=[job.id for job in jl])
 
 # Generate a throughput report
@@ -223,9 +226,10 @@ fig = plt.Figure()
 plt.step(elapsed_minutes, done_counts, where="post")
 plt.xlabel("Elapsed time (minutes)")
 plt.ylabel("Jobs completed")
-plt.savefig("throughput.png")
+plt.savefig('throughput.png')
 
 # Generate a utilization report
+plt.figure()
 times, util = utilization_report(events, node_weighting=True)
 
 t0 = min(times)
@@ -237,7 +241,7 @@ plt.savefig("utilization.png")
 ```
 
 ## Supplemental: Create a collection of jobs at multiple sites (7_create_jobs_at_multiple_sites.sh)
-With Sites established on multiple machines, we can submit jobs to multiple sites from wherever Balsam is installed: here on Theta, or on your laptop. This example creates jobs at four different sites (including my laptop), and submits batch jobs to run them. As these jobs run, they can be monitored using `balsam job ls --tag workflow=hello_multisite --site all`. 
+With Sites established on multiple machines, we can submit jobs to multiple sites from wherever Balsam is installed: here on Polaris, or on your laptop. This example creates jobs at four different sites (including my laptop), and submits batch jobs to run them. As these jobs run, they can be monitored using `balsam job ls --tag workflow=hello_multisite --site all`. 
 
 > **⚠ WARNING: Extra Setup Required **  
 > This example will only work for you if you replicate this site/app setup
