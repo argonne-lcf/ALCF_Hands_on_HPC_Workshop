@@ -18,7 +18,7 @@ $ conda activate
 
 ## A Starting Point
 
-<!-- 
+<!--
 To download the mnist dataset, make sure to enable http forwarding:
 ```bash
 export http_proxy=http://theta-proxy.tmi.alcf.anl.gov:3128
@@ -30,27 +30,36 @@ Run the original script, single node, like so: `python train_GAN.py`.  Feel free
 Take note of the throughput reported!
 
 ```
-2021-04-30 20:21:57,881 - INFO - (0, 0), G Loss: 0.718, D Loss: 0.694, step_time: 2.402, throughput: 53.286 img/s.
-2021-04-30 20:21:58,567 - INFO - (0, 1), G Loss: 0.831, D Loss: 0.636, step_time: 0.686, throughput: 186.688 img/s.
-2021-04-30 20:21:59,222 - INFO - (0, 2), G Loss: 0.855, D Loss: 0.608, step_time: 0.655, throughput: 195.538 img/s.
-2021-04-30 20:21:59,801 - INFO - (0, 3), G Loss: 0.859, D Loss: 0.592, step_time: 0.578, throughput: 221.365 img/s.
-2021-04-30 20:22:00,362 - INFO - (0, 4), G Loss: 0.814, D Loss: 0.599, step_time: 0.561, throughput: 228.349 img/s.
-2021-04-30 20:22:00,902 - INFO - (0, 5), G Loss: 0.770, D Loss: 0.593, step_time: 0.540, throughput: 236.824 img/s.
-2021-04-30 20:22:01,443 - INFO - (0, 6), G Loss: 0.727, D Loss: 0.600, step_time: 0.540, throughput: 236.819 img/s.
-2021-04-30 20:22:01,983 - INFO - (0, 7), G Loss: 0.707, D Loss: 0.597, step_time: 0.540, throughput: 237.101 img/s.
-2021-04-30 20:22:02,523 - INFO - (0, 8), G Loss: 0.710, D Loss: 0.593, step_time: 0.540, throughput: 237.136 img/s.
-2021-04-30 20:22:03,063 - INFO - (0, 9), G Loss: 0.678, D Loss: 0.610, step_time: 0.540, throughput: 237.176 img/s.
-2021-04-30 20:22:03,619 - INFO - (0, 10), G Loss: 0.676, D Loss: 0.609, step_time: 0.540, throughput: 237.097 img/s.
-2021-04-30 20:22:04,159 - INFO - (0, 11), G Loss: 0.665, D Loss: 0.616, step_time: 0.540, throughput: 237.068 img/s
+INFO:root:(0, 0), G Loss: 0.699, D Loss: 0.672, step_time: 1.508, throughput: 84.883 img/s.
+INFO:root:(0, 1), G Loss: 0.892, D Loss: 0.612, step_time: 0.428, throughput: 299.274 img/s.
+INFO:root:(0, 2), G Loss: 0.867, D Loss: 0.591, step_time: 0.427, throughput: 299.728 img/s.
+INFO:root:(0, 3), G Loss: 0.846, D Loss: 0.584, step_time: 0.429, throughput: 298.436 img/s.
+INFO:root:(0, 4), G Loss: 0.848, D Loss: 0.580, step_time: 0.428, throughput: 299.203 img/s.
+INFO:root:(0, 5), G Loss: 0.794, D Loss: 0.582, step_time: 0.428, throughput: 298.880 img/s.
+INFO:root:(0, 6), G Loss: 0.760, D Loss: 0.609, step_time: 0.445, throughput: 287.366 img/s.
+INFO:root:(0, 7), G Loss: 0.722, D Loss: 0.600, step_time: 0.438, throughput: 292.149 img/s.
+INFO:root:(0, 8), G Loss: 0.699, D Loss: 0.602, step_time: 0.429, throughput: 298.461 img/s.
+INFO:root:(0, 9), G Loss: 0.666, D Loss: 0.617, step_time: 0.427, throughput: 299.560 img/s.
+INFO:root:(0, 10), G Loss: 0.655, D Loss: 0.634, step_time: 0.427, throughput: 299.887 img/s.
+INFO:root:(0, 11), G Loss: 0.636, D Loss: 0.654, step_time: 0.428, throughput: 299.198 img/s.
+INFO:root:(0, 12), G Loss: 0.663, D Loss: 0.645, step_time: 0.427, throughput: 299.976 img/s.
+INFO:root:(0, 13), G Loss: 0.658, D Loss: 0.647, step_time: 0.427, throughput: 299.484 img/s.
+INFO:root:(0, 14), G Loss: 0.692, D Loss: 0.646, step_time: 0.427, throughput: 299.853 img/s.
+INFO:root:(0, 15), G Loss: 0.678, D Loss: 0.655, step_time: 0.426, throughput: 300.195 img/s.
+INFO:root:(0, 16), G Loss: 0.701, D Loss: 0.646, step_time: 0.428, throughput: 299.311 img/s.
+INFO:root:(0, 17), G Loss: 0.686, D Loss: 0.649, step_time: 0.432, throughput: 296.549 img/s.
+INFO:root:(0, 18), G Loss: 0.678, D Loss: 0.661, step_time: 0.444, throughput: 287.965 img/s.
+INFO:root:(0, 19), G Loss: 0.686, D Loss: 0.649, step_time: 0.428, throughput: 298.792 img/s.
+
 ```
 
-On average, the A100 system is moving about 237 Images / second through this training loop.  Let's dig in to the first optimization in the [`line_profiler`](https://github.com/argonne-lcf/CompPerfWorkshop-2021/tree/main/09_profiling_frameworks/TensorFlow/line_profiler) directory.
+On average, the A100 system is moving about 299 Images / second through this training loop.  Let's dig in to the first optimization in the [`line_profiler`](https://github.com/argonne-lcf/CompPerfWorkshop-2021/tree/main/09_profiling_frameworks/TensorFlow/line_profiler) directory.
 
 Below are the wrap up conclusions which you can read ahead or come back to later.
 
 # Conclusions
 
-Try the `optimized` version of the code - what throughput are you getting?  It should be a good deal faster! (~170000 Img/s - about 700x faster)  So, after all the profiling, what optimizations did we learn?
+Try the `optimized` version of the code - what throughput are you getting?  It should be a good deal faster! (~177000 Img/s - about 590x faster)  So, after all the profiling, what optimizations did we learn?
 
  - Make sure that IO isn't a bottleneck.  In this case it was simple.  With big datasets it can be a challenge to keep the GPU fed and not idle on IO.
  - Make sure to use graph compilation where you can.  It's easy to make mistakes here: you must make sure to use only tensorflow operations!

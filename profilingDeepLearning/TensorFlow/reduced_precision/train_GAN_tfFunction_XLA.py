@@ -1,13 +1,14 @@
 import sys, os
 import time
 
+os.environ["TF_XLA_FLAGS"]="--tf_xla_auto_jit=2"
+
+
 import logging
 from logging import handlers
 
 import tensorflow as tf
 import numpy
-
-import horovod.tensorflow as hvd
 
 """
 Training a Generative Adversarial Network
@@ -40,59 +41,21 @@ dataset = tf.data.Dataset.from_tensor_slices((x_train))
 dataset.shuffle(60000)
 
 
-
-def init_mpi():
-
-    # Using the presence of an env variable to determine if we're using MPI:
-
-
-    try:
-        hvd.init()
-        local_rank = hvd.local_rank()
-        gpus = tf.config.list_physical_devices('GPU')
-        tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
-
-        return hvd.rank(), hvd.size()
-    except:
-        if "mpirun" in sys.argv or "mpiexec" in sys.argv:
-            raise Exception("MPI detected in command line but was not able to init!")
-        return 0, 1
-
-
-def configure_logger(rank):
+def configure_logger():
     '''Configure a global logger
 
     Adds a stream handler and a file hander, buffers to file (10 lines) but not to stdout.
 
-    Submit the MPI Rank
 
     '''
     logger = logging.getLogger()
+    # stream_handler = logging.StreamHandler()
+    # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    # stream_handler.setFormatter(formatter)
+    # handler = handlers.MemoryHandler(capacity = 10, target=stream_handler)
+    # logger.addHandler(handler)
 
-    # Create a handler for STDOUT, but only on the root rank.
-    # If not distributed, we still get 0 passed in here.
-    if rank == 0:
-        stream_handler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        stream_handler.setFormatter(formatter)
-        handler = handlers.MemoryHandler(capacity = 0, target=stream_handler)
-        logger.addHandler(handler)
-
-        # Add a file handler too:
-        log_file =  "process.log"
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setFormatter(formatter)
-        file_handler = handlers.MemoryHandler(capacity=10, target=file_handler)
-        logger.addHandler(file_handler)
-
-        logger.setLevel(logging.INFO)
-    else:
-        # in this case, MPI is available but it's not rank 0
-        # create a null handler
-        handler = logging.NullHandler()
-        logger.addHandler(handler)
-        logger.setLevel(logging.INFO)
-
+    logger.setLevel(logging.INFO)
 
 # The network designs for a GAN need not be anything special.
 
@@ -371,10 +334,10 @@ def forward_pass(_generator, _discriminator, _real_batch, _input_size):
 
 # Here is a function that will manage the training loop for us:
 
-def train_loop(batch_size, n_training_epochs, models, opts, global_size):
+def train_loop(batch_size, n_training_epochs, models, opts):
 
     @tf.function()
-    def train_iteration(data, _models, _opts, _global_size):
+    def train_iteration(data, _models, _opts):
 
         #Update the generator:
         with tf.GradientTape() as tape:
@@ -384,10 +347,6 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
                     _input_size = 100,
                     _real_batch = data,
                 )
-
-
-        if global_size != 1:
-            tape = hvd.DistributedGradientTape(tape)
 
 
 
@@ -409,11 +368,6 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
                 )
 
 
-        if _global_size != 1:
-            tape = hvd.DistributedGradientTape(tape)
-
-
-
 
         trainable_vars = _models["discriminator"].trainable_variables
 
@@ -430,7 +384,6 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
     logger = logging.getLogger()
 
 
-    rank = hvd.rank()
     tf.profiler.experimental.start('logdir')
     for i_epoch in range(n_training_epochs):
 
@@ -444,7 +397,7 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
 
             start = time.time()
 
-            loss = train_iteration(data, models, opts, global_size)
+            loss = train_iteration(data, models, opts)
 
             if loss["discriminator"] < 0.01:
                 break
@@ -452,7 +405,7 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
 
             end = time.time()
 
-            images = batch_size*2*global_size
+            images = batch_size*2
 
 
             logger.info(f"({i_epoch}, {i_batch}), G Loss: {loss['generator']:.3f}, D Loss: {loss['discriminator']:.3f}, step_time: {end-start :.3f}, throughput: {images/(end-start):.3f} img/s.")
@@ -460,7 +413,7 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
     tf.profiler.experimental.stop()
 
 # @tf.function
-def train_GAN(_batch_size, _training_epochs, global_size):
+def train_GAN(_batch_size, _training_epochs):
 
     tf.keras.mixed_precision.set_global_policy("mixed_float16")
 
@@ -485,20 +438,13 @@ def train_GAN(_batch_size, _training_epochs, global_size):
 
     }
 
-    if global_size != 1:
-        hvd.broadcast_variables(generator.variables, root_rank=0)
-        hvd.broadcast_variables(discriminator.variables, root_rank=0)
-        hvd.broadcast_variables(opts['generator'].variables(), root_rank=0)
-        hvd.broadcast_variables(opts['discriminator'].variables(), root_rank=0)
-
-    train_loop(_batch_size, _training_epochs, models, opts, global_size)
+    train_loop(_batch_size, _training_epochs, models, opts)
 
 
 if __name__ == '__main__':
 
-    rank, size = init_mpi()
-    configure_logger(rank)
+    configure_logger()
 
-    BATCH_SIZE=1024
+    BATCH_SIZE=2048
     N_TRAINING_EPOCHS = 10
-    train_GAN(BATCH_SIZE, N_TRAINING_EPOCHS, size)
+    train_GAN(BATCH_SIZE, N_TRAINING_EPOCHS)
