@@ -59,7 +59,7 @@ Below are the wrap up conclusions which you can read ahead or come back to later
 
 # Conclusions
 
-Try the `optimized` version of the code - what throughput are you getting?  It should be a good deal faster! (~170000 Img/s - about 700x faster)  So, after all the profiling, what optimizations did we learn?
+Try the `optimized` version of the code - what throughput are you getting?  It should be a good deal faster! (~177000 Img/s - about 590x faster)  So, after all the profiling, what optimizations did we learn?
 
  - Make sure that IO isn't a bottleneck.  In this case it was simple.  With big datasets it can be a challenge to keep the GPU fed and not idle on IO.
  - Make sure to use graph compilation where you can.  It's easy to make mistakes here: you must make sure to use only tensorflow operations!

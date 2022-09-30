@@ -9,7 +9,6 @@ from logging import handlers
 import tensorflow as tf
 import numpy
 
-
 """
 Training a Generative Adversarial Network
 
@@ -41,52 +40,21 @@ dataset = tf.data.Dataset.from_tensor_slices((x_train))
 dataset.shuffle(60000)
 
 
-
-def init_mpi():
-
-    # Using the presence of an env variable to determine if we're using MPI:
-
-
-    try:
-        hvd.init()
-        local_rank = hvd.local_rank()
-        gpus = tf.config.list_physical_devices('GPU')
-        tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
-
-        return hvd.rank(), hvd.size()
-    except:
-        if "mpirun" in sys.argv or "mpiexec" in sys.argv:
-            raise Exception("MPI detected in command line but was not able to init!")
-        return 0, 1
-
-
 def configure_logger():
     '''Configure a global logger
 
     Adds a stream handler and a file hander, buffers to file (10 lines) but not to stdout.
 
-    Submit the MPI Rank
 
     '''
     logger = logging.getLogger()
-
-    # Create a handler for STDOUT, but only on the root rank.
-    # If not distributed, we still get 0 passed in here.
-    stream_handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    stream_handler.setFormatter(formatter)
-    handler = handlers.MemoryHandler(capacity = 0, target=stream_handler)
-    logger.addHandler(handler)
-
-    # Add a file handler too:
-    log_file =  "process.log"
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setFormatter(formatter)
-    file_handler = handlers.MemoryHandler(capacity=10, target=file_handler)
-    logger.addHandler(file_handler)
+    # stream_handler = logging.StreamHandler()
+    # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    # stream_handler.setFormatter(formatter)
+    # handler = handlers.MemoryHandler(capacity = 10, target=stream_handler)
+    # logger.addHandler(handler)
 
     logger.setLevel(logging.INFO)
-
 
 # The network designs for a GAN need not be anything special.
 
@@ -302,7 +270,7 @@ def forward_pass(_generator, _discriminator, _real_batch, _input_size):
         # Use the generator to make fake images:
 
         # Use the generator to make fake images:
-        random_noise = tf.random.uniform(shape=[_batch_size,_input_size], minval=-1, maxval=1, dtype=tf.float16)
+        random_noise = tf.random.uniform(shape=[_batch_size,_input_size], minval=-1, maxval=1)
         fake_images  = _generator(random_noise)
 
 
@@ -312,7 +280,7 @@ def forward_pass(_generator, _discriminator, _real_batch, _input_size):
         prediction_on_fake_data = _discriminator(fake_images)
 
 
-        soften = 0.01
+        soften = 0.1
         real_labels = tf.zeros(shape=[_batch_size,1], dtype=tf.float16) + soften
         fake_labels = tf.ones( shape=[_batch_size,1], dtype=tf.float16) - soften
         gen_labels  = tf.zeros(shape=[_batch_size,1], dtype=tf.float16)
@@ -365,10 +333,10 @@ def forward_pass(_generator, _discriminator, _real_batch, _input_size):
 
 # Here is a function that will manage the training loop for us:
 
-def train_loop(batch_size, n_training_epochs, models, opts, global_size):
+def train_loop(batch_size, n_training_epochs, models, opts):
 
     @tf.function()
-    def train_iteration(data, _models, _opts, _global_size):
+    def train_iteration(data, _models, _opts):
 
         #Update the generator:
         with tf.GradientTape() as tape:
@@ -378,6 +346,8 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
                     _input_size = 100,
                     _real_batch = data,
                 )
+
+
 
 
         trainable_vars = _models["generator"].trainable_variables
@@ -425,7 +395,7 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
 
             start = time.time()
 
-            loss = train_iteration(data, models, opts, global_size)
+            loss = train_iteration(data, models, opts)
 
             if loss["discriminator"] < 0.01:
                 break
@@ -433,16 +403,15 @@ def train_loop(batch_size, n_training_epochs, models, opts, global_size):
 
             end = time.time()
 
-            images = batch_size*2*global_size
+            images = batch_size*2
 
 
             logger.info(f"({i_epoch}, {i_batch}), G Loss: {loss['generator']:.3f}, D Loss: {loss['discriminator']:.3f}, step_time: {end-start :.3f}, throughput: {images/(end-start):.3f} img/s.")
 
 # @tf.function
-def train_GAN(_batch_size, _training_epochs, global_size):
+def train_GAN(_batch_size, _training_epochs):
 
     tf.keras.mixed_precision.set_global_policy("mixed_float16")
-
 
     generator = Generator()
 
@@ -465,16 +434,13 @@ def train_GAN(_batch_size, _training_epochs, global_size):
 
     }
 
-    train_loop(_batch_size, _training_epochs, models, opts, global_size)
+    train_loop(_batch_size, _training_epochs, models, opts)
 
-
-    # Save the model:
-    generator.save_weights("trained_GAN_100epochs.h5")
 
 if __name__ == '__main__':
 
     configure_logger()
 
     BATCH_SIZE=4096
-    N_TRAINING_EPOCHS = 100
-    train_GAN(BATCH_SIZE, N_TRAINING_EPOCHS, size)
+    N_TRAINING_EPOCHS = 10
+    train_GAN(BATCH_SIZE, N_TRAINING_EPOCHS)

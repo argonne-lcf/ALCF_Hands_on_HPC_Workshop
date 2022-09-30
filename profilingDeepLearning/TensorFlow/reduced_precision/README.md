@@ -11,17 +11,22 @@ In this case, there are also a bunch of places where I hard-coded `float32` - oo
 Next, run with mixed precision (profiling is still turned on here):
 
 ```
-2021-04-28 21:24:47,079 - INFO - G Loss: 1.297, D Loss: 0.493, step_time: 0.200, throughput: 81943.425 img/s.
-2021-04-28 21:24:47,279 - INFO - G Loss: 1.338, D Loss: 0.491, step_time: 0.200, throughput: 81944.206 img/s.
-2021-04-28 21:24:47,479 - INFO - G Loss: 1.306, D Loss: 0.492, step_time: 0.200, throughput: 81977.345 img/s.
-2021-04-28 21:24:47,680 - INFO - G Loss: 1.346, D Loss: 0.491, step_time: 0.200, throughput: 81911.681 img/s.
-2021-04-28 21:24:47,880 - INFO - G Loss: 1.313, D Loss: 0.492, step_time: 0.200, throughput: 81956.031 img/s.
-2021-04-28 21:24:48,080 - INFO - G Loss: 1.353, D Loss: 0.491, step_time: 0.200, throughput: 81871.669 img/s.
-2021-04-28 21:24:48,280 - INFO - G Loss: 1.320, D Loss: 0.492, step_time: 0.200, throughput: 81990.353 img/s.
-2021-04-28 21:24:48,480 - INFO - G Loss: 1.358, D Loss: 0.490, step_time: 0.200, throughput: 81811.531 img/s.
+INFO:root:(9, 16), G Loss: 0.754, D Loss: 0.615, step_time: 0.025, throughput: 162552.695 img/s.
+INFO:root:(9, 17), G Loss: 0.762, D Loss: 0.620, step_time: 0.025, throughput: 162734.387 img/s.
+INFO:root:(9, 18), G Loss: 0.755, D Loss: 0.629, step_time: 0.025, throughput: 163159.402 img/s.
+INFO:root:(9, 19), G Loss: 0.777, D Loss: 0.639, step_time: 0.025, throughput: 162735.928 img/s.
+INFO:root:(9, 20), G Loss: 0.752, D Loss: 0.637, step_time: 0.025, throughput: 162651.189 img/s.
+INFO:root:(9, 21), G Loss: 0.848, D Loss: 0.644, step_time: 0.025, throughput: 162032.965 img/s.
+INFO:root:(9, 22), G Loss: 0.683, D Loss: 0.649, step_time: 0.025, throughput: 162702.022 img/s.
+INFO:root:(9, 23), G Loss: 1.082, D Loss: 0.664, step_time: 0.025, throughput: 163047.910 img/s.
+INFO:root:(9, 24), G Loss: 0.592, D Loss: 0.671, step_time: 0.025, throughput: 162345.324 img/s.
+INFO:root:(9, 25), G Loss: 1.044, D Loss: 0.648, step_time: 0.025, throughput: 162668.130 img/s.
+INFO:root:(9, 26), G Loss: 0.707, D Loss: 0.638, step_time: 0.025, throughput: 161794.912 img/s.
+INFO:root:(9, 27), G Loss: 0.949, D Loss: 0.625, step_time: 0.025, throughput: 162225.750 img/s.
+INFO:root:(9, 28), G Loss: 0.778, D Loss: 0.621, step_time: 0.025, throughput: 163931.614 img/s.
 ```
 
-This is disappointing!  We ran with mixed precision and it is SLOWER.  Let's look into the profile to discover why.
+This is disappointing!  We ran with mixed precision and it is NOT FASTER.  Let's look into the profile to discover why.
 
 Here's the overview page.  We note right away that in the bottom left, it IS using a good amount of reduced precision.
 
@@ -50,4 +55,3 @@ And zoomed:
 ![timeline zoom](trace-zoomed.png)
 
 So, reduced precision appears to be slower because of one particular operation.  How to fix this?  Well the best solution here is probably to open a bug report.
-

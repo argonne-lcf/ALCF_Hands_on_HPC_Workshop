@@ -438,6 +438,6 @@ if __name__ == '__main__':
 
     configure_logger()
 
-    BATCH_SIZE=1024
+    BATCH_SIZE=2048
     N_TRAINING_EPOCHS = 1
     train_GAN(BATCH_SIZE, N_TRAINING_EPOCHS)
