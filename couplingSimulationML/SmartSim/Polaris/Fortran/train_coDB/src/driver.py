@@ -39,16 +39,15 @@ PORT = 6780
 exp = Experiment("train-example", launcher="pbs")
 
 # Set the run settings, including the Python executable and how to run it
-Py_exe = './src/load_data.py'
+Ftn_exe = './src/dataLoaderFtn.exe'
 if (simprocs_pn<ppn):
     ppn = simprocs_pn
 runArgs = {'hostfile': hostfile,
            'np': simprocs, 'ppn': ppn,
           }
-exe_args = Py_exe+ f' --dbnodes 1 --ppn {simprocs_pn} --logging {logging}'
 run_settings = MpiexecSettings(
-               'python',
-               exe_args=exe_args,
+               Ftn_exe,
+               exe_args=None,
                run_args=runArgs,
                env_vars=None
                )

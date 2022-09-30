@@ -3,7 +3,7 @@
       use smartredis_client, only : client_type      
 
       type(client_type) :: client
-      integer nnDB
+      integer nnDB, ppn
 
       end module ssim
 
@@ -48,29 +48,36 @@ c ==================================================
       integer its, numts, i, err
       integer stepInfo(2), arrInfo(6)
       integer myrank, comm_size, ierr, tag, status(MPI_STATUS_SIZE), 
-     &        nproc
+     &        nproc, name_len
       character*255 rank_key, sendArr_key
-      character*255 ssdb
+      character*255 ssdb, fname
+      character*(MPI_MAX_PROCESSOR_NAME) proc_name
 
 c     Initialize MPI
       call MPI_INIT(ierr)
       call MPI_COMM_SIZE(MPI_COMM_WORLD, comm_size, ierr)
       call MPI_COMM_RANK(MPI_COMM_WORLD, myrank, ierr)
+      call MPI_Get_processor_name( proc_name, name_len, ierr)
       nproc = comm_size
+      write(*,100) 'Hello from rank ',myrank,'/',nproc,
+     &           'on node ',trim(proc_name)
+100   format (A,I0,A,I0,A,A)
       call MPI_Barrier(MPI_COMM_WORLD,ierr)
-      write(*,*) 'Hello from rank ',myrank
       flush(OUTPUT_UNIT)
 
 c     Initialize SmartRedis clients
-      nnDB = 1 
+      nnDB = 1
+      ppn = 16
       call init_client(myrank)
       call MPI_Barrier(MPI_COMM_WORLD,ierr)
       if (myrank.eq.0) write(*,*) 'All SmartRedis clients initialized'
 
 c     Write the DB IP address to file
       call get_environment_variable("SSDB", ssdb)
-      if (myrank.eq.0) then
-         open (unit=25, file='SSDB.dat', status='replace')
+      if (mod(myrank,ppn).eq.0) then
+          write (fname, "(A3,A1,I0)") 
+     &               'SSDB_',trim(proc_name),'.dat'
+         open (unit=25, file=fname, status='replace')
          write(25,'(a)',advance='no') trim(adjustl(ssdb))
          close(25)
       endif
@@ -91,7 +98,7 @@ c     Tha training data is obtained from a uniform distribution over the domain
 
 
 c     Send array used to communicate whether to keep running data loader or ML
-      if (myrank.eq.0) then
+      if (mod(myrank,ppn).eq.0) then
          arrMLrun = 1.0
          err = client%put_tensor("check-run", arrMLrun, shape(arrMLrun))
          if (err.ne.0) write(*,*)
@@ -100,12 +107,12 @@ c     Send array used to communicate whether to keep running data loader or ML
 
 
 c     Send some information regarding the training data size
-      if (myrank.eq.0) then
+      if (mod(myrank,ppn).eq.0) then
          arrInfo(1) = nSamples
          arrInfo(2) = nInputs+nOutputs
          arrInfo(3) = nInputs
          arrInfo(4) = nproc
-         arrInfo(5) = nproc
+         arrInfo(5) = ppn
          arrInfo(6) = myrank
          err = client%put_tensor("sizeInfo", arrInfo, shape(arrInfo))
          if (err.ne.0) then 
@@ -119,20 +126,21 @@ c     Send some information regarding the training data size
 c     Generate first part of the key for the training data
 c     The key will be tagged with the rank ID and the time step number
       rank_key = "y."
-      if (myrank.lt.10) then
-         write (rank_key, "(A2,I1)") trim(rank_key), myrank
-      elseif (myrank.lt.100) then
-         write (rank_key, "(A2,I2)") trim(rank_key), myrank
-      elseif (myrank.lt.1000) then
-         write (rank_key, "(A2,I3)") trim(rank_key), myrank
-      endif
+      write (rank_key, "(A2,I0)") trim(rank_key), myrank
+      !if (myrank.lt.10) then
+      !   write (rank_key, "(A2,I1)") trim(rank_key), myrank
+      !elseif (myrank.lt.100) then
+      !   write (rank_key, "(A2,I2)") trim(rank_key), myrank
+      !elseif (myrank.lt.1000) then
+      !   write (rank_key, "(A2,I3)") trim(rank_key), myrank
+      !endif
 
 
 c     Emulate integration of PDEs with a do loop
       numts = 1000
       do its=1,numts
          ! sleep for a few seconds to emulate the time required by PDE integration
-         call sleep (10)
+         call sleep (2)
 
          ! first off check if ML is done training, if so exit from loop
          err = client%unpack_tensor("check-run", arrMLrun, 
@@ -151,13 +159,15 @@ c     Emulate integration of PDEs with a do loop
          enddo
 
          ! Append the ts number to the key so data doesn't get overwritten in database
-         if (myrank.lt.10) then
-            write (sendArr_key, "(A3,A1,I0)") trim(rank_key),'.',its
-         elseif (myrank.lt.100) then
-            write (sendArr_key, "(A4,A1,I0)") trim(rank_key),'.',its
-         elseif (myrank.lt.1000) then
-            write (sendArr_key, "(A5,A1,I0)") trim(rank_key),'.',its
-         endif
+         write (sendArr_key, "(A,A1,I0)") trim(rank_key),'.',its
+         !if (myrank.lt.10) then
+         !   write (sendArr_key, "(A3,A1,I0)") trim(rank_key),'.',its
+         !elseif (myrank.lt.100) then
+         !   write (sendArr_key, "(A4,A1,I0)") trim(rank_key),'.',its
+         !elseif (myrank.lt.1000) then
+         !   write (sendArr_key, "(A5,A1,I0)") trim(rank_key),'.',its
+         !endif
+
          ! send training data to database
          if (myrank.eq.0) write(*,*) 
      &            'Sending training data to database with key ',
@@ -172,9 +182,10 @@ c     Emulate integration of PDEs with a do loop
             if (myrank.eq.0) write(*,*) 
      &                'All ranks finished sending training data'
          endif
+
          ! Send also the time step number, used by ML program to determine 
          ! when new training data is available
-         if (myrank.eq.0) then
+         if (mod(myrank,ppn).eq.0) then
             stepInfo(1) = its
             stepInfo(2) = 0.0
             err = client%put_tensor("step", stepInfo, shape(stepInfo))
@@ -182,8 +193,11 @@ c     Emulate integration of PDEs with a do loop
      &             "ERROR: client%put_tensor failed on rank ",myrank
          endif
       enddo
+
 c     Finilization stuff
       if (myrank.eq.0) write(*,*) "Exiting ... "
+
       deallocate(sendArr)
       call MPI_FINALIZE(ierr)
+
       end program data_loader
