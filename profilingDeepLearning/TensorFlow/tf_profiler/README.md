@@ -32,7 +32,7 @@ Here is the Kernel Statistics page:
 
 ![kernel stats](kernel-stats.png)
 
-Again, this shows that the convolution operations are all the most dominant.
+Again, this shows that the convolution operations are all the most dominant. Note that the first two operations here are XLA _compilation_ operations and 1-time costs.  Unless you are running 1 iteration and then restarting, those turn out to be negligible in most cases.
 
 The tensorflow statistics shows similar info:
 
