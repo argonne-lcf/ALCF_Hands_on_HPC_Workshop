@@ -21,7 +21,7 @@ balsam queue ls
 ```
 ## Getting started with Balsam
 
-To work through this tutorial and any Balsam functionality, you first need to get a login to the Balsam server.  To get a login, email the ALCF Help Desk.
+To work through this tutorial (or any Balsam functionality), you first need to get a login to the Balsam server.  To get a login, email the ALCF Help Desk.
 
 ## Getting started on Polaris
 
@@ -37,26 +37,25 @@ cd sdl_workshop/workflows/balsam
 ## Set up Balsam and supporting codes
 ```
 # Create a virtual environment
-/lus/theta-fs0/software/datascience/conda/2021-09-22/mconda3/bin/python -m venv env
+module load conda
+conda activate base
+python -m venv env
 source env/bin/activate
 pip install --upgrade pip
 # We need matplotlib for one of the examples
 pip install matplotlib
 
 # Install Balsam
-pip install balsam
+pip install --pre balsam
 
 # Login to the Balsam server. This will prompt you to visit an ALCF login page; this command will
 # block until you've logged in on the webpage.
 balsam login
 
-# Load the cobalt-gpu module, so Balsam submits to the ThetaGPU
-module load cobalt/cobalt-gpu
-
 # Create a Balsam site
 # Note: The "-n" option specifies the site name; the last argument specifies the directory name                              
-balsam site init -n thetagpu_tutorial thetagpu_tutorial
-cd thetagpu_tutorial
+balsam site init -n polaris_tutorial polaris_tutorial
+cd polaris_tutorial
 balsam site start
 cd ..
 ```
@@ -68,7 +67,7 @@ We define an application by wrapping the command line in a small amount of Pytho
 from balsam.api import ApplicationDefinition
 
 class Hello(ApplicationDefinition):
-    site = "thetagpu_tutorial"
+    site = "polaris_tutorial"
     command_template = "echo Hello, {{ say_hello_to }}! CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 Hello.sync()
 ```
@@ -81,7 +80,7 @@ python hello.py
 
 ## Create a Hello job using the Balsam CLI interface (1_create_job.sh)
 We create a job using the command line interface, providing the say_hello_to parameter, and then list Balsam jobs with the related tag.
-```python
+```bash
 #!/bin/bash -x 
 
 # Create a Hello job

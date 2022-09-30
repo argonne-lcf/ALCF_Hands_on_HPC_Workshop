@@ -6,7 +6,7 @@ from balsam.analytics import utilization_report
 from matplotlib import pyplot as plt
 
 # Fetch jobs and events for the Hello app
-app = models.App.objects.get(site_name="thetagpu_tutorial",name="Hello")
+app = models.App.objects.get(site_name="polaris_tutorial",name="Hello")
 jl = Job.objects.filter(app_id=app.id)
 events = EventLog.objects.filter(job_id=[job.id for job in jl])
 

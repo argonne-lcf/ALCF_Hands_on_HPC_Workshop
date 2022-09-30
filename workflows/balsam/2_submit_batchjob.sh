@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Submit a batch job to run this job on ThetaGPU
+# Submit a batch job to run this job on Polaris
 # Note: the command-line parameters are similar to scheduler command lines
 # Note: this job will run only jobs with a matching tag
 balsam queue submit \
-    -n 1 -t 10 -q training-gpu -A Comp_Perf_Workshop \
-    --site thetagpu_tutorial \
+    -n 1 -t 10 -q debug -A datascience \
+    --site polaris_tutorial \
     --tag workflow=hello \
     --job-mode mpi
   
