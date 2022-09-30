@@ -103,15 +103,15 @@ Today, we will go through the [clustered Fortran example](Polaris/Fortran/train_
 
 Here is some information about the example:
 - A Python driver script is used to launch the components of the workflow using the SmartSim API
-- First, we launch a clustered database, which will run on one entire node
+- First, we launch a clustered database, which runs on one entire node
 - Second, we launch the data producer, which is a Fortran program that performs the role of the simulation
-  - This will run in parallel using MPI on a separate Polaris node. It will use the CPU of the node
-  - It will connect the SmartRedis client to the database, send some useful meta-data, and then iterate over a time step loop which generates and sends training data to the database until training is complete
-- Lastly, we launch the distributed training program that train the NN model
-  - This will run in parallel on another separate node
-  - It will use PyTorch and Horovod to perform data-parallel distributed training on the GPU
+  - This runs in parallel using MPI on a separate Polaris node. It uses the CPU of the node
+  - It connects the SmartRedis client to the database, sends some useful meta-data, and then iterates over a time step loop which generates and sends training data to the database until training is complete
+- Lastly, we launch the distributed training program that trains the NN model
+  - This runs in parallel on another separate node
+  - It uses PyTorch and Horovod to perform data-parallel distributed training on the GPU
   - The model is a simple fully connected network with 2 hidden layers of 20 neurons, ReLU activatio functions, 1 input, $x$, and 1 output, $y=f(x)$
-  - Training will progress until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
+  - Training progresses until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
 
 To build the Fortran data producer, follow the instructions below: 
 - Change directory to `Polaris/Fortran/train_clDB/src`
@@ -129,8 +129,9 @@ Today, we will go through the [Fortran co-located example](Polaris/Fortran/infer
 
 Here is some information about the example:
 - A Python driver script is used to launch the components of the workflow using the SmartSim API
-- The co-located database and simulation are launched simultaneously, each sharing CPU resources on the Polaris nodes. Inference on the GPU on Polaris is coming very soon!
-- The simulation will connect the SmartRedis client to the on-node database, upload the NN model to the database, and then iterate over a time step loop which generates inference data, sends it to the database, evaluates the model, and finally retreives the predictions
+- The co-located database and simulation are launched simultaneously, each sharing CPU resources on the Polaris nodes
+- The model is evaluated on the GPU
+- The simulation connects the SmartRedis client to the on-node database, uploads the NN model to the database, and then iterates over a time step loop which generates inference data, sends it to the database, evaluates the model, and finally retreives the predictions
 - The predictions are saved to a file for plotting and comparison with the true polynomial values
 
 To build the Fortran simulation code, follow the build instructions from the previous example.
