@@ -43,12 +43,14 @@ c ==================================================
       include "mpif.h"
 
       real*8, allocatable, dimension (:,:) :: sendArr
+      real*8, allocatable, dimension (:) :: read_inputs
       real*8 xmin, xmax, arrMLrun(2), x
       integer nSamples, nInputs, nOutputs, seed
-      integer its, numts, i, err
+      integer its, numts, i, j, err, num_inputs
       integer stepInfo(2), arrInfo(6)
       integer myrank, comm_size, ierr, tag, status(MPI_STATUS_SIZE), 
      &        nproc, name_len
+      logical exlog
       character*255 rank_key, sendArr_key
       character*255 ssdb, fname
       character*(MPI_MAX_PROCESSOR_NAME) proc_name
@@ -60,14 +62,30 @@ c     Initialize MPI
       call MPI_Get_processor_name( proc_name, name_len, ierr)
       nproc = comm_size
       write(*,100) 'Hello from rank ',myrank,'/',nproc,
-     &           'on node ',trim(proc_name)
+     &           ' on node ',trim(proc_name)
 100   format (A,I0,A,I0,A,A)
       call MPI_Barrier(MPI_COMM_WORLD,ierr)
       flush(OUTPUT_UNIT)
 
-c     Initialize SmartRedis clients
-      nnDB = 1
-      ppn = 16
+c     Initialize SmartRedis client
+      inquire(file='input.config',exist=exlog)
+      if(exlog) then
+         open (unit=24, file='input.config', status='unknown')
+         read(24,*) num_inputs
+         allocate(read_inputs(num_inputs))
+         read(24,*) (read_inputs(j), j=1,num_inputs)
+         close(24)
+         nnDB = int(read_inputs(1))
+         ppn = int(read_inputs(2))
+         deallocate(read_inputs)
+      else
+         if (myrank.eq.0) then
+            write(*,*) 'Inputs not specified in input.config'
+            write(*,*) 'Setting nnDB and ppn to 1'
+         endif
+         nnDB = 1
+         ppn = 1
+      endif
       call init_client(myrank)
       call MPI_Barrier(MPI_COMM_WORLD,ierr)
       if (myrank.eq.0) write(*,*) 'All SmartRedis clients initialized'
@@ -75,12 +93,13 @@ c     Initialize SmartRedis clients
 c     Write the DB IP address to file
       call get_environment_variable("SSDB", ssdb)
       if (mod(myrank,ppn).eq.0) then
-          write (fname, "(A3,A1,I0)") 
+          write (fname, "(A5,A,A4)") 
      &               'SSDB_',trim(proc_name),'.dat'
          open (unit=25, file=fname, status='replace')
-         write(25,'(a)',advance='no') trim(adjustl(ssdb))
+         write(25,101,advance='no') trim(adjustl(ssdb))
          close(25)
       endif
+101   format(A)
 
 c     Set parameters for array of random numbers to be set as training data
 c     In this example we create training data for a simple function

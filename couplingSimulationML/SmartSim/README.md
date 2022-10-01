@@ -114,6 +114,7 @@ Here is some information about the example:
   - Training progresses until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
 
 To build the Fortran data producer, follow the instructions below: 
+- Connect to a Polaris login or compute node, either will work for this example
 - Change directory to `Polaris/Fortran/train_clDB/src`
 - Make sure the working directory is clean, if not run `./clean.sh`
 - Make sure the environment is already set, if not run `source env_Polaris.sh`

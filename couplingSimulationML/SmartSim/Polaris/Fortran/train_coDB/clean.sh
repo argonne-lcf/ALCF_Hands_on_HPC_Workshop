@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm train_coDB.*
+rm input.config
 rm load_data-db.log
 rm load_data.out load_data.err
 rm train_model.err train_model.out

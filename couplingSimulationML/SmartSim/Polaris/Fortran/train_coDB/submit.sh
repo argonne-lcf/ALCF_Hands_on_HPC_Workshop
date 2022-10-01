@@ -41,6 +41,8 @@ HOST_FILE=$(echo $PBS_NODEFILE)
 
 # Run
 echo python $DRIVER $nodes $ppn $simprocs $sim_ppn $mlprocs $ml_ppn $db_ppn $device $logging $HOST_FILE
+echo 2 > input.config
+echo "1 $sim_ppn" >> input.config
 python $DRIVER $nodes $ppn $simprocs $sim_ppn $mlprocs $ml_ppn $db_ppn $device $logging $HOST_FILE
 
 # Handle output

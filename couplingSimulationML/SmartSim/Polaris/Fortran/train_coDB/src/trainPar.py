@@ -191,6 +191,8 @@ def main():
             if (SSDB == ''):
                 continue
             else: 
+                if ('\n' == SSDB[-1]):
+                    SSDB = SSDB[:-1]
                 break
         else:
             continue

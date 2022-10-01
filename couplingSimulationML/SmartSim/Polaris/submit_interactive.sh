@@ -9,7 +9,5 @@ runtime=01:00:00
 echo number of nodes $nodes
 echo run time $runtime
 
-qsub -I -A $ChargeAccount -q $queue -l select=$nodes:ncpus=64:ngpus=4,walltime=$runtime,filesystems=eagle,home
+qsub -I -A $ChargeAccount -q $queue -l select=$nodes:ncpus=64:ngpus=4,walltime=$runtime,filesystems=eagle:home
 
-# Then, run
-#./run.sh 1 12 4 4 1 1 4 cpu
