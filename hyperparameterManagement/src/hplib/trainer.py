@@ -3,24 +3,23 @@ ddp/trainer.py
 """
 from __future__ import absolute_import, annotations, division, print_function
 import time
-from typing import Optional
+from typing import Optional, Any
 
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 import torch
 from torch import optim
 from torch.cuda.amp.grad_scaler import GradScaler
-from torch.cuda.amp.grad_scaler import GradScaler
-import torch.distributed as dist
 import torch.distributed as dist
 import torch.nn as nn
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.utils.data
 import torch.utils.data.distributed
 from torchvision import datasets, transforms
+import wandb
 
+from hplib.configs import DATA_DIR, NetworkConfig, TrainerConfig
 from hplib.network import Net
-from hplib.configs import DATA_DIR, TrainerConfig, NetworkConfig
 from hplib.utils.pylogger import get_pylogger
 
 log = get_pylogger(__name__)
@@ -33,23 +32,15 @@ def metric_average(val: torch.Tensor, size: int = 1):
         log.exception(exc)
         pass
 
-    # if (WITH_DDP):
-    #     # Sum everything and divide by the total size
-    #     dist.all_reduce(val, op=dist.ReduceOp.SUM)
-    #     return val / SIZE
-
-    # return val
     return val / size
 
-
-import wandb
 
 class Trainer:
     def __init__(
             self,
             config: TrainerConfig | dict | DictConfig,
             net_config: Optional[NetworkConfig | dict | DictConfig],
-            wbrun: Optional[wandb.run] = None,
+            wbrun: Optional[Any] = None,
             scaler: Optional[GradScaler] = None,
             model: Optional[torch.nn.Module] = None,
             optimizer: Optional[torch.optim.Optimizer] = None,
@@ -58,14 +49,13 @@ class Trainer:
             self.config = instantiate(config)
         elif isinstance(config, TrainerConfig):
             self.config = config
-        if not isinstance(config, TrainerConfig):
-            import pdb; pdb.set_trace()
-        # self.cfg = cfg
-        # self.rank = RANK
+        assert isinstance(self.config, TrainerConfig)
+
         if scaler is None:
             self.scaler = None
 
         if net_config is None:
+            assert model is not None and hasattr(model, 'config')
             self.net_config = model.config
         else:
             if isinstance(net_config, (dict, DictConfig)):
@@ -97,8 +87,8 @@ class Trainer:
             self.world_size = dist.get_world_size()
             self.local_size = torch.cuda.device_count()
             self._ngpus = self.world_size * torch.cuda.device_count()
-            if self._ngpus > 1:
-                self.model = DDP(self.model)
+            # if self._ngpus > 1:
+            #     self.model = DDP(self.model)
 
         self.wbrun = wbrun
         # if self.rank == 0:
@@ -118,14 +108,7 @@ class Trainer:
             log.warning(f'Caught wandb.run from: {self.rank}')
             self.wbrun.watch(self.model, log='all', criterion=self.loss_fn)
 
-
-    def build_model(
-            self,
-            net_config: Optional[NetworkConfig] = None
-    ) -> nn.Module:
-        if net_config is None:
-            net_config = self.config.network
-
+    def build_model(self, net_config: NetworkConfig) -> nn.Module:
         assert net_config is not None
         model = Net(net_config)
         xshape = (1, *[28, 28])
@@ -135,6 +118,9 @@ class Trainer:
             x = x.cuda()
 
         _ = model(x)
+
+        if self.world_size > 1:
+            model = DDP(model)
 
         return model
 
@@ -173,7 +159,7 @@ class Trainer:
 
         train_dataset = (
             datasets.MNIST(
-                DATA_DIR,
+                DATA_DIR.as_posix(),
                 train=True,
                 download=True,
                 transform=transforms.Compose([
@@ -196,7 +182,7 @@ class Trainer:
 
         test_dataset = (
             datasets.MNIST(
-                DATA_DIR,
+                DATA_DIR.as_posix(),
                 train=False,
                 transform=transforms.Compose([
                     transforms.ToTensor(),
@@ -248,6 +234,14 @@ class Trainer:
 
         return loss, acc
 
+    def has_wbrun(self):
+        assert self.wbrun is not None
+        return (
+            self.rank == 0
+            and self.wbrun is not None
+            and self.wbrun is wandb.run
+        )
+
     def train_epoch(
             self,
             epoch: int,
@@ -264,6 +258,7 @@ class Trainer:
         train_loader = self.data['train']['loader']
         # DDP: set epoch to sampler for shuffling
         train_sampler.set_epoch(epoch)
+
         for bidx, (data, target) in enumerate(train_loader):
             t0 = time.time()
             loss, acc = self.train_step(data, target)
@@ -293,17 +288,27 @@ class Trainer:
                 log.info(' '.join([
                     *pre, *[f'{k}={v:.4f}' for k, v in metrics.items()]
                 ]))
-                if self.rank == 0:  # and self.wbrun is wandb.run:
-                    self.wbrun.log(
+                # if (
+                #         self.rank == 0
+                #         and self.wbrun is not None
+                #         and self.wbrun is wandb.run
+                # ):
+                # if self.has_wbrun():
+                # assert self.wbrun is not None
+                # assert self.wbrun is not None and self.wbrun is wandb.run
+                try:
+                    self.wbrun.log(  # type:ignore
                         {f'batch/{key}': val for key, val in metrics.items()}
                     )
-
+                except Exception:
+                    pass
 
         running_loss = running_loss / len(train_sampler)
         running_acc = running_acc / len(train_sampler)
         training_acc = metric_average(running_acc, size=self._ngpus)
         loss_avg = metric_average(running_loss, size=self._ngpus)
         if self.rank == 0:
+            assert self.wbrun is not None and self.wbrun is wandb.run
             self.wbrun.log({'train/loss': loss_avg, 'train/acc': training_acc})
 
         return {'loss': loss_avg, 'acc': training_acc}
@@ -324,6 +329,9 @@ class Trainer:
 
         acc = correct / total
         if self.rank == 0:
-            self.wbrun.log({'test/acc': correct / total})
+            try:
+                self.wbrun.log({'test/acc': correct / total})  # type:ignore
+            except Exception:
+                pass
 
         return acc

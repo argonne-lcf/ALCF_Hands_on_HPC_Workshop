@@ -8,7 +8,7 @@ from __future__ import absolute_import, annotations, division, print_function
 import os
 import socket
 import time
-from typing import Callable, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import hydra
 from hydra.utils import instantiate
@@ -16,14 +16,17 @@ import numpy as np
 from omegaconf import DictConfig, OmegaConf
 import torch
 import torch.distributed as dist
+import torch.nn as nn
+from torch.distributed.elastic.multiprocessing.errors import record
 import torch.multiprocessing as mp
+from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.utils.data
 import torch.utils.data.distributed
 import wandb
+
 from hplib.configs import PROJECT_DIR
-# from torch.nn.parallel import DistributedDataParallel as DDP
-
-
+from hplib.configs import NetworkConfig, TrainerConfig
+from hplib.network import Net
 from hplib.utils.pylogger import get_pylogger
 
 log = get_pylogger(__name__)
@@ -32,12 +35,15 @@ log = get_pylogger(__name__)
 try:
     from mpi4py import MPI
     WITH_DDP = True
-    LOCAL_RANK = int(
-        os.environ.get(
-            'PMI_LOCAL_RANK',
-            os.environ.get(
-                'OMPI_COMM_WORLD_LOCAL_RANK',
-                '0'
+    LOCAL_RANK = int(              # ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
+        os.environ.get(            # ┃ Should be set by torch, ┃
+            'LOCAL_RANK',          # ┃ otherwise we should:    ┃
+            os.environ.get(        # ┃━━━━━━━━━━━━━━━━━━━━━━━━━┃
+                'PMI_LOCAL_RANK',  # ┃   1. check for Polaris  ┃
+                os.environ.get(    # ┃   2. check for ThetaGPU ┃
+                    'OMPI_COMM_WORLD_LOCAL_RANK', # ━━━━━━━━━━━┛
+                    '0'
+                )
             )
         )
     )
@@ -70,9 +76,6 @@ except (ImportError, ModuleNotFoundError) as e:
     log.warning(e)
 
 
-Tensor = torch.Tensor
-
-
 def init_process_group(
     rank: Union[int, str],
     world_size: Union[int, str],
@@ -96,7 +99,7 @@ def cleanup():
     dist.destroy_process_group()
 
 
-def metric_average(val: Tensor):
+def metric_average(val: torch.Tensor):
     if (WITH_DDP):
         # Sum everything and divide by the total size
         dist.all_reduce(val, op=dist.ReduceOp.SUM)
@@ -112,12 +115,48 @@ def run_demo(demo_fn: Callable, world_size: int | str) -> None:
              join=True)
 
 
-def train_mnist(cfg: DictConfig, wbrun: Optional[wandb.run] = None) -> float:
+def build_model(
+        config: NetworkConfig | DictConfig | dict,
+        xshape: Optional[list[int]] = None,
+        # tconfig: Optional[TrainerConfig] = None,
+) -> nn.Module:
+    """Build and return model."""
+    MNIST_SHAPE = (1, *(28, 28))  # [C, *[H, W]]
+    if not isinstance(config, NetworkConfig):
+        config = instantiate(config)
+    assert isinstance(config, NetworkConfig)
+    model = Net(config)
+    if SIZE > 1:
+        model = DDP(
+            model,
+            device_ids=[LOCAL_RANK],
+            output_device=LOCAL_RANK
+        )
+    xshape = (1, *MNIST_SHAPE) if xshape is None else xshape
+    x = torch.rand(xshape)  # [N, *[C, H, W]]
+    if torch.cuda.is_available():
+        model.cuda()
+        x = x.cuda()
+    _ = model(x)
+
+    return model
+        
+def train_mnist(cfg: DictConfig, wbrun: Optional[Any] = None) -> float:
     from hplib.trainer import Trainer
+    from hplib.configs import NetworkConfig, TrainerConfig
     start = time.time()
     tconfig = instantiate(cfg.get('trainer'))
     net_config = instantiate(cfg.get('network'))
-    trainer = Trainer(config=tconfig, net_config=net_config, wbrun=wbrun)
+    # assert isinstance(tconfig, TrainerConfig)
+    # assert isinstance(net_config, NetworkConfig)
+    # xshape = (tconfig.batch_size, *(1, *[28, 28]))
+    # model = build_model(net_config, xshape)
+    trainer = Trainer(
+        config=tconfig,
+        net_config=net_config,
+        wbrun=wbrun
+        # model=model,
+    )
     epoch_times = []
     for epoch in range(1, tconfig.epochs + 1):
         t0 = time.time()
@@ -158,22 +197,10 @@ def train_mnist(cfg: DictConfig, wbrun: Optional[wandb.run] = None) -> float:
         log.info(' '.join([
             rstr,
             f'Average time per epoch in the last {avg_over}: {avg_epoch_time}'
-
         ]))
 
     test_acc = trainer.test()
     return test_acc
-
-
-def train_epoch_and_eval(cfg: DictConfig, wbrun: Optional[wandb.run] = None) -> float:
-    from hplib.trainer import Trainer
-    tconfig = instantiate(cfg.get('trainer'))
-    net_config = instantiate(cfg.get('network'))
-    trainer = Trainer(config=tconfig, net_config=net_config, wbrun=wbrun)
-    t0 = time.time()
-    _ = trainer.train(0)
-    log.info(f'Training took: {time.time() - t0:.4f}s')
-    return trainer.test()
 
 
 def setup_wandb(cfg: DictConfig) -> dict:
@@ -194,6 +221,7 @@ def setup_wandb(cfg: DictConfig) -> dict:
                 project='sdl-wandb-test',
                 # entity='',  # wbcfg.setup.entity,
             )
+            assert wbrun is not None and wbrun is wandb.run
             wbrun.log_code(cfg.get('work_dir', PROJECT_DIR))
             wbrun.config.update(OmegaConf.to_container(cfg, resolve=True))
             wbrun.config['run_id'] = run_id
@@ -207,17 +235,15 @@ def setup_wandb(cfg: DictConfig) -> dict:
     return {'run': wbrun}
 
 
-
 def run(cfg: DictConfig) -> float:
     wb = setup_wandb(cfg)
     backend = 'NCCL' if torch.cuda.is_available() else 'gloo'
     init_process_group(RANK, world_size=SIZE, backend=backend)
-    # train_mnist(cfg, wbrun)
-    # run(cfg, wbrun)
     test_acc = train_mnist(cfg, wb['run'])
     return test_acc
 
 
+@record
 @hydra.main(version_base=None, config_path='./conf', config_name='config')
 def main(cfg: DictConfig) -> None:
     run(cfg)

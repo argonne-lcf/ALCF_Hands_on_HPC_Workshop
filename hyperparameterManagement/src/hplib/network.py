@@ -96,6 +96,5 @@ class Net(nn.Module):
 
 
 
-
 def get_network(config: NetworkConfig) -> nn.Module:
     return Net(config)
