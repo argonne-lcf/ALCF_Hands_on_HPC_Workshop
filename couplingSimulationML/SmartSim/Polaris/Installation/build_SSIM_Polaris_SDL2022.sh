@@ -1,13 +1,15 @@
 #!/bin/bash
 
-## Load base module and conda env
+ENV_PREFIX=$1
+
+## Load conda module and activate base env
 module load conda/2022-09-08
 conda activate base
 module load cmake
 
-## Create a new conda env
-conda create -p /lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean_2/ssim python=3.8 -y
-conda activate /lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean_2/ssim
+## Create a new conda env at specified path
+conda create -p $ENV_PREFIX/ssim python=3.8 -y
+conda activate $ENV_PREFIX/ssim
 
 ## Set some env variables
 #export CRAYPE_LINK_TYPE=dynamic  # set by default
@@ -18,12 +20,12 @@ export CXX=CC
 ## Clone and install SmartSim
 git clone -b redisai_upgrade https://github.com/ashao/SmartSim.git
 cd SmartSim
-pip install -e .[ml]
+pip install -e .[ml] # The [ml] extension installs TensorFlow 2.8
 cd ..
 
 ## Install GPU backend (RedisAI and PyTorch)
-export CUDNN_LIBRARY=/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib/
-export CUDNN_INCLUDE_DIR=/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/include/
+export CUDNN_LIBRARY=/soft/libraries/cudnn/cudnn-11.5-linux-x64-v8.3.3.40/lib/
+export CUDNN_INCLUDE_DIR=/soft/libraries/cudnn/cudnn-11.5-linux-x64-v8.3.3.40/include/
 export LD_LIBRARY_PATH=$CUDNN_LIBRARY:$LD_LIBRARY_PATH
 cd SmartSim
 # This installs torch==1.11.0+cu113 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
@@ -32,9 +34,9 @@ smart build -v --device gpu | tee build.log
 pip install torch==1.11.0+cu115 torchvision==0.12.0+cu115 -f https://download.pytorch.org/whl/torch_stable.html
 cd ..
 
-## Changes to source code for Polaris
+## Changes to source code for Polaris (these will be part of SmartSim repo soon)
 cd SmartSim/smartsim
-SSIM_SAFE=/lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean/SmartSim
+SSIM_SAFE=/lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean_2/SmartSim
 cp $SSIM_SAFE/smartsim/database/orchestrator.py database/orchestrator.py
 cp $SSIM_SAFE/smartsim/settings/mpirunSettings.py settings/mpirunSettings.py
 cp $SSIM_SAFE/smartsim/_core/launcher/step/mpirunStep.py _core/launcher/step/mpirunStep.py
@@ -97,5 +99,12 @@ HVD_WHEEL=$(find . -maxdepth 1 -name "horovod*.whl" -type f)
 echo Install Horovod $HVD_WHEEL
 pip install --force-reinstall --no-cache-dir $HVD_WHEEL
 
+cd ..
+
 ## Install MPI4PY
 MPICC="cc -shared" pip install --force-reinstall --no-cache-dir --no-binary=mpi4py mpi4py
+
+## Install any other packages
+
+
+

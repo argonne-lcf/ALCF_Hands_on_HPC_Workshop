@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # change `CONDA_ENV_PREFIX` with the path to your conda environment
-CONDA_ENV=/lus/grand/projects/datascience/balin/Polaris/smartsim_envs/buildFromClean_preProd/ssim
+CONDA_ENV=/lus/eagle/projects/datascience/balin/SDL_Workshop/ssim
 DRIVER=src/driver.py
 
 echo nodes $1
@@ -12,7 +12,7 @@ echo db_ppn $5
 echo device $6
 echo logging $7
 
-module load conda/2022-07-19
+module load conda/2022-09-08
 conda activate $CONDA_ENV
 HOST_FILE=$(echo $PBS_NODEFILE)
 

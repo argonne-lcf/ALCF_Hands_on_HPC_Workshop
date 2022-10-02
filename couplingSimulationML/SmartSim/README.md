@@ -85,11 +85,12 @@ conda activate /path/to/ssim_env
 ```
 
 Please note that this environment does not contain all the modules available with the base env from the `conda/2022-09-08` module, however it contains many of the essential packages, such as PyTorch, TensorFlow, Horovod, and MPI4PY.
-If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](Polaris/Installation/build_SSIM_Polaris_SDL2022.sh) and executing it with the command
+If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](Polaris/Installation/build_SSIM_Polaris_SDL2022.sh) and executing it *from a compute node* with the command
 ```
 source build_SSIM_Polaris_SDL2022.sh /path/to/conda/env
 ```
-It is recommended you build the Conda env inside a project space rather than your home space on ALCF systems because it will produce a lot of files and consume disk space.
+It is recommended you build the Conda env inside a project space rather than your home space on ALCF systems because it will produce a lot of files and consume disk space. 
+You can use [this script](Polaris/submit_interactive.sh) to submit an interactive job on Polaris.
 
 If you wish to use SmartSim on other ALCF systems (Theta and ThetaGPU), you can find instructions [here](https://github.com/rickybalin/ALCF/tree/main/SmartSim).
 
