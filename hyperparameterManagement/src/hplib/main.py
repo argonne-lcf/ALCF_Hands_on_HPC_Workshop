@@ -26,15 +26,9 @@ from hplib.configs import PROJECT_DIR
 
 from hplib.utils.pylogger import get_pylogger
 
-# log = logging.getLogger(__name__)
 log = get_pylogger(__name__)
-#
-# wblog = logging.getLogger("wandb")
-# wblog.setLevel(logging.WARNING)
 
 
-
-# Get MPI:
 try:
     from mpi4py import MPI
     WITH_DDP = True
@@ -47,7 +41,6 @@ try:
             )
         )
     )
-    # LOCAL_RANK = os.environ['OMPI_COMM_WORLD_LOCAL_RANK']
     SIZE = MPI.COMM_WORLD.Get_size()
     RANK = MPI.COMM_WORLD.Get_rank()
 
@@ -66,10 +59,6 @@ try:
     MASTER_ADDR = MPI.COMM_WORLD.bcast(MASTER_ADDR, root=0)
     os.environ['MASTER_ADDR'] = MASTER_ADDR
     os.environ['MASTER_PORT'] = str(2345)
-    # log = logging.getLogger(__name__)
-    # log.setLevel(logging.DEBUG)
-    # if RANK != 0 or LOCAL_RANK != 0:
-    #     log.setLevel(logging.CRITICAL)
 
 except (ImportError, ModuleNotFoundError) as e:
     WITH_DDP = False
