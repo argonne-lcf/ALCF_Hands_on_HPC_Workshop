@@ -8,27 +8,26 @@ We use [Hydra](https://hydra.cc)[^1] for configuration management.
 
 [^1]: [Hydra](https://hydra.cc): A framework for elegantly configuring complex applications
 
-
 # Organization
 
-```txt
+```tree
 📂 sdl_workshop/hyperparameterManagement/
 ┣━━ 📂 src/
 ┃   ┗━━ 📂 hplib/
 ┃       ┣━━ 📂 conf/
 ┃       ┃   ┣━━ 📂 network
-┃       ┃   ┃   ┗━━ 📄 default.yaml
+┃       ┃   ┃   ┗━━ ⚙️ default.yaml
 ┃       ┃   ┣━━ 📂 sweeps
-┃       ┃   ┃   ┗━━ 📄 default.yaml
+┃       ┃   ┃   ┗━━ ⚙️ default.yaml
 ┃       ┃   ┣━━ 📂 trainer
-┃       ┃   ┃   ┗━━ 📄 default.yaml
+┃       ┃   ┃   ┗━━ ⚙️ default.yaml
 ┃       ┃   ┣━━ 📂 wandb
-┃       ┃   ┃   ┗━━ 📄 default.yaml
-┃       ┃   ┗━━ 📄 config.yaml
+┃       ┃   ┃   ┗━━ ⚙️ default.yaml
+┃       ┃   ┗━━ ⚙️ config.yaml
 ┃       ┣━━ 📂 utils/
 ┃       ┃   ┗━━ 🐍 pylogger.py
+┃       ┣━━ 💻 affinity.sh
 ┃       ┣━━ 🐍 __init__.py
-┃       ┣━━ 📄 affinity.sh
 ┃       ┣━━ 🐍 configs.py
 ┃       ┣━━ 🐍 main.py
 ┃       ┣━━ 🐍 network.py
