@@ -1,17 +1,6 @@
 # @package _global_
 _target_: hplib.configs.ExperimentConfig
 
-# seed: 42
-# epochs: 10
-# backend: gloo
-# lr_init: 0.001
-# # momentum: 0.5
-# num_threads: 0
-# logfreq: 10
-# batch_size: 64
-# test_batch_size: 64
-# fp16_allreduce: False
-
 defaults:
   - _self_
   - network: default.yaml
@@ -23,7 +12,6 @@ defaults:
 hydra:
   job:
     chdir: true
-
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the new log directory
