@@ -11,14 +11,13 @@ import horovod.torch as hvd
 
 import time
 
-
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                     help='input batch size for testing (default: 1000)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
+parser.add_argument('--epochs', type=int, default=32, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
@@ -26,18 +25,41 @@ parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                     help='SGD momentum (default: 0.5)')
 parser.add_argument('--seed', type=int, default=42, metavar='S',
                     help='random seed (default: 42)')
-parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+parser.add_argument('--log-interval', type=int, default=500, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--fp16-allreduce', action='store_true', default=False,
                     help='use fp16 compression during allreduce')
 parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
+parser.add_argument('--wandb', action='store_true', 
+                    help='whether to use wandb to log data')
 parser.add_argument('--num_threads', default=0, help='set number of threads per worker', type=int)
+
 args = parser.parse_args()
+
+
 
 args.cuda = args.device.find("gpu")!=-1
 # Horovod: initialize library.
 hvd.init()
+
+if args.wandb and hvd.rank()==0:
+    try:
+        import wandb
+        wandb.init(project="sdl-pytorch-mnist")
+    except:
+        args.wandb = False
+    config = wandb.config          # Initialize config
+    config.batch_size = args.batch_size         # input batch size for training (default: 64)
+    config.test_batch_size = args.test_batch_size    # input batch size for testing (default: 1000)
+    config.epochs = args.epochs            # number of epochs to train (default: 10)
+    config.lr = args.lr              # learning rate (default: 0.01)
+    config.momentum = args.momentum         # SGD momentum (default: 0.5) 
+    config.device = args.device        # disables CUDA training
+    config.seed = args.seed               # random seed (default: 42)
+    config.log_interval = args.log_interval     # how many batches to wait before logging training status
+    config.num_workers = hvd.size()
+
 torch.manual_seed(args.seed)
 print("Horovod: I am worker %s of %s." %(hvd.rank(), hvd.size()))
 if args.device.find("gpu")!=-1:
@@ -97,7 +119,8 @@ class Net(nn.Module):
 
 
 model = Net()
-
+if args.wandb and hvd.rank()==0:
+    wandb.watch(model)
 if args.device.find("gpu")!=-1:
     # Move model to GPU.
     model.cuda()
@@ -148,9 +171,8 @@ def train(epoch):
     training_acc = training_acc / len(train_sampler)
     loss_avg = metric_average(running_loss, 'running_loss')
     training_acc = metric_average(training_acc, 'training_acc')
-
     if hvd.rank()==0: print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(loss_avg, training_acc*100))
-
+    return loss_avg, training_acc
 
 def metric_average(val, name):
     tensor = torch.tensor(val)
@@ -188,11 +210,19 @@ def test():
     if hvd.rank() == 0:
         print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
+    return test_loss, test_accuracy
+
 
 t0 = time.time()
 for epoch in range(1, args.epochs + 1):
-    train(epoch)
-    test()
+    tt0=time.time()
+    train_loss, train_acc = train(epoch)
+    test_loss, test_acc = test()
+    tt1 = time.time()
+    if (hvd.rank()==0) and args.wandb:
+        wandb.log({'time_per_epoch':tt1 - tt0, 
+            "training_loss": train_loss, "training_acc": train_acc, 
+            "test_loss": test_loss, "test_acc":test_acc}, step=epoch)
 t1 = time.time()
 if hvd.rank()==0:
     print("Total training time: %s seconds" %(t1 - t0))

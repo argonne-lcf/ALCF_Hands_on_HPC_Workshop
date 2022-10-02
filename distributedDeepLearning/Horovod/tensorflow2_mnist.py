@@ -31,13 +31,26 @@ parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
+parser.add_argument('--wandb', action='store_true', 
+                    help='whether to use wandb to log data')
 
 args = parser.parse_args()
     
 # Horovod: initialize Horovod.
 hvd.init()
 print("I am rank %s of %s" %(hvd.rank(), hvd.size()))
-
+if args.wandb and hvd.rank()==0:
+    try:
+        import wandb
+        wandb.init(project="sdl-tf2-mnist")
+    except:
+        args.wandb = False
+    config = wandb.config          # Initialize config
+    config.batch_size = args.batch_size         # input batch size for training (default: 64)
+    config.epochs = args.epochs            # number of epochs to train (default: 10)
+    config.lr = args.lr              # learning rate (default: 0.01)
+    config.device = args.device        # disables CUDA training
+    config.num_workers = hvd.size()
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
 if args.device == 'cpu':
     tf.config.threading.set_intra_op_parallelism_threads(args.num_intra)
@@ -80,7 +93,6 @@ mnist_model = tf.keras.Sequential([
     tf.keras.layers.Dense(10, activation='softmax')
 ])
 loss = tf.losses.SparseCategoricalCrossentropy()
-
 # Horovod: adjust learning rate based on number of GPUs.
 opt = tf.optimizers.Adam(args.lr * hvd.size())
 
@@ -158,7 +170,10 @@ for ep in range(args.epochs):
     tt1 = time.time()
     if (hvd.rank()==0):
         print('Epoch - %d, \ttrain Loss: %.6f, \t training Acc: %.6f, \tval loss: %.6f, \t val Acc: %.6f\t Time: %.6f seconds' % (ep, total_loss, total_acc, total_test_loss, total_test_acc, tt1 - tt0))
-
+    if (hvd.rank()==0) and args.wandb:
+        wandb.log({'time_per_epoch':tt1 - tt0, 
+            "training_loss": total_loss, "training_acc": total_acc, 
+            "test_loss": total_test_loss, "test_acc":total_test_acc}, step=ep)
 # Horovod: save checkpoints only on worker 0 to prevent other workers from
 # corrupting it.
 if hvd.rank() == 0:
