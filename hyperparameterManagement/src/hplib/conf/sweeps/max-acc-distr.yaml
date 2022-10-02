@@ -1,0 +1,33 @@
+name: max-acc-distributed
+method: bayes
+program: './train.sh'
+description: Find hparams which maximize batch/batch_acc
+# controller:
+#   type: local
+metric: 
+  name: batch/batch_acc
+  goal: maximize
+parameters:
+  # -- Trainer hparams -------
+  trainer.lr_init:
+    # min: 0.00001
+    # max: 0.001
+    values: [0.00001, 0.001, 0.01]
+  trainer.batch_size:
+      values: [64, 256, 512]
+  # -- Network hparams -------
+  network.drop1:
+      values: [0.1, 0.2, 0.5]
+  network.drop2:
+      values: [0.1, 0.2, 0.5]
+  network.filters1:
+      values: [8, 16, 32]
+  network.filters2:
+      values: [8, 16, 32]
+  network.hidden_size:
+      values: [8, 64, 128]
+
+command:
+  - ${env}
+  - ${program}
+  - ${args_no_hyphens}

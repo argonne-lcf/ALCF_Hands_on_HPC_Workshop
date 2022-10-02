@@ -1,0 +1,41 @@
+name: min-loss-distributed
+method: bayes
+description: Find hparams which minimize batch/batch_loss
+
+metric: 
+  name: batch/batch_loss
+  goal: minimize 
+
+parameters:
+  # -- TRAINER ----
+  trainer.lr_init:
+    # min: 0.00001
+    # max: 0.001
+    values: [0.00001, 0.001, 0.01]
+  # -- FIXED ------
+  trainer.epochs:
+    value: 2
+
+  # -- NETWORK --------------
+  network.drop1:
+      values: [0.1, 0.2, 0.5]
+  network.drop2:
+      values: [0.1, 0.2, 0.5]
+  network.filters1:
+      values: [8, 16, 32]
+  network.filters2:
+      values: [8, 16, 32]
+  network.hidden_size:
+      values: [8, 64, 128]
+  trainer.batch_size:
+      values: [64, 256, 512]
+
+# -------------------------------------------------------------
+# NOTE: launch INDIVIDUAL (distributed) agents, SEQUENTIALLY
+program: './train.sh'  # run distributed training w/ DDP
+# -------------------------------------------------------------
+
+command:
+  - ${env}
+  - ${program}
+  - ${args_no_hyphens}
