@@ -1,4 +1,5 @@
-<h1><span style="line-height:3.0em;font-size:1.5em;"> Hyperparameter Management <a href="https://hydra.cc"><img src="https://hydra.cc/img/logo.svg" width="20%" display="inline" style="vertical-align:middle;line-height:3.0em;margin-right:10%;" align="right" ></a> </span></h1>
+<h1><span style="line-height:3.0em;font-size:1.5em;"> Hyperparameter Management <a href="https://hydra.cc"><img src="https://hydra.cc/img/logo.svg" width="10%" display="inline" style="vertical-align:middle;line-height:3.0em;margin-right:10%;" align="left" ></a> </span></h1>
+
 **Author**: [Sam Foreman](https://samforeman.me) ([foremans@anl.gov](mailto:///foremans@anl.gov))
 
 This section will cover some best practices / ideas related to experiment organization and hyperparameter management.
