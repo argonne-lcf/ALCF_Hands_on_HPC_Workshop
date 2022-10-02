@@ -1,0 +1,34 @@
+# @package _global_
+_target_: hplib.configs.ExperimentConfig
+
+# seed: 42
+# epochs: 10
+# backend: gloo
+# lr_init: 0.001
+# # momentum: 0.5
+# num_threads: 0
+# logfreq: 10
+# batch_size: 64
+# test_batch_size: 64
+# fp16_allreduce: False
+
+defaults:
+  - _self_
+  - network: default.yaml
+  - trainer: default.yaml
+  - wandb: default.yaml
+  - override hydra/hydra_logging: colorlog
+  - override hydra/job_logging: colorlog
+
+hydra:
+  job:
+    chdir: true
+
+
+# path to original working directory
+# hydra hijacks working directory by changing it to the new log directory
+# so its useful to have this path as a special variable
+# https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+work_dir: ${hydra:runtime.cwd}
+# path to folder with data
+data_dir: ${work_dir}/datasets/
