@@ -52,7 +52,6 @@ c ==================================================
      &        nproc, name_len
       logical exlog
       character*255 rank_key, sendArr_key
-      character*255 ssdb, fname
       character*(MPI_MAX_PROCESSOR_NAME) proc_name
 
 c     Initialize MPI
@@ -90,17 +89,6 @@ c     Initialize SmartRedis client
       call MPI_Barrier(MPI_COMM_WORLD,ierr)
       if (myrank.eq.0) write(*,*) 'All SmartRedis clients initialized'
 
-c     Write the DB IP address to file
-      call get_environment_variable("SSDB", ssdb)
-      if (mod(myrank,ppn).eq.0) then
-          write (fname, "(A5,A,A4)") 
-     &               'SSDB_',trim(proc_name),'.dat'
-         open (unit=25, file=fname, status='replace')
-         write(25,101,advance='no') trim(adjustl(ssdb))
-         close(25)
-      endif
-101   format(A)
-
 c     Set parameters for array of random numbers to be set as training data
 c     In this example we create training data for a simple function
 c     y=f(x), which has 1 input (x) and 1 output (y)
@@ -117,7 +105,7 @@ c     Tha training data is obtained from a uniform distribution over the domain
 
 
 c     Send array used to communicate whether to keep running data loader or ML
-      if (mod(myrank,ppn).eq.0) then
+      if (myrank.eq.0) then
          arrMLrun = 1.0
          err = client%put_tensor("check-run", arrMLrun, shape(arrMLrun))
          if (err.ne.0) write(*,*)
@@ -126,7 +114,7 @@ c     Send array used to communicate whether to keep running data loader or ML
 
 
 c     Send some information regarding the training data size
-      if (mod(myrank,ppn).eq.0) then
+      if (myrank.eq.0) then
          arrInfo(1) = nSamples
          arrInfo(2) = nInputs+nOutputs
          arrInfo(3) = nInputs
@@ -190,7 +178,7 @@ c     Emulate integration of PDEs with a do loop
 
          ! Send also the time step number, used by ML program to determine 
          ! when new training data is available
-         if (mod(myrank,ppn).eq.0) then
+         if (myrank.eq.0) then
             stepInfo(1) = its
             stepInfo(2) = 0.0
             err = client%put_tensor("step", stepInfo, shape(stepInfo))
