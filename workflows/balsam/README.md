@@ -30,7 +30,7 @@ To work through this tutorial (or any Balsam functionality), you first need to g
 ssh polaris.alcf.anl.gov
 
 # clone this repo
-git clone git@github.com:argonne-lcf/sdl_workshop.git
+git clone https://github.com/argonne-lcf/sdl_workshop.git
 cd sdl_workshop/workflows/balsam
 ```
 
