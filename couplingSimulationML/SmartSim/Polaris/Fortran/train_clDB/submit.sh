@@ -6,13 +6,13 @@
 #PBS -l filesystems=eagle:home
 #PBS -k doe
 #PBS -j oe
-#PBS -A datascience
+#PBS -A SDL_Workshop
 #PBS -q debug-scaling
 #PBS -V
 
 DRIVER=src/driver.py
 MODULE=conda/2022-09-08
-CONDA_ENV=/lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean_2/ssim
+CONDA_ENV=/lus/eagle/projects/SDL_Workshop/SmartSim/ssim
 
 dbnodes=1
 simnodes=1
