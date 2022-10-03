@@ -10,6 +10,9 @@ Furthermore, this example demonstrates how to couple the ML workflow with an app
 - C++17 compiler
 - C11 compiler
 - CUDA 9 or later
+- Virtual Python Environment
+
+All of the above are provided on ThetaGPU
 
 ## Building and Running 
 
@@ -22,11 +25,23 @@ ssh thetagpusn1
 ```
 qsub -n 1 -q training-gpu -A SDL_Workshop -I -t 1:00:00
 ```
+3. Set the Environment
+
+Load the cmake and virtual python environment 
+```
+module load cmake
+module load conda/2021-11-30
+```
+
+
 ## Key Features
+
 
 ### Device Memory
 
+
 ### Using CuPY to enable zero-copy, in-situe analysis
+
 
 ## Acknowledgements
 
