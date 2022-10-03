@@ -1,4 +1,6 @@
 from __future__ import print_function
+import os
+os.environ['IBV_FORK_SAFE']='1'
 import argparse
 import torch.nn as nn
 import torch.nn.functional as F
@@ -73,7 +75,7 @@ if hvd.rank()==0:
 #    print(" Number of inter_op threads: ", torch.get_num_interop_threads())
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
+kwargs = {'num_workers': 0, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
 
 
 transform = transforms.Compose(

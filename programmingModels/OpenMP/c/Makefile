@@ -1,8 +1,8 @@
+# this assumes that the NVIDIA compiler is used
 
-CXX = clang++
-CXXOFFLOAD = -fopenmp -fopenmp-targets=nvptx64
-CXXFLAGS = -Wno-unknown-cuda-version
-EXE = map map_function map_unstructured_function
+CXX = CC
+CXXOFFLOAD = -mp=gpu -gpu=cc80
+EXE = 01_target_construct 02_target_teams_parallel 03_map
 
 all : $(EXE)
 
