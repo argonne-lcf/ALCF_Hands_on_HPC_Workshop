@@ -1,8 +1,30 @@
 # Description
 
-The goal of this implementation is to provide an example of how one can integrate a python-based, machine learning framework within a computational physics (PDE) solver.  The kernel is executed on the device where critical field data resides. 
-This implementation makes use of the CuPY framework to perform in-situ analysis on the device, thereby, avoiding the cost of data movement to host. 
+The goal of this implementation is to provide an example of how one can integrate a python-based, machine learning framework within a computational physics (PDE) solver.  
+The kernel is executed on the device where critical field data resides. 
+This implementation makes use of the [CuPY](https://cupy.dev/) framework to perform in-situ analysis on the device, thereby, avoiding the cost of data movement to host. 
 Furthermore, this example demonstrates how to couple the ML workflow with an application that uses a performance-portability abstraction layer, [OCCA](https://github.com/libocca/occa),  which executes physics kernels on the device.  
+
+## Requirements
+
+- [OCCA]
+- C++17 compiler
+- C11 compiler
+- CUDA 9 or later
+
+## Building and Running 
+
+
+## Key Features
+
+### Using CuPY to enable zero-copy, in-situe analysis
+
+
+
+## Acknowledgements
+
+
+
 
 We assume that you have cloned the repo to a suitable location. These are the steps to execute this code on ThetaGPU (interactively):
 1. Login to a ThetaGPU head node
