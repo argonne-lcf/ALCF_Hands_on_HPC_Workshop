@@ -6,7 +6,7 @@
 #PBS -l filesystems=eagle:home
 #PBS -k doe
 #PBS -j oe
-#PBS -A datascience
+#PBS -A SDL_Workshop
 #PBS -q debug-scaling
 #PBS -V
 
