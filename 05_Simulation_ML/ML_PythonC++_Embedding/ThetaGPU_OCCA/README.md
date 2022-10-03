@@ -27,12 +27,12 @@ qsub -n 1 -q training-gpu -A SDL_Workshop -I -t 1:00:00
 ```
 3. Set the Environment
 
-Load the cmake and virtual python environment 
+Load the cmake and virtual python environment (THIS MIGHT HAVE TO CHANGE) 
 ```
 module load cmake
 module load conda/2021-11-30
 ```
-Set the proper paths for the OCCA library
+Set the proper paths for the OCCA library (THIS MIGHT HAVE TO CHANGE)
 ```
 export OCCA_DIR=/lus/eagle/projects/catalyst/spatel/work/test_occa/occa/install/
 export OCCA_CXX="g++"
@@ -46,6 +46,13 @@ export LD_LIBRARY_PATH+=":${OCCA_DIR}/lib"
 Activate the virtual Python environment
 ```
 conda activate
+```
+Check the environment. (UPDATE THIS SECTION)
+```
+$ module list
+```
+```
+$ occa env
 ```
 
 ## Key Features
