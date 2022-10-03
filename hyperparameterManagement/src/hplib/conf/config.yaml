@@ -9,8 +9,6 @@ defaults:
   - network: default.yaml
   - trainer: default.yaml
   - wandb: default.yaml
-  - override hydra/hydra_logging: colorlog
-  - override hydra/job_logging: colorlog
 
   # Experiment configs allow for version control of specific hyperparameters
   # e.g. the best hyperparameters for a given model and datamodule
@@ -19,6 +17,9 @@ defaults:
 
    # debugging config
   - debug: null
+
+  - override hydra/hydra_logging: colorlog
+  - override hydra/job_logging: colorlog
 
 
 # tags to help you identify your experiments
