@@ -81,7 +81,7 @@ The examples below make use of this environment.
 You can activate it by executing
 ```
 module load conda/2022-09-08
-conda activate /path/to/ssim_env
+conda activate /lus/eagle/projects/SDL_Workshop/SmartSim/ssim
 ```
 
 Please note that this environment does not contain all the modules available with the base env from the `conda/2022-09-08` module, however it contains many of the essential packages, such as PyTorch, TensorFlow, Horovod, and MPI4PY.
