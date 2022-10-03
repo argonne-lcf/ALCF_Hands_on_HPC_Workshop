@@ -43,6 +43,10 @@ export OCCA_CUDA_COMPILER_FLAGS="-O3 --fmad=true"
 export PATH+=":${OCCA_DIR}/bin"
 export LD_LIBRARY_PATH+=":${OCCA_DIR}/lib"
 ```
+Activate the virtual Python environment
+```
+conda activate
+```
 
 ## Key Features
 
