@@ -66,11 +66,12 @@ class Trainer:
         assert isinstance(self.config, TrainerConfig)
         assert isinstance(self.net_config, NetworkConfig)
 
-        self.device = 'gpu' if torch.cuda.is_available() else 'cpu'
         self.loss_fn = nn.CrossEntropyLoss()
+        self.device = 'gpu' if torch.cuda.is_available() else 'cpu'
+
+        self.rank = 0
         self._ngpus = 1
         self.world_size = 1
-        self.rank = 0
         # self.setup_torch()
         self.data = self.setup_data()
         if model is None:
@@ -87,23 +88,8 @@ class Trainer:
             self.world_size = dist.get_world_size()
             self.local_size = torch.cuda.device_count()
             self._ngpus = self.world_size * torch.cuda.device_count()
-            # if self._ngpus > 1:
-            #     self.model = DDP(self.model)
 
         self.wbrun = wbrun
-        # if self.rank == 0:
-        # if self.wbrun is wandb.run:
-        # if isinstance(self.wbrun, wandb.run):
-        # if self.wbrun is None:
-        #     log.warning(f'Initializing WandB from {self.rank}')
-        #     # self.wbrun = wandb.init()
-        # assert self.wbrun is wandb.run
-        # self.optimizer = self.build_optimizer(self.model)
-        # if WITH_CUDA:
-        #    self.loss_fn = self.loss_fn.cuda()
-        # self.backend = self.cfg.backend
-        # if WITH_DDP:
-        # init_process_group(RANK, SIZE, backend='DDP')
         if self.wbrun is not None:
             log.warning(f'Caught wandb.run from: {self.rank}')
             self.wbrun.watch(self.model, log='all', criterion=self.loss_fn)
@@ -111,7 +97,7 @@ class Trainer:
     def build_model(self, net_config: NetworkConfig) -> nn.Module:
         assert net_config is not None
         model = Net(net_config)
-        xshape = (1, *[28, 28])
+        xshape = (1, *self._xshape)
         x = torch.rand((self.config.batch_size, *xshape))
         if torch.cuda.is_available():
             model.cuda()
@@ -151,12 +137,7 @@ class Trainer:
                 f' Number of threads: {torch.get_num_threads()}',
             ]))
 
-    def setup_data(self):
-        kwargs = {}
-
-        if self.device == 'gpu':
-            kwargs = {'num_workers': 0, 'pin_memory': True}
-
+    def get_mnist_datasets(self)-> dict[str, torch.utils.data.Dataset]:
         train_dataset = (
             datasets.MNIST(
                 DATA_DIR.as_posix(),
@@ -168,7 +149,69 @@ class Trainer:
                 ])
             )
         )
+        test_dataset = (
+            datasets.MNIST(
+                DATA_DIR.as_posix(),
+                train=False,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.1307,), (0.3081,))
+                ])
+            )
+        )
+        self._xshape = [28, 28]
+        return {
+            'train': train_dataset,
+            'test': test_dataset,
+        }
 
+
+    def get_datasets(self, dset: str) -> dict[str, torch.utils.data.Dataset]:
+        assert dset in datasets.__all__
+        dset_obj = __import__(f'{datasets}.{dset}')
+        assert isinstance(dset_obj, torch.utils.data.Dataset)
+        train_dataset = (
+            dset_obj(
+                DATA_DIR.as_posix(),
+                train=True,
+                download=True,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                ])
+            )
+        )
+        test_dataset = (
+            dset_obj(
+                DATA_DIR.as_posix(),
+                train=False,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                ])
+            )
+        )
+        return {
+            'train': train_dataset,
+            'test': test_dataset,
+        }
+
+
+    def setup_data(
+            self,
+            datasets: Optional[dict[str, torch.utils.data.Dataset]] = None,
+    ):
+        kwargs = {}
+
+        if self.device == 'gpu':
+            kwargs = {'num_workers': 0, 'pin_memory': True}
+
+        if datasets is None:
+            datasets = self.get_mnist_datasets()
+
+        assert 'train' in datasets and 'test' in datasets
+        train_dataset = datasets['train']
+        test_dataset = datasets['test']
+
+        self._xshape = [28, 28]
         # DDP: use DistributedSampler to partition training data
         train_sampler = torch.utils.data.DistributedSampler(
             train_dataset, num_replicas=self.world_size, rank=self.rank,
@@ -180,16 +223,6 @@ class Trainer:
             **kwargs
         )
 
-        test_dataset = (
-            datasets.MNIST(
-                DATA_DIR.as_posix(),
-                train=False,
-                transform=transforms.Compose([
-                    transforms.ToTensor(),
-                    transforms.Normalize((0.1307,), (0.3081,))
-                ])
-            )
-        )
         # DDP: use DistributedSampler to partition the test data
         test_sampler = torch.utils.data.DistributedSampler(
             test_dataset, num_replicas=self.world_size, rank=self.rank
@@ -308,7 +341,10 @@ class Trainer:
         training_acc = metric_average(running_acc, size=self._ngpus)
         loss_avg = metric_average(running_loss, size=self._ngpus)
         if self.rank == 0:
-            assert self.wbrun is not None and self.wbrun is wandb.run
+            assert (
+                self.wbrun is not None 
+                and self.wbrun is wandb.run  # type:ignore
+            )
             self.wbrun.log({'train/loss': loss_avg, 'train/acc': training_acc})
 
         return {'loss': loss_avg, 'acc': training_acc}
