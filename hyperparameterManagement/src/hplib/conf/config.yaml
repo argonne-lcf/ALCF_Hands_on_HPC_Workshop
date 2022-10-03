@@ -1,6 +1,9 @@
 # @package _global_
 _target_: hplib.configs.ExperimentConfig
 
+# Specify here default configuration
+# Ordering determines precedence, i.e.
+# the order determines the order in which options are overridden
 defaults:
   - _self_
   - network: default.yaml
@@ -8,6 +11,23 @@ defaults:
   - wandb: default.yaml
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
+
+  # Experiment configs allow for version control of specific hyperparameters
+  # e.g. the best hyperparameters for a given model and datamodule
+  - experiment: null
+  - optional local: default.yaml
+
+   # debugging config
+  - debug: null
+
+
+# tags to help you identify your experiments
+# you can overwrite this in experiment configs
+# overwrite from command line with
+# `python train.py tags="[first_tag, second_tag]"`
+tags: null
+
+ckpt_path: null
 
 hydra:
   job:
