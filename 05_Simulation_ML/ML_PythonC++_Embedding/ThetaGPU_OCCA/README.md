@@ -32,7 +32,17 @@ Load the cmake and virtual python environment
 module load cmake
 module load conda/2021-11-30
 ```
+Set the proper paths for the OCCA library
+```
+export OCCA_DIR=/lus/eagle/projects/catalyst/spatel/work/test_occa/occa/install/
+export OCCA_CXX="g++"
+export OCCA_CXXFLAGS="-O3"
+export OCCA_CUDA_COMPILER="nvcc"
+export OCCA_CUDA_COMPILER_FLAGS="-O3 --fmad=true"
 
+export PATH+=":${OCCA_DIR}/bin"
+export LD_LIBRARY_PATH+=":${OCCA_DIR}/lib"
+```
 
 ## Key Features
 
