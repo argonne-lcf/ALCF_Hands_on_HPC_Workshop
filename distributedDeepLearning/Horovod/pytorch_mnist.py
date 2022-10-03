@@ -1,4 +1,8 @@
 from __future__ import print_function
+# below two lines are for fixing hanging issue for wandb
+#import os
+#os.environ['IBV_FORK_SAFE']=''
+# -------------------------------------------------------
 import argparse
 import torch.nn as nn
 import torch.nn.functional as F
@@ -25,7 +29,7 @@ parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                     help='SGD momentum (default: 0.5)')
 parser.add_argument('--seed', type=int, default=42, metavar='S',
                     help='random seed (default: 42)')
-parser.add_argument('--log-interval', type=int, default=500, metavar='N',
+parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--fp16-allreduce', action='store_true', default=False,
                     help='use fp16 compression during allreduce')
@@ -72,9 +76,8 @@ if (args.num_threads!=0):
 if hvd.rank()==0:
     print("Torch Thread setup: ")
     print(" Number of threads: ", torch.get_num_threads())
-#    print(" Number of inter_op threads: ", torch.get_num_interop_threads())
 
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
+kwargs = {'num_workers': 0, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
 train_dataset = \
     datasets.MNIST('datasets/', train=True, download=True,
                    transform=transforms.Compose([
@@ -219,6 +222,8 @@ for epoch in range(1, args.epochs + 1):
     train_loss, train_acc = train(epoch)
     test_loss, test_acc = test()
     tt1 = time.time()
+    if (hvd.rank()==0):
+        print("[Epoch - %d] Time per epoch: %10.6f." %(epoch, tt1 - tt0))
     if (hvd.rank()==0) and args.wandb:
         wandb.log({'time_per_epoch':tt1 - tt0, 
             "training_loss": train_loss, "training_acc": train_acc, 
@@ -226,3 +231,4 @@ for epoch in range(1, args.epochs + 1):
 t1 = time.time()
 if hvd.rank()==0:
     print("Total training time: %s seconds" %(t1 - t0))
+OB
