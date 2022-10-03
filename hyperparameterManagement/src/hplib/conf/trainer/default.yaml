@@ -3,6 +3,6 @@ _target_: hplib.configs.TrainerConfig
 lr_init: 0.001
 batch_size: 512
 logfreq: 10
-epochs: 5
+epochs: 2
 seed: 1234
 # num_threads: 
