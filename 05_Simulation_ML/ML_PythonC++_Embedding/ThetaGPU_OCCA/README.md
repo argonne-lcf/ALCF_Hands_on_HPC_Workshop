@@ -1,12 +1,12 @@
 # Description
 
-The goal of this implementation is to provide an example of how one can integrate a python-based, machine learning framework within a computational physics (PDE) solver.  
+The goal of this implementation is to provide an example of how one can integrate a python-based, machine learning (ML)  framework within a computational physics (PDE) solver.  
 Like most GPU-enabled solvers, the physics kernel is executed on the device where critical field data resides. This implementation makes use of the [CuPY](https://cupy.dev/) framework to perform in-situ analysis on the device, thereby, avoiding the cost of data movement to host. 
-Furthermore, this example demonstrates how to couple the ML workflow with an application that uses a performance-portability abstraction layer, [OCCA](https://github.com/libocca/occa),  which executes physics kernels on the device.  
+Furthermore, this example demonstrates how to couple the ML workflow with an application that uses a performance-portability abstraction layer, namely [OCCA](https://github.com/libocca/occa),  which executes physics kernels on the device for a variety backend-specific programming models (e.g. CUDA, HIP, SYCL).    
 
 ## Requirements
 
-- [OCCA]
+- [OCCA](https://github.com/libocca/occa)
 - C++17 compiler
 - C11 compiler
 - CUDA 9 or later
@@ -54,7 +54,6 @@ $ module list
 ```
 $ occa env
 ```
-
 ## Key Features
 
 
