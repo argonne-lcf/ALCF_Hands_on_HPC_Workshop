@@ -18,11 +18,12 @@
 from PIL import Image as PIL_Image
 import torch
 import torchvision
-import logging,os,glob,time
+import logging,os,glob,time,sys
 import numpy as np
 import xml.etree.ElementTree as ET
+import horovod.torch as hvd
 logger = logging.getLogger(__name__)
-
+hvd.init()
 
 # these are initialized in the get_datasets function and used later
 labels_hash = None
@@ -56,7 +57,7 @@ class Dataset(torch.utils.data.Dataset):
         # this globs for all the directories like "n02537312" to get 
         # list of the string labels
         labels = glob.glob(label_path + os.path.sep + '*')
-        logger.info(f'num labels: {len(labels)}')
+        logger.debug(f'num labels: {len(labels)}')
         # this removes the leading path from the label directories
         labels = [os.path.basename(i) for i in labels]
         
@@ -188,7 +189,8 @@ if __name__ == '__main__':
     logging_level = logging.INFO
     logging.basicConfig(level=logging_level,
                        format=logging_format,
-                       datefmt=logging_datefmt)
+                       datefmt=logging_datefmt,
+                       stream = sys.stdout)
     # parse command line
     import argparse,json
     parser = argparse.ArgumentParser(description='test this')
@@ -207,11 +209,11 @@ if __name__ == '__main__':
     if args.nthreads > 0:
         config['data']['num_parallel_readers'] = args.nthreads
 
-    logger.info('configruation file settings: \n %s',json.dumps(config,indent=4, sort_keys=True))
+    # logger.info('configruation file settings: \n %s',json.dumps(config,indent=4, sort_keys=True))
 
     # these would be set by horovod if run in a parallel setup
-    rank = 0
-    num_ranks = 1
+    rank = hvd.rank()
+    num_ranks = hvd.size()
 
     # call function to build dataset objects
     # both of the returned objects are tf.dataset.Dataset objects
@@ -232,7 +234,8 @@ if __name__ == '__main__':
 
     # epoch loop
     for epoch in range(1):
-        logger.info(f'epoch = {epoch}')
+        if hvd.rank() == 0:
+            logger.info(f'epoch = {epoch}')
 
         # calling this is required to get the shuffle to work and to reset the dataset 
         train_sampler.set_epoch(epoch)
@@ -246,4 +249,8 @@ if __name__ == '__main__':
             if batch_number > args.nsteps: break
         duration = time.time() - start
         images = config['data']['batch_size'] * args.nsteps
-        logger.info('imgs/sec: %5.2f',images/duration)
+        if hvd.rank() == 0:
+            logger.info('imgs/sec: %5.2f',images/duration*hvd.size())
+    
+
+    print('done',hvd.rank())

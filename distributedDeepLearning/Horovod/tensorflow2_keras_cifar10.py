@@ -34,6 +34,9 @@ except:
     hvd=Hvd; 
 
 hvd.init()
+
+
+
 t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -48,6 +51,22 @@ parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
 
 args = parser.parse_args()
+if args.wandb and hvd.rank()==0:
+    try:
+        import wandb
+        wandb.init(project="sdl-keras-cifar10")
+    except:
+        args.wandb = False
+    config = wandb.config          # Initialize config
+    config.batch_size = args.batch_size         # input batch size for training (default: 64)
+    config.test_batch_size = args.test_batch_size    # input batch size for testing (default: 1000)
+    config.epochs = args.epochs            # number of epochs to train (default: 10)
+    config.lr = args.lr              # learning rate (default: 0.01)
+    config.momentum = args.momentum         # SGD momentum (default: 0.5) 
+    config.device = args.device        # disables CUDA training
+    config.seed = args.seed               # random seed (default: 42)
+    config.log_interval = args.log_interval     # how many batches to wait before logging training status
+    config.num_workers = hvd.size()
 
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
 

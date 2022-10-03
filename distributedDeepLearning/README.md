@@ -1,8 +1,8 @@
 # Distributed Deep Learning
 
-Led by Huihuo Zheng, Corey Adams, and Zhen Xie from ALCF
+Let by Huihuo Zheng <huihuo.zheng@anl.gov>; adopted some materials from  Corey Adams and Zhen Xie as well. 
 
-This section of the workshop will introduce to you the methods we use to run distributed deep learning training on ALCF resources like Theta and ThetaGPU.
+This section of the workshop will introduce to you the methods we use to run distributed deep learning training on ALCF resources like ThetaGPU and Polaris. 
 
 We show distributed training using three frameworks: 
 1. [Horovod](Horovod/README.md) (for [TensorFlow](tensorflow.org) and [PyTorch](pytorch.org)), and
