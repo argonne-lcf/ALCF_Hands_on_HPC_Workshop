@@ -16,6 +16,7 @@ Day 2
 
 Day 3
    * [Integrating Al and Simulations](couplingSimulationML)
+   * [Workflows](workflows)
 
 Plus bonus material that we will not cover during the workshop:
    * [Supplementary machine learning materials](extraMachineLearningMaterials)
