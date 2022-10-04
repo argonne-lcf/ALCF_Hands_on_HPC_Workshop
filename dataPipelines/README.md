@@ -66,24 +66,20 @@ for inputs,labels in ds:
    # ...
 ```
 
-## Parallel Processing on ThetaKNL
+## Parallel Processing on Polaris
 
-The example `00_tensorflowDatasetAPI/ilsvrc_dataset_serial.py` can be run via
+The example `00_tensorflowDatasetAPI/ilsvrc_dataset.py` can be run via
 ```bash
-# module load miniconda-3/2020-12
-python 00_tensorflowDatasetAPI/ilsvrc_dataset_serial.py -c 00_tensorflowDatasetAPI/ilsvrc.json
-```
+cd 00_tensorflowDatasetAPI
+qsub -A <project> -q debug submit_polaris.sh
+```   
 
-You will see very poor performance as this is an example of serial data pipeline that only uses one or two cores. You can see in this screenshot from the [Tensorflow Profiler](../04_profilingDeepLearning/TensorflowProfiler/) how your processes are being utilized. The profile shows a single process handling all the data pipeline processes. All ReadFile calls are being done serially when they could be done in parallel. One long IO operation holds up the entire application.
+This script will run the example 3 times with 1 thread (no parallelism), 16 threads, and 64 threads per MPI process. The reported `imgs/sec` throughput will be lowest for serial processing and highest for the 64 threads per MPI process. You can see in this screenshot from the [Tensorflow Profiler](https://www.tensorflow.org/tensorboard/tensorboard_profiling_keras) how processes are being utilized. 
+
+This profile shows the single process handling all the data pipeline processes. All data pipeline calls are being done serially when they could be done in parallel. It takes over 3 seconds to prepare a batch of images.
 ![serial](images/ilsvrc_serial.png)
 
-Now switch to running the parallel version
-```bash
-# module load miniconda-3/2020-12
-python 00_tensorflowDatasetAPI/ilsvrc_dataset.py -c 00_tensorflowDatasetAPI/ilsvrc.json --interop 64 --intraop 64
-```
-
-You will see much better performance in this case. Batch processing time is down from 10 seconds to 1 second. The profiler shows we are running with our 64 parallel processes, all of which are opening JPEGs, processing them into tensors, extracting truth information, and so on. There are still some spurious IO operations that slow us down, but really this speaks to the fact that we are loading a million small files (100KB), which is bad in practice, but good for this example. In reality, we'd want to do all this data processing in advanced.
-![parallel](images/ilsvrc_parallel.png)
+In the case of 64-threads per MPI process, batch processing time is down to 0.08 seconds. The profiler shows we are running with our 64 parallel processes, all of which are opening JPEGs, processing them into tensors, extracting truth information, and so on. Once can see the `ReadFile` operation taking place in parallel which opens the jpeg and reads in the data to memory. This operation is the most time consuming in this pipeline and by parallelizing it, we have improved our throughput.
+![parallel](images/ilsvrc_64threads_zoom.png)
 
 
