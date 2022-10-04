@@ -65,9 +65,9 @@ if [[ $(hostname) == x* ]]; then
   export NRANKS=$(wc -l < "${PBS_NODEFILE}")
   export NGPU_PER_RANK=$(nvidia-smi -L | wc -l)
   export NGPUS="$((${NRANKS}*${NGPU_PER_RANK}))"
-  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
   echo "┃  RUNNING ON ${ALCF_RESOURCE}: ${NGPUS} GPUs   ┃"
-  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
   module load conda; conda activate base
   VENV_PREFIX='2022-09-08'
   MPI_COMMAND=$(which mpiexec)
@@ -81,9 +81,9 @@ elif [[ $(hostname) == theta* ]]; then
   export NRANKS=$(wc -l < "${COBALT_NODEFILE}")
   export NGPU_PER_RANK=$(nvidia-smi -L | wc -l)
   export NGPUS=$(("${NRANKS}"*"${NGPU_PER_RANK}"))
-  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
   echo "┃  RUNNING ON ${ALCF_RESOURCE}: ${NGPUS} GPUs   ┃"
-  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
   module load conda; conda activate base
   VENV_PREFIX='2022-07-21'
   MPI_COMMAND=$(which mpirun)
@@ -137,8 +137,10 @@ conda run python3 -m pip install --upgrade pip
 # -----------------------------------------------------------
 VENV_DIR="${ROOT}/venvs/${ALCF_RESOURCE}/${VENV_PREFIX}"
 if [ -d ${VENV_DIR} ]; then
+  echo "Found venv at: ${VENV_DIR}"
   source "${VENV_DIR}/bin/activate"
 else
+  echo "Creating new venv at: ${VENV_DIR}"
   python3 -m venv ${VENV_DIR} --system-site-packages
   source "${VENV_DIR}/bin/activate"
 fi
@@ -168,5 +170,7 @@ echo "┃  - python3: $(which python3)"
 echo "┃  - MPI: ${MPI_COMMAND}"
 echo "┃  - exec: ${EXEC}"
 echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# unset PYTHONUSERBASE
 
 ${EXEC} $@
