@@ -286,8 +286,7 @@ python -m torch.utils.bottleneck example2/v3.py
 ```
 The output of the bottleneck is too big to show it here. Basically, it combines outputs of python cProfile, `torch.autorgrad.profile` for CPU and CUDA modes.
 
-### Warnings
-* The launch of CUDA kernels is asynchronous, so if you want to measure time spent in them make sure that you turned flag `use_cuda` on. Otherwise, your results may be misleading.
+#### Warning
 * Profiling tools collect events and analyze them and have a huge overhead. Profiler is helpful in searching for performance issues but slows down training/evaluation. Make sure to remove it when you finish your code investigation.
 
 
@@ -351,7 +350,7 @@ More examples and details of the new PyTorch profile can be found on its [github
 
 
 
-#### References and additional information:
+#### References and additional information
 - [PyTorch autograd profiler example](https://pytorch.org/tutorials/beginner/profiler.html)
 - [PyTorch profiler](https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html)
 - [PyTorch profiler with TensorBoard](https://pytorch.org/tutorials/intermediate/tensorboard_profiler_tutorial.html?highlight=tensorboard)
