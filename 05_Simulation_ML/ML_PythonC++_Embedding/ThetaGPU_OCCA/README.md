@@ -1,8 +1,6 @@
 # Description
 
-The goal of this implementation is to provide an example of how one can integrate a python-based, machine learning (ML)  framework within a computational physics (PDE) solver.  
-Like most GPU-enabled solvers, the physics kernel is executed on the device where critical field data resides. This implementation makes use of the [CuPY](https://cupy.dev/) framework to perform in-situ analysis on the device, thereby, avoiding the cost of data movement to host. 
-Furthermore, this example demonstrates how to couple the ML workflow with an application that uses a performance-portability abstraction layer, namely [OCCA](https://github.com/libocca/occa),  which executes physics kernels on the device for a variety backend-specific programming models (e.g. CUDA, HIP, SYCL).    
+The goal of this implementation is to provide an example of how one can integrate a python-based, machine learning (ML) framework within a computational physics (PDE) solver.  Like most GPU-enabled solvers, the physics kernel is executed on the device where critical field data resides. This implementation makes use of the [CuPY](https://cupy.dev/) framework to perform in-situ analysis on the device, thereby, avoiding the cost of data movement to host. Furthermore, this example demonstrates how to couple the ML workflow with an application that uses a performance-portability abstraction layer, namely [OCCA](https://github.com/libocca/occa), which executes physics kernels on the device for a variety backend-specific programming models (e.g. CUDA, HIP, SYCL).    
 
 ## Requirements
 
@@ -56,9 +54,15 @@ $ occa env
 ```
 ## Key Features
 
-
-### Device Memory
-
+### OCCA API: Host, Device & Memory
+The host, usually a CPU processor, is the physical device that runs the application. A device can be a physical device which is the same as the host (i.e. a CPU) or an offload device - one that is physically distinct from the host.  In this example, our kernels run on an offload device. OCCA enablesus to connect to physical device through the OCCA API.  For example, the following snippet is one way to instantiate the device:
+```
+  device.setup((std::string) args["options/device"]);
+  device.setup({
+     {"mode"     , "CUDA"},
+     {"device_id", 0},
+   });   
+```
 
 ### Using CuPY to enable zero-copy, in-situe analysis
 
