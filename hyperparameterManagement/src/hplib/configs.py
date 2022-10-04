@@ -90,13 +90,24 @@ class NetworkConfig:
 
 
 @dataclass
+class DataConfig:
+    batch_size: int = 128
+    dataset: str = 'MNIST'
+
+
+    def __post_init__(self):
+        assert self.dataset in ['MNIST', 'FashionMNIST']
+
+
+@dataclass
 class TrainerConfig:
     lr_init: float
-    batch_size: int
     logfreq: int = 10
     epochs: int = 5
     seed: int = 9992
     num_threads: int = 16
+    # batch_size: int
+    # dataset: str = 'MNIST'
 
     def scale_lr(self, factor: int) -> float:
         return self.lr_init * factor
@@ -104,6 +115,7 @@ class TrainerConfig:
 
 @dataclass
 class ExperimentConfig:
+    data: DataConfig
     trainer: TrainerConfig
     network: NetworkConfig
     wandb: Any

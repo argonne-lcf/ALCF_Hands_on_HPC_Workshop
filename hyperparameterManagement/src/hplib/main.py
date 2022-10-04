@@ -25,7 +25,7 @@ import torch.utils.data.distributed
 import wandb
 
 from hplib.configs import PROJECT_DIR
-from hplib.configs import NetworkConfig, TrainerConfig
+from hplib.configs import NetworkConfig
 from hplib.network import Net
 from hplib.utils.pylogger import get_pylogger
 
@@ -143,27 +143,27 @@ def build_model(
         
 def train_mnist(cfg: DictConfig, wbrun: Optional[Any] = None) -> float:
     from hplib.trainer import Trainer
-    from hplib.configs import NetworkConfig, TrainerConfig
+    from hplib.configs import ExperimentConfig
     start = time.time()
-    tconfig = instantiate(cfg.get('trainer'))
-    net_config = instantiate(cfg.get('network'))
+    config = instantiate(cfg)
+    assert isinstance(config, ExperimentConfig)
+    # tconfig = instantiate(cfg.get('trainer'))
+    # net_config = instantiate(cfg.get('network'))
     # assert isinstance(tconfig, TrainerConfig)
     # assert isinstance(net_config, NetworkConfig)
     # xshape = (tconfig.batch_size, *(1, *[28, 28]))
     # model = build_model(net_config, xshape)
     trainer = Trainer(
-        config=tconfig,
-        net_config=net_config,
+        config=config,
         wbrun=wbrun
-        # model=model,
     )
     epoch_times = []
-    for epoch in range(1, tconfig.epochs + 1):
+    for epoch in range(1, config.trainer.epochs + 1):
         t0 = time.time()
         metrics = trainer.train_epoch(epoch)
         epoch_times.append(time.time() - t0)
 
-        if epoch % tconfig.logfreq and RANK == 0:
+        if epoch % config.trainer.logfreq and RANK == 0:
             acc = trainer.test()
             astr = f'[TEST] Accuracy: {100.0 * acc:.0f}%'
             sepstr = '-' * len(astr)
@@ -217,7 +217,7 @@ def setup_wandb(cfg: DictConfig) -> dict:
                 mode='online',
                 resume='allow',
                 # magic=True,
-                # save_code=True,
+                save_code=False,
                 project='sdl-wandb-test',
                 # entity='',  # wbcfg.setup.entity,
             )

@@ -18,7 +18,7 @@ import torch.utils.data.distributed
 from torchvision import datasets, transforms
 import wandb
 
-from hplib.configs import DATA_DIR, NetworkConfig, TrainerConfig
+from hplib.configs import DATA_DIR, ExperimentConfig, NetworkConfig
 from hplib.network import Net
 from hplib.utils.pylogger import get_pylogger
 
@@ -38,33 +38,42 @@ def metric_average(val: torch.Tensor, size: int = 1):
 class Trainer:
     def __init__(
             self,
-            config: TrainerConfig | dict | DictConfig,
-            net_config: Optional[NetworkConfig | dict | DictConfig],
+            config: ExperimentConfig | dict | DictConfig,
             wbrun: Optional[Any] = None,
             scaler: Optional[GradScaler] = None,
             model: Optional[torch.nn.Module] = None,
             optimizer: Optional[torch.optim.Optimizer] = None,
     ):
+        # if isinstance(config, (dict, DictConfig)):
+        #     self.config = instantiate(config)
+        # elif isinstance(config, TrainerConfig):
+        #     self.config = config
+        # assert isinstance(self.config, TrainerConfig)
         if isinstance(config, (dict, DictConfig)):
             self.config = instantiate(config)
-        elif isinstance(config, TrainerConfig):
+        elif isinstance(config, ExperimentConfig):
             self.config = config
-        assert isinstance(self.config, TrainerConfig)
+        else:
+            raise TypeError(
+                'Expected `config` to be of type: '
+                '`dict | DictConfig | ExperimentConfig`'
+            )
 
         if scaler is None:
             self.scaler = None
 
-        if net_config is None:
-            assert model is not None and hasattr(model, 'config')
-            self.net_config = model.config
-        else:
-            if isinstance(net_config, (dict, DictConfig)):
-                self.net_config = instantiate(net_config)
-            else:
-                self.net_config = net_config
+        # if net_config is None:
+        #     assert model is not None and hasattr(model, 'config')
+        #     self.net_config = model.config
+        # else:
+        #     if isinstance(net_config, (dict, DictConfig)):
+        #         self.net_config = instantiate(net_config)
+        #     else:
+        #         self.net_config = net_config
 
-        assert isinstance(self.config, TrainerConfig)
-        assert isinstance(self.net_config, NetworkConfig)
+        # assert isinstance(self.config.train, TrainerConfig)
+        # assert isinstance(self.net_config, NetworkConfig)
+        assert isinstance(self.config, ExperimentConfig)
 
         self.loss_fn = nn.CrossEntropyLoss()
         self.device = 'gpu' if torch.cuda.is_available() else 'cpu'
@@ -75,11 +84,11 @@ class Trainer:
         # self.setup_torch()
         self.data = self.setup_data()
         if model is None:
-            self.model = self.build_model(self.net_config)
+            self.model = self.build_model(self.config.network)
         if optimizer is None:
             self.optimizer = self.build_optimizer(
                 model=self.model,
-                lr_init=self.config.lr_init
+                lr_init=self.config.trainer.lr_init
             )
 
         if torch.cuda.is_available():
@@ -98,7 +107,7 @@ class Trainer:
         assert net_config is not None
         model = Net(net_config)
         xshape = (1, *self._xshape)
-        x = torch.rand((self.config.batch_size, *xshape))
+        x = torch.rand((self.config.data.batch_size, *xshape))
         if torch.cuda.is_available():
             model.cuda()
             x = x.cuda()
@@ -118,19 +127,19 @@ class Trainer:
         return optim.Adam(model.parameters(), lr=lr_init)
 
     def setup_torch(self):
-        torch.manual_seed(self.config.seed)
+        torch.manual_seed(self.config.trainer.seed)
         # if self.device == 'gpu':
         if torch.cuda.is_available():
             # DDP: pin GPU to local rank
             # torch.cuda.set_device(int(LOCAL_RANK))
-            torch.cuda.manual_seed(self.config.seed)
+            torch.cuda.manual_seed(self.config.trainer.seed)
 
         if (
-                self.config.num_threads is not None
-                and isinstance(self.config.num_threads, int)
-                and self.config.num_threads > 0
+                self.config.trainer.num_threads is not None
+                and isinstance(self.config.trainer.num_threads, int)
+                and self.config.trainer.num_threads > 0
         ):
-            torch.set_num_threads(self.config.num_threads)
+            torch.set_num_threads(self.config.trainer.num_threads)
 
             log.info('\n'.join([
                 'Torch Thread Setup:',
@@ -151,6 +160,35 @@ class Trainer:
         )
         test_dataset = (
             datasets.MNIST(
+                DATA_DIR.as_posix(),
+                train=False,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.1307,), (0.3081,))
+                ])
+            )
+        )
+        self._xshape = [28, 28]
+        return {
+            'train': train_dataset,
+            'test': test_dataset,
+        }
+
+
+    def get_fashionmnist_datasets(self)-> dict[str, torch.utils.data.Dataset]:
+        train_dataset = (
+            datasets.FashionMNIST(
+                DATA_DIR.as_posix(),
+                train=True,
+                download=True,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.1307,), (0.3081,)),
+                ])
+            )
+        )
+        test_dataset = (
+            datasets.FashionMNIST(
                 DATA_DIR.as_posix(),
                 train=False,
                 transform=transforms.Compose([
@@ -205,7 +243,12 @@ class Trainer:
             kwargs = {'num_workers': 0, 'pin_memory': True}
 
         if datasets is None:
-            datasets = self.get_mnist_datasets()
+            # datasets = self.get_mnist_datasets()
+            # if self.config.dataset.lower() == 'fashionmnist': 
+            if self.config.data.dataset.lower() == 'fashionmnist':
+                datasets = self.get_fashionmnist_datasets()
+            else:
+                datasets = self.get_mnist_datasets()
 
         assert 'train' in datasets and 'test' in datasets
         train_dataset = datasets['train']
@@ -218,7 +261,7 @@ class Trainer:
         )
         train_loader = torch.utils.data.DataLoader(
             train_dataset,
-            batch_size=self.config.batch_size,
+            batch_size=self.config.data.batch_size,
             sampler=train_sampler,
             **kwargs
         )
@@ -228,7 +271,7 @@ class Trainer:
             test_dataset, num_replicas=self.world_size, rank=self.rank
         )
         test_loader = torch.utils.data.DataLoader(
-            test_dataset, batch_size=self.config.batch_size
+            test_dataset, batch_size=self.config.data.batch_size
         )
 
         return {
@@ -297,14 +340,14 @@ class Trainer:
             loss, acc = self.train_step(data, target)
             running_acc += acc
             running_loss += loss.item()
-            if bidx % self.config.logfreq == 0 and self.rank == 0:
+            if bidx % self.config.trainer.logfreq == 0 and self.rank == 0:
                 # DDP: use train_sampler to determine the number of
                 # examples in this workers partition
                 metrics = {
                     'epoch': epoch,
                     'dt': time.time() - t0,
-                    'batch_acc': acc.item() / self.config.batch_size,
-                    'batch_loss': loss.item() / self.config.batch_size,
+                    'batch_acc': acc.item() / self.config.data.batch_size,
+                    'batch_loss': loss.item() / self.config.data.batch_size,
                     'acc': running_acc / len(self.data['train']['sampler']),
                     'running_loss': (
                         running_loss / len(self.data['train']['sampler'])
@@ -313,7 +356,7 @@ class Trainer:
                 pre = [
                     f'[{self.rank}]',
                     (   # looks like: [num_processed/total (% complete)]
-                        f'[{epoch}/{self.config.epochs}:'
+                        f'[{epoch}/{self.config.trainer.epochs}:'
                         f' {bidx * len(data)}/{len(train_sampler)}'
                         f' ({100. * bidx / len(train_loader):.0f}%)]'
                     ),
