@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # change `CONDA_ENV_PREFIX` with the path to your conda environment
-CONDA_ENV=/lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean_2/ssim
+CONDA_ENV=/lus/eagle/projects/SDL_Workshop/SmartSim/ssim
 DRIVER=src/driver.py
 
 echo nodes $1

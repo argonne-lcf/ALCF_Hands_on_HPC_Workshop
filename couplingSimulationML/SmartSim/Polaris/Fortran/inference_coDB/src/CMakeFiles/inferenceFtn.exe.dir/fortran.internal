@@ -1,6 +1,0 @@
-# The fortran modules provided by this target.
-provides
- fortran_c_interop.mod
- smartredis_client.mod
- smartredis_dataset.mod
- ssim.mod
