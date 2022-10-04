@@ -81,10 +81,22 @@ To get the backend pointer, one can do:
 This exposes the address set by the backend model (e.g. CUDA) and hardware (e.g. NVIDIA A100). Doing this will be helpful as we perform in-situ analysis on data resident on the device.  
 
 ### Using CuPY to enable zero-copy, in-situ analysis
-
+In CuPY, `cupy.ndarray` is the counterpart of the NumPy `numpy.ndarray` which provides an interface for fixed-size multi-dimensional array which resides on a CUDA device.  Low-level CUDA support in CuPY allows us to retreive device memory. For example,
 
 ```
+import cupy
+from cupy.cuda import memory
 
+  def my_function(a):
+      b = cupy.ndarray(
+                  a.__array_interface__['shape'][0],
+                  cupy.dtype(a.dtype.name),
+                  cupy.cuda.MemoryPointer(cupy.cuda.UnownedMemory(
+                                             a.__array_interface__['data'][0], #<---Pointer?
+                                             a.size,
+                                             a,
+                                             0), 0),
+                  strides=a.__array_interface__['strides'])
 
 ```
 
