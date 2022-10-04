@@ -9,6 +9,7 @@ Day 1
   * [Programming Models](programmingModels)
 
 Day 2
+   * [Learning Frameworks](learningFrameworks)
    * [Distributed Deep Learning](distributedDeepLearning)
    * [Building Data Pipelines](dataPipelines)
    * [Hyperparameter Management](hyperparameterManagement)
