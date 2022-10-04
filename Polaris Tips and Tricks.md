@@ -10,6 +10,28 @@ qsub -l select=1:system=polaris -l walltime=0:60:00 -l filesystems=home:eagle -q
 ```
 this requests 1 node for 60 min with the home and eagle filesystem
 
+### How do I run a simple script job?
+
+Given a simple script:
+```
+#!/bin/sh
+#PBS -l select=1:system=polaris
+#PBS -l walltime=0:30:00
+#PBS -q SDL_Workshop 
+#PBS -A SDL_Workshop
+#PBS -l filesystems=home:eagle
+
+cd ${PBS_O_WORKDIR}
+ mpiexec -n 1 echo "Hello!"
+ ```
+ You can submit it with:
+
+```
+qsub -l select=1:system=polaris -l walltime=0:30:00 -l filesystems=home:eagle -q SDL_Workshop -A SDL_Workshop ./submit.sh
+```
+
+In the above, having the PBS options in the script and on the command line is redundant, but we put it there to show both ways of launching. This submits the script to one node in the SDL_Workshop queue on Polaris, requesting 30 min and the eagle and home filesystems. It will charge project SDL_Workshop for the time.
+
 ### How do I figure out where my jobs are running? - FROM THE LOGIN NODE
 
 This is, unfortunately, a multistep process.  First, find out what your job ID is, if you don't know it already:
