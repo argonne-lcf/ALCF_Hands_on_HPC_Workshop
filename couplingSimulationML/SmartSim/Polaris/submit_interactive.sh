@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# change `datascience` to the charge account for your project
+# change `SDL_Workshop` to the charge account for your project
 nodes=1
-ChargeAccount=datascience
+ChargeAccount=SDL_Workshop
 queue=debug
 runtime=01:00:00
 

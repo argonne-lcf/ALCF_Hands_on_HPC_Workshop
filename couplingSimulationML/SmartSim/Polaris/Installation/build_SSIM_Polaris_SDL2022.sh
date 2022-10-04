@@ -36,7 +36,7 @@ cd ..
 
 ## Changes to source code for Polaris (these will be part of SmartSim repo soon)
 cd SmartSim/smartsim
-SSIM_SAFE=/lus/eagle/projects/datascience/balin/test_build_SSIM_220908_clean_2/SmartSim
+SSIM_SAFE=/lus/eagle/projects/SDL_Workshop/SmartSim/SmartSim_Polaris_source
 cp $SSIM_SAFE/smartsim/database/orchestrator.py database/orchestrator.py
 cp $SSIM_SAFE/smartsim/settings/mpirunSettings.py settings/mpirunSettings.py
 cp $SSIM_SAFE/smartsim/_core/launcher/step/mpirunStep.py _core/launcher/step/mpirunStep.py
