@@ -74,8 +74,20 @@ The OCCA API is also used for memory allocation.  This is done using the [malloc
   o_uh_prev = device.malloc<double>(N);
 
 ```
+To get the backend pointer, one can do:
+```
+  double *d_b = static_cast<double *>(o_uh.ptr());
+```
+This exposes the address set by the backend model (e.g. CUDA) and hardware (e.g. NVIDIA A100). Doing this will be helpful as we perform in-situ analysis on data resident on the device.  
 
-### Using CuPY to enable zero-copy, in-situe analysis
+### Using CuPY to enable zero-copy, in-situ analysis
+
+
+```
+
+
+```
+
 
 
 ## Acknowledgements
