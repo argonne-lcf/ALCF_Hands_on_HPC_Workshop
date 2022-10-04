@@ -7,12 +7,13 @@ _target_: hplib.configs.ExperimentConfig
 defaults:
   - _self_
   - network: default.yaml
+  - data: default.yaml
   - trainer: default.yaml
   - wandb: default.yaml
 
   # Experiment configs allow for version control of specific hyperparameters
   # e.g. the best hyperparameters for a given model and datamodule
-  - experiment: null
+  # - experiment: null
   - optional local: default.yaml
 
    # debugging config
@@ -26,18 +27,18 @@ defaults:
 # you can overwrite this in experiment configs
 # overwrite from command line with
 # `python train.py tags="[first_tag, second_tag]"`
-tags: null
+# tags: null
 
-ckpt_path: null
+# ckpt_path: null
 
 hydra:
   job:
     chdir: true
 
-# path to original working directory
-# hydra hijacks working directory by changing it to the new log directory
-# so its useful to have this path as a special variable
-# https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
-work_dir: ${hydra:runtime.cwd}
-# path to folder with data
-data_dir: ${work_dir}/datasets/
+# # path to original working directory
+# # hydra hijacks working directory by changing it to the new log directory
+# # so its useful to have this path as a special variable
+# # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+# work_dir: ${hydra:runtime.cwd}
+# # path to folder with data
+# data_dir: ${work_dir}/datasets/
