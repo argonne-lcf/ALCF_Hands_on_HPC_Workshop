@@ -31,7 +31,7 @@ ssh username@polaris.alcf.anl.gov
 ```
 where you can get a node in interactive regime:
 ```bash
-qsub -l select=1:system=polaris -l walltime=30:00 -l filesystems=home:eagle -I -A YourAllocation -q debug
+qsub -l select=1:system=polaris -l walltime=30:00 -l filesystems=home:eagle -I -A SDL_Workshop -q SDL_Workshop
 ```
 Finally, you can activate conda environment
 ```bash
