@@ -102,7 +102,7 @@ int main(int argc, const char **argv) {
   double *d_b = static_cast<double *>(o_uh.ptr());
 
   // Compile the kernel at run-time
-  occa::kernel burgerUpdateKernel = device.buildKernel("burger.okl","update_burger");
+  occa::kernel burgerUpdateKernel = device.buildKernel("kernel/burger.okl","update_burger");
 
   // Copy memory to the device
   o_uh_prev.copyFrom(uh_prev);
