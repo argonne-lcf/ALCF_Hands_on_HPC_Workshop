@@ -55,13 +55,24 @@ $ occa env
 ## Key Features
 
 ### OCCA API: Host, Device & Memory
-The host, usually a CPU processor, is the physical device that runs the application. A device can be a physical device which is the same as the host (i.e. a CPU) or an offload device - one that is physically distinct from the host.  In this example, our kernels run on an offload device. OCCA enablesus to connect to physical device through the OCCA API.  For example, the following snippet is one way to instantiate the device:
+The host, usually a CPU processor, is the physical device that runs the application. A device can be a physical device which can be the host (i.e. a CPU) or an offload device - one that is physically distinct from the host.  In this example, our kernels run on an offload device. OCCA enables the user to connect to the physical device through the OCCA API.  For example, the following snippet is one way to instantiate the device:
 ```
+  occa::device device;
+
   device.setup((std::string) args["options/device"]);
   device.setup({
      {"mode"     , "CUDA"},
      {"device_id", 0},
    });   
+```
+The OCCA API is also used for memory allocation.  This is done using the [malloc](https://libocca.org/#/api/device/malloc) method on a device object. 
+```
+  int N = 1000;
+  occa::memory o_uh, o_uh_prev;
+
+  o_uh = device.malloc<double>(N);
+  o_uh_prev = device.malloc<double>(N);
+
 ```
 
 ### Using CuPY to enable zero-copy, in-situe analysis
