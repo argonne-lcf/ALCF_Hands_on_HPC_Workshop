@@ -48,9 +48,29 @@ conda activate
 Check the environment. (UPDATE THIS SECTION)
 ```
 $ module list
+
+
+Currently Loaded Modules:
+  1) Core/StdEnv   2) cmake/3.19.5   3) openmpi/openmpi-4.1.4_ucx-1.12.1_gcc-9.4.0   4) conda/2021-11-30
+
 ```
 ```
-$ occa env
+$ occa info
+    ========+======================+=================================
+     CPU(s) | Processor Name       | AMD EPYC 7742 64-Core Processor 
+            | Memory               | 1007.69 GB                      
+            | Clock Frequency      | 2.2 MHz                         
+            | SIMD Instruction Set | SSE2                            
+            | SIMD Width           | 128 bits                        
+            | L1d Cache Size       |   4 MB                          
+            | L1i Cache Size       |   4 MB                          
+            | L2 Cache Size        |  64 MB                          
+            | L3 Cache Size        | 512 MB                          
+    ========+======================+=================================
+     CUDA   | Device Name          | NVIDIA A100-SXM4-40GB           
+            | Device ID            | 0                               
+            | Memory               | 39.58 GB                        
+    ========+======================+=================================
 ```
 ## Key Features
 
