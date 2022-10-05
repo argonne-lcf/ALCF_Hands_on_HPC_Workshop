@@ -140,11 +140,7 @@ Called python analyses function successfully
 
 $ ls
 burger	Field_evolution.png  kernel python_module.py  SVD_Eigenvectors.png
-
-
 ```
-
-
 
 
 ## Key Features
