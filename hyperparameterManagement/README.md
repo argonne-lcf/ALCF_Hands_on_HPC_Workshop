@@ -60,7 +60,8 @@ We use [Hydra](https://hydra.cc)[^1] for configuration management.
   $ python3 -c "import hplib; print(hplib.__file__)"
   ```
 
-3. Run experiments:
+3. Request an interactive job and run experiments:
+  Instructions for requesting an interactive job are [here](https://saforem2.github.io/hparam-management-sdl2022/#/2).
   ```shell
   $ cd src/hplib
   $ ./train.sh
