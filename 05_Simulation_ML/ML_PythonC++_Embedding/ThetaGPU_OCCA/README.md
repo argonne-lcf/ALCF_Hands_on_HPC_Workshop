@@ -46,12 +46,13 @@ export OCCA_CUDA_COMPILER_FLAGS="-O3 --fmad=true"
 export PATH+=":${OCCA_DIR}/bin"
 export LD_LIBRARY_PATH+=":${OCCA_DIR}/lib"
 ```
+NOTE: the `OCCA_CACHE_DIR` specifies a location where OCCA-specific kernels (.okl) are stored/cached. Please make note of your path to this directory. 
 
-Activate the virtual Python environment
+4. Activate the virtual Python environment
 ```
 conda activate
 ```
-Check the environment. (UPDATE THIS SECTION)
+5. Check the environment.
 ```
 $ module list
 
