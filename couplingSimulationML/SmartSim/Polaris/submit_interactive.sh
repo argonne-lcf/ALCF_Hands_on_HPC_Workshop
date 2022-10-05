@@ -3,7 +3,7 @@
 # change `SDL_Workshop` to the charge account for your project
 nodes=1
 ChargeAccount=SDL_Workshop
-queue=debug
+queue=SDL_Workshop
 runtime=01:00:00
 
 echo number of nodes $nodes

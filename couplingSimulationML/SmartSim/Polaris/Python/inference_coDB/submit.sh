@@ -7,7 +7,7 @@
 #PBS -k doe
 #PBS -j oe
 #PBS -A SDL_Workshop
-#PBS -q debug-scaling
+#PBS -q SDL_Workshop
 #PBS -V
 
 DRIVER=src/driver.py
