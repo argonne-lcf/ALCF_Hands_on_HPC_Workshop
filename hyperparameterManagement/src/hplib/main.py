@@ -186,6 +186,8 @@ def train_mnist(cfg: DictConfig, wbrun: Optional[Any] = None) -> float:
             log.info((sep := '-' * len(summary)))
             log.info(summary)
             log.info(sep)
+        if wbrun is not None:
+            wbrun.log({'time_per_epoch': (time.time() - t0)})
 
     rstr = f'[{RANK}] ::'
     if RANK == 0:
@@ -228,7 +230,7 @@ def setup_wandb(cfg: DictConfig) -> dict:
             nranks_env = os.environ.get('NRANKS', SIZE)
             if nranks_env != SIZE:
                 log.warning(f'$NRANKS != SIZE')
-                log.warning(f'NRANKS: {NRANKS}')
+                log.warning(f'NRANKS: {nranks_env}')
                 log.warning(f'SIZE: {SIZE}')
             wbrun.config['NRANKS'] = SIZE  # os.environ.get('NRANKS', SIZE)
             wbrun.config['hostname'] = MASTER_ADDR
