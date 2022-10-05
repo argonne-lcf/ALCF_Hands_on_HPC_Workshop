@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+import os
+os.environ['IBV_FORK_SAFE']="1"
 
 import tensorflow as tf
 import argparse
@@ -20,12 +22,13 @@ import argparse
 import horovod.tensorflow as hvd
 import time
 
+
 parser = argparse.ArgumentParser(description='TensorFlow MNIST Example')
 parser.add_argument('--batch_size', type=int, default=256, metavar='N',
                     help='input batch size for training (default: 256)')
-parser.add_argument('--epochs', type=int, default=16, metavar='N',
-                    help='number of epochs to train (default: 4)')
-parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+parser.add_argument('--epochs', type=int, default=32, metavar='N',
+                    help='number of epochs to train (default: 32)')
+parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
@@ -33,6 +36,8 @@ parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
 parser.add_argument('--wandb', action='store_true', 
                     help='whether to use wandb to log data')
+parser.add_argument('--num_warmup_epochs', default=0, 
+                    help='Number of warmup epochs', type=int)
 
 args = parser.parse_args()
     
@@ -75,13 +80,13 @@ test_dset = tf.data.Dataset.from_tensor_slices(
              tf.cast(y_test, tf.int64))
 )
 
-nsamples = len(list(dataset))
-ntests = len(list(test_dset))
-# shuffle the dataset, with shuffle buffer to be 10000
-dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
-
+nsamples = len(list(dataset))//hvd.size()
+ntests = len(list(test_dset))//hvd.size()
+# shuffle the dataset, with shuffle buffer to be 1000
+dataset = dataset.shard(num_shards=hvd.size(), index=hvd.rank()).repeat().shuffle(1000).batch(args.batch_size)
 test_dset  = test_dset.shard(num_shards=hvd.size(), index=hvd.rank()).repeat().batch(args.batch_size)
 
+print(nsamples, ntests)
 mnist_model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
     tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
@@ -140,10 +145,14 @@ def validation_step(images, labels):
 
 from tqdm import tqdm 
 # Horovod: adjust number of steps based on number of GPUs.
-nstep = nsamples//hvd.size()//args.batch_size
-ntest_step = ntests//args.batch_size//hvd.size()
+nstep = nsamples//args.batch_size
+ntest_step = ntests//args.batch_size
 t0 = time.time()
 for ep in range(args.epochs):
+    if (ep < args.num_warmup_epochs):
+        opt = tf.optimizers.Adam(args.lr)
+    else:
+        opt = tf.optimizers.Adam(args.lr*hvd.size())
     running_loss = 0.0
     running_acc = 0.0
     tt0 = time.time()

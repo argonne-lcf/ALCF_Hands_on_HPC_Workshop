@@ -15,7 +15,7 @@
 
  First, get an interactive job on Polaris:
  ```
-  qsub -l select=1:system=polaris -I -q SDL_workshop  -l walltime=0:30:00 -l filesystems=home:eagle -A SDL_Workshop
+  qsub -l select=1:system=polaris -I -q SDL_Workshop  -l walltime=0:30:00 -l filesystems=home:eagle -A SDL_Workshop
  ```
 
  Since we're using the default module, there's nothing additional

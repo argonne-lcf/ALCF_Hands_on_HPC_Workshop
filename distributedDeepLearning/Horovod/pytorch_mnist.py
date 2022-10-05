@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
-                    help='input batch size for testing (default: 1000)')
+                    help='input batch size for testing (default: 64)')
 parser.add_argument('--epochs', type=int, default=32, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
@@ -38,6 +38,8 @@ parser.add_argument('--device', default='cpu',
 parser.add_argument('--wandb', action='store_true', 
                     help='whether to use wandb to log data')
 parser.add_argument('--num_threads', default=0, help='set number of threads per worker', type=int)
+parser.add_argument('--project', default="sdl-pytorch-mnist", type=str)
+parser.add_argument('--num_workers', default=1, help='set number of io workers', type=int)
 
 args = parser.parse_args()
 
@@ -47,10 +49,12 @@ args.cuda = args.device.find("gpu")!=-1
 # Horovod: initialize library.
 hvd.init()
 
+
+
 if args.wandb and hvd.rank()==0:
     try:
         import wandb
-        wandb.init(project="sdl-pytorch-mnist")
+        wandb.init(project=args.project)
     except:
         args.wandb = False
     config = wandb.config          # Initialize config
@@ -77,12 +81,12 @@ if hvd.rank()==0:
     print("Torch Thread setup: ")
     print(" Number of threads: ", torch.get_num_threads())
 
-kwargs = {'num_workers': 0, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
+kwargs = {'num_workers': args.num_workers, 'pin_memory': False} if args.device.find("gpu")!=-1 else {}
 train_dataset = \
     datasets.MNIST('datasets/', train=True, download=True,
                    transform=transforms.Compose([
                        transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
+                       transforms.Normalize((0.1307,), (0.3081  ,))
                    ]))
 # Horovod: use DistributedSampler to partition the training data.
 train_sampler = torch.utils.data.distributed.DistributedSampler(
@@ -120,7 +124,6 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x)
 
-
 model = Net()
 if args.wandb and hvd.rank()==0:
     wandb.watch(model)
@@ -143,8 +146,8 @@ compression = hvd.Compression.fp16 if args.fp16_allreduce else hvd.Compression.n
 
 # Horovod: wrap optimizer with DistributedOptimizer.
 optimizer = hvd.DistributedOptimizer(optimizer,
-									 named_parameters=model.named_parameters(),
-									 compression=compression)
+				     named_parameters=model.named_parameters(),
+				     compression=compression)
 
 
 def train(epoch):
@@ -231,4 +234,3 @@ for epoch in range(1, args.epochs + 1):
 t1 = time.time()
 if hvd.rank()==0:
     print("Total training time: %s seconds" %(t1 - t0))
-OB

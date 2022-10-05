@@ -1,23 +1,16 @@
 #!/bin/bash -l
-#COBALT -n 1
-#COBALT -t 0:20:00 -A SDL_Workshop
-#COBALT -q training-gpu
-#COBALT --attrs=pubnet
-#COBALT -O cifar10_1node_8gpus
-
-#submisstion script for running pytorch_mnist with DDP
-
-echo "Running Cobalt Job $COBALT_JOBID."
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=0:20:00
+#PBS -A SDL_Workshop
+#PBS -q SDL_Workshop
 
 module load conda
 conda activate
 
-N_NODES=$(cat $COBALT_NODEFILE | wc -l)
-RANKS_PER_NODE=8
-let N_RANKS=${RANKS_PER_NODE}*${N_NODES}
+cd $PBS_O_WORKDIR
+for n in 1 2 4
+do  
+    aprun -n $n python pytorch_cifar10.py --device gpu --epochs 32 --wandb --project cifar10_ddp >& cifar10.$n.dat
+done
 
-echo "Current Directory: "
-pwd
 
-mpirun -n $N_RANKS -hostfile ${COBALT_NODEFILE} -map-by node \
-python pytorch_cifar10.py --device gpu --epochs 32

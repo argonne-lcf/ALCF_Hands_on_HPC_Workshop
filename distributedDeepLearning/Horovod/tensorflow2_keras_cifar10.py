@@ -41,15 +41,18 @@ t0 = time.time()
 parser = argparse.ArgumentParser(description='TensorFlow MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
+parser.add_argument('--epochs', type=int, default=32, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
                     help='learning rate (default: 0.001)')
 parser.add_argument('--device', default='cpu',
-                    help='Wheter this is running on cpu or gpu')
+                    help='Whether this is running on cpu or gpu')
 parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
-
+parser.add_argument('--wandb', action='store_true', 
+                    help='whether to use wandb to log data')
+parser.add_argument('--num_warmup_epochs', 
+                    default=0, help='set number of warmup epochs', type=int)                    
 args = parser.parse_args()
 if args.wandb and hvd.rank()==0:
     try:
@@ -59,13 +62,9 @@ if args.wandb and hvd.rank()==0:
         args.wandb = False
     config = wandb.config          # Initialize config
     config.batch_size = args.batch_size         # input batch size for training (default: 64)
-    config.test_batch_size = args.test_batch_size    # input batch size for testing (default: 1000)
     config.epochs = args.epochs            # number of epochs to train (default: 10)
     config.lr = args.lr              # learning rate (default: 0.01)
-    config.momentum = args.momentum         # SGD momentum (default: 0.5) 
     config.device = args.device        # disables CUDA training
-    config.seed = args.seed               # random seed (default: 42)
-    config.log_interval = args.log_interval     # how many batches to wait before logging training status
     config.num_workers = hvd.size()
 
 # Horovod: pin GPU to be used to process local rank (one GPU per process)
@@ -82,16 +81,23 @@ else:
     if gpus:
         tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
 
-(cifar10_images, cifar10_labels), _ = \
-    tf.keras.datasets.cifar10.load_data()
-(train_images, train_labels), (test_images, test_labels) =    tf.keras.datasets.cifar10.load_data()
-train_images, test_images = train_images / 255.0, test_images / 255.0
+(train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
+
 dataset = tf.data.Dataset.from_tensor_slices(
-    (tf.cast(cifar10_images[..., tf.newaxis] / 255.0, tf.float32),
-             tf.cast(cifar10_labels, tf.int64))
+    (tf.cast(train_images[..., tf.newaxis] / 255.0, tf.float32),
+             tf.cast(train_labels, tf.int64))
 )
-nsamples = len(list(dataset))
-dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
+
+test_dset = tf.data.Dataset.from_tensor_slices(
+    (tf.cast(test_images[..., tf.newaxis] / 255.0, tf.float32),
+             tf.cast(test_labels, tf.int64))
+)
+
+nsamples = len(list(dataset))//hvd.size()
+ntests = len(list(test_dset))//hvd.size()
+
+dataset = dataset.shard(num_shards=hvd.size(), index=hvd.rank()).repeat().shuffle(10000).batch(args.batch_size)
+test_dset  = test_dset.shard(num_shards=hvd.size(), index=hvd.rank()).batch(args.batch_size)
 
 
 # Horovod: adjust learning rate based on number of GPUs.
@@ -165,7 +171,6 @@ cifar10_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(from_logits=T
                     optimizer=opt,
                     metrics=['accuracy'],
                     experimental_run_tf_function=False)
-#print(cifar10_model.summary())
 if (with_hvd):
     callbacks = [
         # Horovod: broadcast initial variable states from rank 0 to all other processes.
@@ -182,7 +187,7 @@ if (with_hvd):
         # Horovod: using `lr = 1.0 * hvd.size()` from the very beginning leads to worse final
         # accuracy. Scale the learning rate `lr = 1.0` ---> `lr = 1.0 * hvd.size()` during
         # the first three epochs. See https://arxiv.org/abs/1706.02677 for details.
-        hvd.callbacks.LearningRateWarmupCallback(warmup_epochs=3, verbose=1, initial_lr = args.lr),
+        hvd.callbacks.LearningRateWarmupCallback(warmup_epochs=args.num_warmup_epochs, verbose=1, initial_lr = args.lr),
     ]
 else:
     callbacks=[]
@@ -190,7 +195,8 @@ else:
 
 if hvd.rank() == 0:
     callbacks.append(tf.keras.callbacks.ModelCheckpoint('./checkpoints/keras_cifar10-{epoch}.h5'))
-
+if hvd.rank()==0 and args.wandb:
+    callbacks.append(wandb.keras.WandbCallback())
 # Horovod: write logs on worker 0.
 verbose = 1 if hvd.rank() == 0 else 0
 
@@ -198,7 +204,7 @@ verbose = 1 if hvd.rank() == 0 else 0
 # Horovod: adjust number of steps based on number of GPUs.
 #cifar10_model.fit(dataset, steps_per_epoch=nsamples // hvd.size() // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose)
 
-history = cifar10_model.fit(train_images, train_labels, epochs=args.epochs, steps_per_epoch=nsamples//hvd.size()//args.batch_size, callbacks=callbacks, verbose=verbose, validation_data=(test_images, test_labels), shuffle = True)
+history = cifar10_model.fit(dataset, epochs=args.epochs, steps_per_epoch=nsamples//args.batch_size, callbacks=callbacks, verbose=verbose, validation_data=test_dset, shuffle = True)
 
 t1 = time.time()
 if (hvd.rank()==0):
