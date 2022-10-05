@@ -32,7 +32,7 @@ qsub -A SDL_Workshop \
 ```
 3. Set the Environment
 
-You can do `source set_OCCA_env.sh`. This loads modules and sets certain environment variables. 
+Edit `OCCA_CACHE_DIR` in `set_OCCA_env.sh.` Then run `source set_OCCA_env.sh`. This loads modules and sets certain environment variables. 
 
 ```
 $ cat set_OCCA_env.sh
@@ -40,7 +40,7 @@ $ cat set_OCCA_env.sh
 module load cmake
 module load conda/2021-11-30
 
-SDL=sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/
+SDL=sdl_workshop/couplingSimulationML/ML_PythonC++_Embedding/ThetaGPU_OCCA/
 
 export OCCA_DIR=/lus/grand/projects/catalyst/world-shared/spatel/occa/install
 export OCCA_CACHE_DIR=/path/to/$SDL
