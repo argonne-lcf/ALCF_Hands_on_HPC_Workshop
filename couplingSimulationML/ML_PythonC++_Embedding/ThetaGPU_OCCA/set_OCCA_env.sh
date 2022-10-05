@@ -3,7 +3,7 @@
 module load cmake
 module load conda/2021-11-30
 
-SDL=sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/
+SDL=sdl_workshop/couplingSimulationML/ML_PythonC++_Embedding/ThetaGPU_OCCA/
 
 export OCCA_DIR=/lus/grand/projects/catalyst/world-shared/spatel/occa/install
 export OCCA_CACHE_DIR=/path/to/$SDL
