@@ -3,6 +3,6 @@ _target_: hplib.configs.NetworkConfig
 drop1: 0.1
 drop2: 0.25
 filters1: 32
-activation_fn: relu
+activation_fn: "relu"
 filters2: 64
 hidden_size: 16

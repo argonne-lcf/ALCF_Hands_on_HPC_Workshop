@@ -1,5 +1,5 @@
 """
-ddp/network.py
+network.py
 """
 from __future__ import absolute_import, annotations, division, print_function
 import torch
@@ -59,41 +59,16 @@ class Net(nn.Module):
             self.cuda()
             self.layers.cuda()
 
-        # self.conv1 = nn.Conv2d(
-        #     1,
-        #     self.config.filters1,
-        #     3,
-        #     1
-        # )
-        # self.conv2 = nn.Conv2d(
-        #     self.config.filters1,
-        #     self.config.filters2,
-        #     3,
-        #     1
-        # )
-        # self.dropout1 = nn.Dropout(self.config.drop1)
-        # self.dropout2 = nn.Dropout(self.config.drop2)
-        # self.fc1 = nn.Linear(9216, self.config.hidden_size)
-        # self.fc2 = nn.Linear(self.config.hidden_size, 10)
-
     def get_config(self):
         return self.config
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x = F.relu(self.conv1(x))
-        # x = F.relu(self.conv2(x))
-        # x = F.max_pool2d(x, 2)
-        # x = self.dropout1(x)
-        # x = F.relu(self.fc1(torch.flatten(x, 1)))
-        # x = self.dropout2(x)
-        # x = self.fc2(x)
         x.requires_grad_(True)
         x = x.to(self.device)
         for layer in self.layers:
             x = layer(x)
 
         return F.log_softmax(x, dim=1)
-
 
 
 
