@@ -15,17 +15,23 @@ All of the above are provided on ThetaGPU
 ## Building and Running 
 
 We assume that you have cloned the repo to a suitable location. These are the steps to execute this code on ThetaGPU (interactively):
-1. Login to a ThetaGPU head node
+
+1. From the theta login node, please Login to a ThetaGPU service node
 ```
 ssh thetagpusn1
 ```
 2. Request an interactive session on an A100 GPU
 ```
-qsub -n 1 -q training-gpu -A SDL_Workshop -I -t 1:00:00
+qsub -A SDL_Workshop \
+     -q single-gpu \
+     -I \
+     -n 1 \
+     --attrs filesystems=home,grand,eagle \
+     -t 60
 ```
 3. Set the Environment
 
-You can do `source set_OCCA_env.sh`. Which load modules and sets certain environment variables. 
+You can do `source set_OCCA_env.sh`. This loads modules and sets certain environment variables. 
 
 ```
 $ cat set_OCCA_env.sh
@@ -48,14 +54,9 @@ export LD_LIBRARY_PATH+=":${OCCA_DIR}/lib"
 ```
 NOTE: the `OCCA_CACHE_DIR` specifies a location where OCCA-specific kernels (.okl) are stored/cached. Please make note of your path to this directory. 
 
-4. Activate the virtual Python environment
-```
-conda activate
-```
-5. Check the environment.
+4. Check the environment.
 ```
 $ module list
-
 
 Currently Loaded Modules:
   1) Core/StdEnv   2) cmake/3.19.5   3) openmpi/openmpi-4.1.4_ucx-1.12.1_gcc-9.4.0   4) conda/2021-11-30
@@ -79,6 +80,13 @@ $ occa info
             | Memory               | 39.58 GB                        
     ========+======================+=================================
 ```
+5. Activate the virtual Python environment
+
+```
+conda activate
+```
+5. Check the environment.
+
 
 4. Compile
 
