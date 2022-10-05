@@ -51,7 +51,7 @@
 
    Currently, there is some issue with pytorch dataloader, one has to set ```num_workers=0``` which will hurt the performance.
   ```bash
-  aprun -n 8 -N 4  python pytorch_mnist.py --device gpu --wandb --project mnist_hvd >& pytorch_mnist.out.8
+  aprun -n 8 -N 4  python pytorch_mnist.py --device gpu --num_workers=0 --wandb --project mnist_hvd >& pytorch_mnist.out.8
   ```
 
    You can check the test accuracy and the timing for different scales.
