@@ -18,7 +18,6 @@ os.environ['IBV_FORK_SAFE']="1"
 import tensorflow as tf
 import argparse
 #Horovod: import horovod module 
-
 import horovod.tensorflow as hvd
 import time
 
@@ -143,7 +142,6 @@ def validation_step(images, labels):
     return loss_value, accuracy
 
 
-from tqdm import tqdm 
 # Horovod: adjust number of steps based on number of GPUs.
 nstep = nsamples//args.batch_size
 ntest_step = ntests//args.batch_size
