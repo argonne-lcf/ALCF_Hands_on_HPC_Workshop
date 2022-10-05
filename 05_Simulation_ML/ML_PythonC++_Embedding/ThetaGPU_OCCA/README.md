@@ -92,19 +92,19 @@ sh build.sh
 ```
 You should some output that looks like:
 ```
--- Build files have been written to: /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/build
+-- Build files have been written to: ... 
 + cmake --build /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/build --parallel 4
 Scanning dependencies of target burger
 [ 50%] Building CXX object CMakeFiles/burger.dir/main.cpp.o
 [100%] Linking CXX executable burger
 [100%] Built target burger
-+ cmake --install /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/build --prefix ... 
++ cmake --install ... --prefix ... 
 -- Install configuration: "RelWithDebInfo"
--- Installing: /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./burger
--- Set runtime path of "/home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./burger" to ""
--- Installing: /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/install/kernel
--- Installing: /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/install/kernel/burger.okl
--- Installing: /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./python_module.py
+-- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./burger
+-- Set runtime path of ".../ThetaGPU_OCCA/install/./burger" to ""
+-- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/kernel
+-- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/kernel/burger.okl
+-- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./python_module.py
 ```
 
 
