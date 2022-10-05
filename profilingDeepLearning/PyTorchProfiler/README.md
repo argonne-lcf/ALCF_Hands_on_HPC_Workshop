@@ -1,5 +1,8 @@
 # PyTorch Profiler
 
+Presented by Filippo Simini (fsimini@anl.gov) based on [material](https://github.com/argonne-lcf/CompPerfWorkshop/tree/main/09_profiling_frameworks/PyTorchProfiler) by Denis Boyda (boyda@anl.gov)
+
+
 Profiling is an efficient way of measuring the performance and optimize your PyTorch scripts. It allows you to examine a PyTorch script and understand if it has some performance issues. One can measure and analyze execution time and memory consumption as well as finding bottlenecks and trace source code. In this tutorial we discuss several ways to profile PyTorch scripts such as [`torch.autograd.profiler`](https://pytorch.org/docs/stable/autograd.html#torch.autograd.profiler.profile), [`torch.profiler`](https://pytorch.org/docs/stable/profiler.html#torch-profiler), [`torch.utils.bottleneck`](https://pytorch.org/docs/stable/bottleneck.html#torch-utils-bottleneck) and [Python cProfiler](https://docs.python.org/3/library/profile.html#module-cProfile).
 
 In this tutorial we:

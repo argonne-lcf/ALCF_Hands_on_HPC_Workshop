@@ -4,12 +4,12 @@
 
 This section will cover some best practices / ideas related to experiment organization and hyperparameter management.
 
-We use [Hydra](https://hydra.cc)[^1] for configuration management.
+We use [Hydra](https://hydra.cc) for configuration management.
 
-- The accompanying slides for this talk can be found at: 
+- The slides for this talk can be found at: 
   - 📊 [Hyperparameter Management](https://saforem2.github.io/hparam-management-sdl2022/#/)
 
-- There is a Weights & Biases workspace available online at:
+- There is a WandB workspace available online at:
   - [wandb.ai/alcf-mlops/sdl-wandb](https://wandb.ai/alcf-mlops/sdl-wandb?workspace=user-foremans)
 
 
@@ -23,7 +23,7 @@ We use [Hydra](https://hydra.cc)[^1] for configuration management.
 
 # Quick Start
 
-1. Clone the github repo and navigate into this directory
+1. Clone the GitHub repo and navigate into this directory
   ```shell
   $ git clone https://github.com/argonne-lcf/sdl_workshop
   $ cd sdl_workshop/hyperparameterManagement/
@@ -37,7 +37,8 @@ We use [Hydra](https://hydra.cc)[^1] for configuration management.
 3. Run experiments:
   ```shell
   $ cd src/hplib
-  $ ./train.sh
+  $ ./train.sh > train.log 2>&1 &
+  $ tail -f train.log $(tail -1 logs/latest)
   ```
   
 This will perform a complete training + evaluation run using the default configurations specified in [`src/hplib/conf/config.yaml`](./src/hplib/conf/config.yaml)
@@ -70,9 +71,9 @@ hydra:
     chdir: true
 ```
 
-The `_target_` field indicates that this configuration implements an `hplib.configs.ExperimentConfig` object.
+The `_target_` field indicates that this configuration implements a `hplib.configs.ExperimentConfig` object.
 
-Hydra will step recusively into nested fields and look for the implementation details specified by their values.
+Hydra will step recursively into nested fields and look for the implementation details specified by their values.
 
 Explicitly, we have the following object implemented in [`src/hplib/configs.py`](./src/hplib/configs.py):
 
@@ -136,7 +137,7 @@ We can override the default options in our configuration either:
   ```shell
   $ ./train.sh network.hidden_size=32 data.batch_size=2048
   ```
-  will set the hidden size to be 32 in our `NetworkConfig` and the batch size to be `2048` in our `DataConfig`
+  will set the hidden size to be 32 in our `NetworkConfig`, and the batch size to be `2048` in our `DataConfig`
   
   
 # WandB Sweeps
@@ -210,6 +211,3 @@ command:
 ┣━━ 📄 README.md
 ┗━━ 📄 setup.cfg
 ```
-
-
-[^1]: [Hydra](https://hydra.cc): A framework for elegantly configuring complex applications

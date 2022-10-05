@@ -24,6 +24,7 @@ To download the mnist dataset, make sure to enable http forwarding:
 export http_proxy=http://theta-proxy.tmi.alcf.anl.gov:3128
 export https_proxy=https://theta-proxy.tmi.alcf.anl.gov:3128
 ``` -->
+First, request a node. See [this page](https://github.com/argonne-lcf/sdl_workshop/blob/master/Polaris%20Tips%20and%20Tricks.md) for a reminder of how to do this on Polaris. 
 
 Run the original script, single node, like so: `python train_GAN.py`.  Feel free to ctrl+C once it hits a stable throughput.
 
