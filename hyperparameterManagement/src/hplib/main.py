@@ -132,7 +132,8 @@ def build_model(
             device_ids=[LOCAL_RANK],
             output_device=LOCAL_RANK
         )
-    xshape = (1, *MNIST_SHAPE) if xshape is None else xshape
+    xshape = (1, *MNIST_SHAPE) if xshape is None else xshape  # type:ignore
+    assert xshape is not None
     x = torch.rand(xshape)  # [N, *[C, H, W]]
     if torch.cuda.is_available():
         model.cuda()
@@ -216,16 +217,19 @@ def setup_wandb(cfg: DictConfig) -> dict:
                 id=run_id,
                 mode='online',
                 resume='allow',
-                # magic=True,
-                save_code=False,
-                project='sdl-wandb-test',
-                # entity='',  # wbcfg.setup.entity,
+                save_code=True,
+                project='sdl-wandb',
             )
             assert wbrun is not None and wbrun is wandb.run
             wbrun.log_code(cfg.get('work_dir', PROJECT_DIR))
             wbrun.config.update(OmegaConf.to_container(cfg, resolve=True))
             wbrun.config['run_id'] = run_id
             wbrun.config['logdir'] = os.getcwd()
+            nranks_env = os.environ.get('NRANKS', SIZE)
+            if nranks_env != SIZE:
+                log.warning(f'$NRANKS != SIZE')
+                log.warning(f'NRANKS: {NRANKS}')
+                log.warning(f'SIZE: {SIZE}')
             wbrun.config['NRANKS'] = SIZE  # os.environ.get('NRANKS', SIZE)
             wbrun.config['hostname'] = MASTER_ADDR
             wbrun.config['device'] = (
