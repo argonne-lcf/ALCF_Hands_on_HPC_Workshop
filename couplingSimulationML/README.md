@@ -1,6 +1,6 @@
 # Combining HPC Simulations with AI/ML
 
-Led by Bethany Lusch and Riccardo Balin from ALCF
+Led by Saumil Patel and Riccardo Balin from ALCF, assisted by Bethany Lusch and Filippo Simini. 
 
 Today, we're learning about coupling simulations and machine learning.
 
