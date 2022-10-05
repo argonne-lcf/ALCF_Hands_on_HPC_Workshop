@@ -15,10 +15,10 @@ To see a similar coupling but with OpenFOAM on the C++ side (CFD software), chec
 ## What you should see when you run this on either ThetaGPU or ThetaKNL
 
 ### Field evolution
-![Fields](../ThetaKNL/app_build/Field_evolution.png "Fields")
+![Fields](app_build/Field_evolution.png "Fields")
 
 ### Modal decomposition
-![Modes](../ThetaKNL/app_build/SVD_Eigenvectors.png "Modes")
+![Modes](app_build/SVD_Eigenvectors.png "Modes")
 
 ### Forecasting the modal evolution in time (still rather poor but you get the idea)
 ![Forecasting Mode 0](../ThetaKNL/app_build/Mode_0_prediction.png "Mode 0 prediction")
