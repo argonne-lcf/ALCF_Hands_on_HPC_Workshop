@@ -17,8 +17,6 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
-#include <cuda.h>
-
 constexpr int NX=256; // number of points in spatial discretization
 occa::json parseArgs(int argc, const char **argv);
 void PyIt(PyObject *p_func, double *u);
