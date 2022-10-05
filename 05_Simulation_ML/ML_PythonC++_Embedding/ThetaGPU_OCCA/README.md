@@ -90,7 +90,7 @@ conda activate
 ```
 sh build.sh
 ```
-You should some output that looks like:
+You should some output that looks something like:
 ```
 -- Build files have been written to: ... 
 + cmake --build .../ML_PythonC++_Embedding/ThetaGPU_OCCA/build --parallel 4
@@ -107,6 +107,44 @@ Scanning dependencies of target burger
 -- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./python_module.py
 ```
 7. Run
+
+```
+$ cd install/
+$ ls
+burger	kernel	python_module.py
+
+$ ls kernel/
+burger.okl
+
+$ ./burger
+Initialization of Python: Done
+Within Python Module File
+Loaded Python Module File: Done
+Loaded Functions: Done
+Called python data collection function successfully
+time = 0.001
+Called python data collection function successfully
+Called python data collection function successfully
+Called python data collection function successfully
+...
+...
+...
+Called python data collection function successfully
+Called python data collection function successfully
+time = 2.001
+Mean Wall-Time: 0.0469978
+A random value in the solution array: 0.0733873
+Called python analyses function successfully
+Performing SVD
+Called python analyses function successfully
+
+$ ls
+burger	Field_evolution.png  kernel python_module.py  SVD_Eigenvectors.png
+
+
+```
+
+
 
 
 ## Key Features
