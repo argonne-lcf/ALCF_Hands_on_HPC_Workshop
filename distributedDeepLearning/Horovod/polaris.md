@@ -1,8 +1,8 @@
 # Hands on for Data Parallel Deep Learning on ThetaGPU
 
 0. (OPTIONAL) Follow the following instruction to register an weights&Bias account:
-https://docs.wandb.ai/quickstart
-
+   - Sign up for a free account at https://wandb.ai/site and then login to your wandb account.
+   - Login to the wandb library on your machine. You will find your API key here: https://wandb.ai/authorize. 
 
 1. Request an interactive session on Polaris:
       ```bash
@@ -33,23 +33,23 @@ https://docs.wandb.ai/quickstart
    ```
 3. Run examples on a single node
       ```bash
-      aprun -n 4 python pytorch_mnist.py --device gpu --wandb 
+      aprun -n 4 python pytorch_mnist.py --device gpu --wandb --project mnist_hvd
       ```
 4. Visualize the results (replace ```hzheng``` with your wandb username): 
-   https://wandb.ai/hzheng/sdl-pytorch-mnist
+   https://wandb.ai/hzheng/mnist_hvd
 
 5. Test scaling:
    ```bash
    for n in 1 2 4
    do
-     	aprun -n $n python pytorch_mnist.py --device gpu --wandb >& pytorch_mnist.out.$n
+     	aprun -n $n python pytorch_mnist.py --device gpu --wandb --project mnist_hvd >& pytorch_mnist.out.$n
    done
    ```
    If you want to go to larger scale (8 GPUs), you could run on 2 nodes. 
 
    Currently, there is some issue with pytorch dataloader, one has to set ```num_workers=0``` which will hurt the performance.
   ```bash
-  aprun -n 8 -N 4  python pytorch_mnist.py --device gpu --wandb >& pytorch_mnist.out.8
+  aprun -n 8 -N 4  python pytorch_mnist.py --device gpu --wandb --project mnist_hvd >& pytorch_mnist.out.8
   ```
 
    You can check the test accuracy and the timing for different scales.

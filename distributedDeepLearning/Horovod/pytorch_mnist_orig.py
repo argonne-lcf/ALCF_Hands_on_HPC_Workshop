@@ -148,9 +148,7 @@ def train(epoch):
     running_loss = running_loss / len(train_sampler)
     training_acc = training_acc / len(train_sampler)
     print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(running_loss, training_acc*100))
-    return loss_avg, training_acc
-
-
+    return running_loss, training_acc
 def test():
     model.eval()
     test_loss = 0.
