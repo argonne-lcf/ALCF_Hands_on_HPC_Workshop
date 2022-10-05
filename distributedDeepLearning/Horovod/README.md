@@ -252,8 +252,14 @@ def tensor_average(val, name):
 We provided some examples in: [Horovod](Horovod/) 
 * [pytorch_mnist.py](pytorch_mnist.py)
 * [pytorch_cifar10.py](pytorch_cifar10.py)
+* [tensorflow2_mnist.py](tensorflow2_mnist.py)
+* [tensorflow2_keras_cifar10.py](tensorflow2_keras_cifar10.py)
+* [tensorflow2_keras_mnist.py](tensorflow2_keras_cifar10.py)
 
-## Examples
+## Exercises
+Implement [pytorch_mnist_orig.py](pytorch_mnist_orig.py) and [tensorflow2_mnist_orig.py](tensorflow2_mnist_orig.py)
+
+## Running the examples
 * [polaris.md](polaris.md): running on Polaris (```--device gpu```)
 * [thetagpu.md](thetagpu.md): running on ThetaGPU (```--device gpu```)
 * [theta.md](theta.md): running on ThetaKNL CPU (```--device cpu```)

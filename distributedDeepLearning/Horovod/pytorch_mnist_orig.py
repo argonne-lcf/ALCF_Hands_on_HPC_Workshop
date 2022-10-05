@@ -147,7 +147,7 @@ def train(epoch):
                 epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
     running_loss = running_loss / len(train_sampler)
     training_acc = training_acc / len(train_sampler)
-    print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(loss_avg, training_acc*100))
+    print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(running_loss, training_acc*100))
     return loss_avg, training_acc
 
 
