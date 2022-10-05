@@ -84,12 +84,12 @@ $ occa info
 5. Activate the virtual Python environment
 
 ```
-conda activate
+$ conda activate
 ```
 6. Build by running the `build.sh` script from this directory. This script is the cmake driver.  
 
 ```
-sh build.sh
+$ sh build.sh
 ```
 You should some output that looks something like:
 ```
@@ -142,7 +142,6 @@ Called python analyses function successfully
 $ ls
 burger	Field_evolution.png  kernel python_module.py  SVD_Eigenvectors.png
 ```
-
 
 ## Key Features
 
