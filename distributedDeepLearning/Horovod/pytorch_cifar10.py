@@ -10,13 +10,14 @@ import torch.utils.data.distributed
 #Horovod: import horovod
 import horovod.torch as hvd
 import time
+import torchvision
 
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
-parser.add_argument('--batch_size', type=int, default=16, metavar='N',
+parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 16)')
-parser.add_argument('--test-batch-size', type=int, default=16, metavar='N',
+parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--epochs', type=int, default=32, metavar='N',
                     help='number of epochs to train (default: 32)')
@@ -26,7 +27,7 @@ parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                     help='SGD momentum (default: 0.5)')
 parser.add_argument('--seed', type=int, default=42, metavar='S',
                     help='random seed (default: 42)')
-parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--fp16-allreduce', action='store_true', default=False,
                     help='use fp16 compression during allreduce')
@@ -34,7 +35,10 @@ parser.add_argument('--device', default='cpu',
                     help='Wheter this is running on cpu or gpu')
 parser.add_argument('--wandb', action='store_true', 
                     help='whether to use wandb to log data')
+parser.add_argument('--project', default="sdl-pytorch-cifar10", type=str)
 parser.add_argument('--num_threads', default=0, help='set number of threads per worker', type=int)
+parser.add_argument('--num_workers', default=1, help='set number of io workers', type=int)
+
 args = parser.parse_args()
 
 
@@ -46,7 +50,7 @@ hvd.init()
 if args.wandb and hvd.rank()==0:
     try:
         import wandb
-        wandb.init(project="sdl-pytorch-cifar10")
+        wandb.init(project=args.project)
     except:
         args.wandb = False
     config = wandb.config          # Initialize config
@@ -75,7 +79,7 @@ if hvd.rank()==0:
 #    print(" Number of inter_op threads: ", torch.get_num_interop_threads())
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
-kwargs = {'num_workers': 0, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
+kwargs = {'num_workers': args.num_workers, 'pin_memory': True} if args.device.find("gpu")!=-1 else {}
 
 
 transform = transforms.Compose(
@@ -137,7 +141,7 @@ class AlexNet(nn.Module):
         x = x.view(x.size(0), 256 * 2 * 2)
         x = self.classifier(x)
         return x
-
+#model = torchvision.models.resnet50(num_classes=10)
 model = AlexNet(num_classes=10)
 if args.wandb and hvd.rank()==0:
     wandb.watch(model)
@@ -167,8 +171,11 @@ def train(epoch):
     model.train()
     # Horovod: set epoch to sampler for shuffling.
     train_sampler.set_epoch(epoch)
-    running_loss = 0.0
-    training_acc = 0.0
+    running_loss = torch.tensor(0.0)
+    training_acc = torch.tensor(0.0)
+    if args.device == "gpu":
+        running_loss = running_loss.cuda()
+        training_acc = training_acc.cuda()
     for batch_idx, (data, target) in enumerate(train_loader):
         if args.cuda:
             data, target = data.cuda(), target.cuda()
@@ -202,8 +209,11 @@ def metric_average(val, name):
 
 def test():
     model.eval()
-    test_loss = 0.
-    test_accuracy = 0.
+    test_loss = torch.tensor(0.0)
+    test_accuracy = torch.tensor(0.0)
+    if args.device == "gpu":
+        test_loss = test_loss.cuda()
+        test_accuracy = test_accuracy.cuda()
     for data, target in test_loader:
         if args.cuda:
             data, target = data.cuda(), target.cuda()
@@ -238,8 +248,8 @@ for epoch in range(1, args.epochs + 1):
     tt1 = time.time()
     if hvd.rank()==0:
         print("Epoch - %d time: %s seconds" %(epoch, tt1 - tt0))
-    if (hvd.rank()==0):
-        wandb.log({
+    if (hvd.rank()==0 and args.wandb):
+        wandb.log({"time_per_epoch": tt1 - tt0, 
             "train_loss": training_loss, "train_acc": training_acc, 
             "test_loss": test_loss, "test_acc":test_acc}, step=epoch)
 t1 = time.time()

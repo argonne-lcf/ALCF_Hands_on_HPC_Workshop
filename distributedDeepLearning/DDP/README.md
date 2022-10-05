@@ -1,6 +1,7 @@
 # Distributed training with PyTorch DDP
 
 Author: Corey Adams corey.adams@anl.gov
+Huihuo made some changes on the code. 
 
 Pytorch has an additional built-in distributed data parallel package, DDP, short for Distributed Data Parallel.  It comes in pytorch 1.6 or higher, and wraps your model (__not__ your optimizer, like horovod) and performs computation and communication simultaneously.
 
@@ -100,18 +101,45 @@ Take a look in the `submissions` folder for more details about this.
 
 # Example Performance
 
-Here I show the results I got measuring the time-per-epoch averaged over the last 5 epochs of a training run.  I scaled out over a single node, and out onto 4 nodes x 8 GPUs
+Here I show the results I got measuring the time-per-epoch averaged over the last 5 epochs of a training run.  I scaled out over a single node, and out onto 4 nodes x 4 GPUs
 
+```
+for n in 1 2 4
+do
+    aprun -n $n python pytorch_cifar10.py --device gpu --wandb --project cifar10_ddp >& cifar10.$n.dat
+    aprun -n $n python pytorch_mnist.py --device gpu --wandb --project mnist_ddp >& mnist.$n.dat
+done    
+```
 
 | GPUs | Cifar10 Time/epoch [s] | MNIST Time/epoch [s] |
 | ---- | ---------------------- | -------------------- |
-|    1 |            13.6        |         11.7         |
-|    4 |            2.66        |         2.64         |
-|    8 |            1.43        |         1.37         |
+|    1 |            12.6        |         10.09        |
+|    2 |            6.40        |         5.28         |
+|    4 |            2.66        |         2.98         |
+
+* MNIST DDP Scaling
+![mnist_ddp](./mnist_ddp.png)
+* Cifar10 DDP Scaling
+![cifar10_ddp](./cifar10_ddp.png)
+
+## Comparison between DDP and Horovod
+```bash
+for n in 1 2 4
+do  
+    aprun -n $n python pytorch_mnist.py --device gpu --epochs 32 --wandb --project mnist_ddp_hvd_$n >& mnist_ddp.$n.dat
+    aprun -n $n python ../Horovod/pytorch_mnist.py --device gpu --epochs 32 --wandb --project mnist_ddp_hvd_$n >& mnist_hvd.$n.dat
+done
+```
+
+| GPUs | Cifar10-DDP Time/epoch [s] | Cifar10-HVD Time/epoch [s] |
+| ---- | ---------------------- | -------------------- |
+|    1 |            12.49        |         12.26        |
+|    2 |            7.47        |         8.10         |
+|    4 |            4.61        |          5.47        |
 
 
-| Nodes | Cifar10 Time/epoch [s] | MNIST Time/epoch [s] |
-| ----- | ---------------------- | -------------------- |
-|    1  |           1.43         |        1.37          |
-|    2  |           0.82         |        0.80          |
-|    4  |           0.50         |        0.49          |
+| GPUs | MNIST-DDP Time/epoch [s] | MNIST-HVD Time/epoch [s] |
+| ---- | ---------------------- | -------------------- |
+|    1 |            10.00        |         11.66        |
+|    2 |            5.23        |         7.95         |
+|    4 |            3.00        |          5.61        |

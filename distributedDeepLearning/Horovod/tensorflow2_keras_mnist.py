@@ -88,15 +88,26 @@ else:
     if gpus:
         tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
 
-(mnist_images, mnist_labels), _ = \
+(mnist_images, mnist_labels), (x_test, y_test) = \
     tf.keras.datasets.mnist.load_data(path='mnist.npz')
 
 dataset = tf.data.Dataset.from_tensor_slices(
     (tf.cast(mnist_images[..., tf.newaxis] / 255.0, tf.float32),
              tf.cast(mnist_labels, tf.int64))
 )
-nsamples = len(list(dataset))
-dataset = dataset.repeat().shuffle(10000).batch(args.batch_size)
+
+test_dset = tf.data.Dataset.from_tensor_slices(
+    (tf.cast(x_test[..., tf.newaxis] / 255.0, tf.float32),
+             tf.cast(y_test, tf.int64))
+)
+
+nsamples = len(list(dataset))//hvd.size()
+ntests = len(list(test_dset))//hvd.size()
+# shuffle the dataset, with shuffle buffer to be 10000
+dataset = dataset.shard(num_shards=hvd.size(), index=hvd.rank()).repeat().shuffle(10000).batch(args.batch_size)
+test_dset  = test_dset.shard(num_shards=hvd.size(), index=hvd.rank()).repeat().batch(args.batch_size)
+
+
 mnist_model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(32, [3, 3], activation='relu'),
     tf.keras.layers.Conv2D(64, [3, 3], activation='relu'),
@@ -122,6 +133,18 @@ mnist_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(),
                     optimizer=opt,
                     metrics=['accuracy'],
                     experimental_run_tf_function=False)
+
+
+WandbCallback(
+    monitor="val_loss", verbose=0, mode="auto", save_weights_only=(False),
+    log_weights=(False), log_gradients=(False), save_model=(True),
+    training_data=None, validation_data=None, labels=[], predictions=36,
+    generator=None, input_type=None, output_type=None, log_evaluation=(False),
+    validation_steps=None, class_colors=None, log_batch_frequency=None,
+    log_best_prefix="best_", save_graph=(True), validation_indexes=None,
+    validation_row_processor=None, prediction_row_processor=None,
+    infer_missing_processors=(True), log_evaluation_frequency=0, **kwargs
+)
 
 if (with_hvd):
     callbacks = [
@@ -153,7 +176,7 @@ verbose = 1 if hvd.rank() == 0 else 0
 
 # Train the model.
 # Horovod: adjust number of steps based on number of GPUs.
-mnist_model.fit(dataset, steps_per_epoch=nsamples // hvd.size() // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose)
+mnist_model.fit(dataset, steps_per_epoch=nsamples // args.batch_size, callbacks=callbacks, epochs=args.epochs, verbose=verbose, validation_data=test_dset)
 t1 = time.time()
 if (hvd.rank()==0):
     print("Total training time: %s seconds" %(t1 - t0))

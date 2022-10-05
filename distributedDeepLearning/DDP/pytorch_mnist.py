@@ -20,9 +20,10 @@ try:
     from mpi4py import MPI
 
     with_ddp=True
-    local_rank = os.environ['OMPI_COMM_WORLD_LOCAL_RANK']
+    #local_rank = os.environ['OMPI_COMM_WORLD_LOCAL_RANK']
     size = MPI.COMM_WORLD.Get_size()
     rank = MPI.COMM_WORLD.Get_rank()
+    local_rank = rank%4
 
 
     # Pytorch will look for these:
@@ -57,9 +58,9 @@ parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
-                    help='input batch size for testing (default: 1000)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
-                    help='number of epochs to train (default: 10)')
+                    help='input batch size for testing (default: 64)')
+parser.add_argument('--epochs', type=int, default=32, metavar='N',
+                    help='number of epochs to train (default: 32)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
@@ -73,7 +74,28 @@ parser.add_argument('--fp16-allreduce', action='store_true', default=False,
 parser.add_argument('--device', default='cpu', choices=['cpu', 'gpu'],
                     help='Whether this is running on cpu or gpu')
 parser.add_argument('--num_threads', default=0, help='set number of threads per worker', type=int)
+parser.add_argument('--num_workers', default=1, help='set number of io workers', type=int)
+parser.add_argument('--wandb', action='store_true', 
+                    help='whether to use wandb to log data')                
+parser.add_argument('--project', default="sdl-pytorch-mnist", type=str)
 args = parser.parse_args()
+
+if args.wandb and rank==0:
+    try:
+        import wandb
+        wandb.init(project=args.project)
+    except:
+        args.wandb = False
+    config = wandb.config          # Initialize config
+    config.batch_size = args.batch_size         # input batch size for training (default: 64)
+    config.test_batch_size = args.test_batch_size    # input batch size for testing (default: 1000)
+    config.epochs = args.epochs            # number of epochs to train (default: 10)
+    config.lr = args.lr              # learning rate (default: 0.01)
+    config.momentum = args.momentum         # SGD momentum (default: 0.5) 
+    config.device = args.device        # disables CUDA training
+    config.seed = args.seed               # random seed (default: 42)
+    config.log_interval = args.log_interval     # how many batches to wait before logging training status
+    config.num_workers = size
 
 args.cuda = torch.cuda.is_available()
 
@@ -104,14 +126,14 @@ if rank==0:
     print(" Number of threads: ", torch.get_num_threads())
 
 
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.device == 'gpu' else {}
+kwargs = {'num_workers': args.num_workers, 'pin_memory': True} if args.device == 'gpu' else {}
 train_dataset = \
     datasets.MNIST('datasets/', train=True, download=True,
                    transform=transforms.Compose([
                        transforms.ToTensor(),
                        transforms.Normalize((0.1307,), (0.3081,))
                    ]))
-# Horovod: use DistributedSampler to partition the training data.
+# DDP: use DistributedSampler to partition the training data.
 train_sampler = torch.utils.data.distributed.DistributedSampler(
     train_dataset, num_replicas=size, rank=rank)
 train_loader = torch.utils.data.DataLoader(
@@ -122,7 +144,7 @@ test_dataset = \
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ]))
-# Horovod: use DistributedSampler to partition the test data.
+# DDP: use DistributedSampler to partition the test data.
 test_sampler = torch.utils.data.distributed.DistributedSampler(
     test_dataset, num_replicas=size, rank=rank)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.test_batch_size,
@@ -160,7 +182,7 @@ if with_ddp:
     model = DDP(model)
 
 
-# Horovod: scale learning rate by the number of GPUs.
+# DDP: scale learning rate by the number of GPUs.
 optimizer = optim.SGD(model.parameters(), lr=args.lr * size,
                       momentum=args.momentum)
 
@@ -174,7 +196,7 @@ def train(epoch):
     if args.device == "gpu":
         running_loss = running_loss.cuda()
         training_acc = training_acc.cuda()
-    # Horovod: set epoch to sampler for shuffling.
+    # DDP: set epoch to sampler for shuffling.
     train_sampler.set_epoch(epoch)
     for batch_idx, (data, target) in enumerate(train_loader):
         if args.device == "gpu":
@@ -189,7 +211,7 @@ def train(epoch):
         running_loss += loss
 
         if batch_idx % args.log_interval == 0 and rank == 0 :
-            # Horovod: use train_sampler to determine the number of examples in
+            # DDP: use train_sampler to determine the number of examples in
             # this worker's partition.
             if rank == 0: print('[{}] Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(rank,
                 epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
@@ -197,8 +219,8 @@ def train(epoch):
     training_acc /= len(train_sampler)
     loss_avg = metric_average(running_loss, 'running_loss')
     training_acc = metric_average(training_acc, 'training_acc')
-
     if rank==0: print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(loss_avg, training_acc*100))
+    return loss_avg, training_acc
 
 
 def metric_average(val, name):
@@ -231,7 +253,7 @@ def test():
         test_accuracy += pred.eq(target.data.view_as(pred)).float().sum()
         n=n+1
 
-    # Horovod: use test_sampler to determine the number of examples in
+    # DDP: use test_sampler to determine the number of examples in
     # this worker's partition.
     test_loss /= len(test_sampler)
     test_accuracy /= len(test_sampler)
@@ -244,15 +266,23 @@ def test():
     if rank == 0:
         print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
+    return test_loss, test_accuracy
 
 
 epoch_times = []
 for epoch in range(1, args.epochs + 1):
     e_start = time.time()
-    train(epoch)
-    test()
+    training_loss, training_acc = train(epoch)
+    test_loss, test_acc = test()
     e_end = time.time()
     epoch_times.append(e_end - e_start)
+    if rank==0:
+        print("Epoch - %d time: %s seconds" %(epoch, e_end - e_start))
+    if (rank==0 and args.wandb):
+        wandb.log({"time_per_epoch": e_end - e_start, 
+            "train_loss": training_loss, "train_acc": training_acc, 
+            "test_loss": test_loss, "test_acc":test_acc}, step=epoch)
+
 t1 = time.time()
 if rank==0:
     print("Total training time: %s seconds" %(t1 - t0))

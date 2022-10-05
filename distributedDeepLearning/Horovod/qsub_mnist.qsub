@@ -10,7 +10,5 @@ conda activate
 cd $PBS_O_WORKDIR
 for n in 1 2 4
 do  
-    aprun -n $n python pytorch_cifar10.py --device gpu --epochs 32 --wandb --project cifar10_ddp >& cifar10.$n.dat
+    aprun -n $n python pytorch_mnist.py --device gpu --epochs 32 --wandb --project mnist_hvd >& mnist.$n.dat
 done
-
-

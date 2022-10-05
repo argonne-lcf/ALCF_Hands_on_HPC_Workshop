@@ -253,8 +253,7 @@ We provided some examples in: [Horovod](Horovod/)
 * [pytorch_mnist.py](pytorch_mnist.py)
 * [pytorch_cifar10.py](pytorch_cifar10.py)
 
-## Handson
+## Examples
+* [polaris.md](polaris.md): running on Polaris (```--device gpu```)
 * [thetagpu.md](thetagpu.md): running on ThetaGPU (```--device gpu```)
 * [theta.md](theta.md): running on ThetaKNL CPU (```--device cpu```)
-
-For submitting jobs in the script (non-interactive) job mode, check the submission scripts in the [submissions](./submission/) folder. 
