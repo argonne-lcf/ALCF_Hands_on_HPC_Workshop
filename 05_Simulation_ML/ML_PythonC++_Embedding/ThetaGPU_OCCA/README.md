@@ -85,7 +85,7 @@ $ occa info
 ```
 conda activate
 ```
-6. Build by running the `build.sh` script from this directory. This script is cmake driver.  
+6. Build by running the `build.sh` script from this directory. This script is the cmake driver.  
 
 ```
 sh build.sh
@@ -93,7 +93,7 @@ sh build.sh
 You should some output that looks like:
 ```
 -- Build files have been written to: ... 
-+ cmake --build /home/sspatel/catalyst/sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/build --parallel 4
++ cmake --build .../ML_PythonC++_Embedding/ThetaGPU_OCCA/build --parallel 4
 Scanning dependencies of target burger
 [ 50%] Building CXX object CMakeFiles/burger.dir/main.cpp.o
 [100%] Linking CXX executable burger
@@ -106,15 +106,7 @@ Scanning dependencies of target burger
 -- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/kernel/burger.okl
 -- Installing: .../ML_PythonC++_Embedding/ThetaGPU_OCCA/install/./python_module.py
 ```
-
-
-
-
-4. Compile
-
-
-
-5. Run
+7. Run
 
 
 ## Key Features
