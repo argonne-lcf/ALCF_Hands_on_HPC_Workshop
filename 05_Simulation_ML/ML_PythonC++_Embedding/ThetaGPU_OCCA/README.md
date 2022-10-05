@@ -25,14 +25,19 @@ qsub -n 1 -q training-gpu -A SDL_Workshop -I -t 1:00:00
 ```
 3. Set the Environment
 
-Load the cmake and virtual python environment (THIS MIGHT HAVE TO CHANGE) 
+You can do `source set_OCCA_env.sh`. Which load modules and sets certain environment variables. 
+
 ```
+$ cat set_OCCA_env.sh
+
 module load cmake
 module load conda/2021-11-30
-```
-Set the proper paths for the OCCA library (THIS MIGHT HAVE TO CHANGE)
-```
-export OCCA_DIR=/lus/eagle/projects/catalyst/spatel/work/test_occa/occa/install/
+
+SDL=sdl_workshop/05_Simulation_ML/ML_PythonC++_Embedding/ThetaGPU_OCCA/
+
+export OCCA_DIR=/lus/grand/projects/catalyst/world-shared/spatel/occa/install
+export OCCA_CACHE_DIR=/path/to/$SDL
+
 export OCCA_CXX="g++"
 export OCCA_CXXFLAGS="-O3"
 export OCCA_CUDA_COMPILER="nvcc"
@@ -41,6 +46,7 @@ export OCCA_CUDA_COMPILER_FLAGS="-O3 --fmad=true"
 export PATH+=":${OCCA_DIR}/bin"
 export LD_LIBRARY_PATH+=":${OCCA_DIR}/lib"
 ```
+
 Activate the virtual Python environment
 ```
 conda activate
@@ -72,6 +78,14 @@ $ occa info
             | Memory               | 39.58 GB                        
     ========+======================+=================================
 ```
+
+4. Compile
+
+
+
+5. Run
+
+
 ## Key Features
 
 ### OCCA API: Host, Device & Memory
