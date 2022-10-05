@@ -9,13 +9,10 @@
 //---[ Internal Tools ]-----------------
 // Note: These headers are not officially supported
 //       Please don't rely on it outside of the occa examples
-//##include </grand/catalyst/spatel/OCCA_ML/occa/src/occa/internal/utils/cli.hpp>
-//##include </grand/catalyst/spatel/OCCA_ML/occa/src/occa/internal/utils/testing.hpp>
 #include <occa/internal/utils/cli.hpp>
 #include <occa/internal/utils/testing.hpp>
-//#include </home/sspatel/work/occa/src/occa/internal/utils/cli.hpp>
-//#include </home/sspatel/work/occa/src/occa/internal/utils/testing.hpp>
 //======================================
+
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
@@ -34,33 +31,29 @@ int main(int argc, const char **argv) {
   PyRun_SimpleString("import sys");
   PyRun_SimpleString("sys.path.append(\".\")");
 
-  std::cout << "Initialization of Python 1: Done" << std::endl;
+     std::cout << "Initialization of Python: Done" << std::endl;
 
-  std::cout << "Initializing numpy library" << std::endl;
   // initialize numpy array library
   import_array1(-1);
 
-  std::cout << "Loading python module" << std::endl;
+  // Load Python Module File
   PyObject* pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
   PyObject* pModule = PyImport_Import(pName);
   Py_DECREF(pName); // finished with this string so release reference
-  std::cout << "Loaded python module" << std::endl;
+     std::cout << "Loaded Python Module File: Done" << std::endl;
 
-  std::cout << "Loading functions from module" << std::endl;
-
-  //PyObject* pmy_func1 = PyObject_GetAttrString(pModule, "my_function1");
   PyObject* py_PlotField = PyObject_GetAttrString(pModule, "analyses_plotField");
   PyObject* py_SVD = PyObject_GetAttrString(pModule, "analyses_SVD");
   PyObject* pcollect = PyObject_GetAttrString(pModule, "collection_func");
   Py_DECREF(pModule); // finished with this module so release reference
-  std::cout << "Loaded functions" << std::endl;
+     std::cout << "Loaded Functions: Done" << std::endl;
 
   occa::json args = parseArgs(argc, argv);
 
   const double PI = 3.1415926535;	
   const double h = 2.0*PI/NX;
   const double cfl = 0.05;
-  const double dt = 0.001; // cfl*h/1.0;
+  const double dt = 0.001; // 
   const double FT = 2.000; // Final Time
   const double NU = 0.01;  // diffusion param
 
@@ -108,29 +101,30 @@ int main(int argc, const char **argv) {
   o_uh_prev.copyFrom(uh_prev);
   double t = 0.0;
   int Ntri = NX+2;
+  int i=0;
   auto walltime_start = std::chrono::high_resolution_clock::now();
   do{
       //Do the Burger's update with FD  
-      burgerUpdateKernel(NX+2, s1, s2, o_uh_prev, o_uh);
-
-      //o_uh.copyTo(res_par);
-      //std::cout << "Time is: " << t << "Random Value in Array : " << res_par[10] << std::endl;
+      burgerUpdateKernel(Ntri, s1, s2, o_uh_prev, o_uh);
 
       {
         PyIt(pcollect, d_b); //collect to global python data array  
       }
+
       // Move the current solution to the previous timestep 
       o_uh_prev.copyFrom(o_uh);
-      //std::cout << "time = " << t << std::endl;
       t = t + dt;  
+      if (i % 100 == 0) std::cout << "time = " << t << std::endl;
+      i = i + 1;
+
   }while(t<FT);
   auto walltime_finish = std::chrono::high_resolution_clock::now();
   double wallTime = std::chrono::duration<double,std::milli>(walltime_finish-walltime_start).count(); 
-  //std::cout << "dKernel total mean wallTime : " << wallTime/Ntests << std::endl;
+  std::cout << "Mean Wall-Time: " << wallTime/i << std::endl;
   
   //Copy Result to Host
   o_uh.copyTo(res_par);
-  std::cout << "Random Value in Array : " << res_par[10] << std::endl;
+  std::cout << "A random value in the solution array: " << res_par[10] << std::endl;
 
       {
          Py_DECREF(pcollect);
@@ -140,7 +134,6 @@ int main(int argc, const char **argv) {
       {
 	pynalyze(py_PlotField);
         Py_DECREF(py_PlotField);
-        //std::cout << "yyyyyCalled python analyses function successfully"<<std::endl;
       }	
       
       //SVD
@@ -188,7 +181,7 @@ void PyIt(PyObject *p_func, double *u)
 
     // pass array into our Python function and cast result to PyArrayObject
     PyArrayObject* pValue = (PyArrayObject*) PyObject_CallObject(p_func, pArgs);
-    std::cout << "Called python data collection function successfully"<<std::endl;
+    std::cout <<"Called python data collection function successfully"<<std::endl;
 
     Py_DECREF(pArgs);
     Py_DECREF(pValue);
@@ -202,6 +195,4 @@ void pynalyze(PyObject *p_func)
   std::cout << "Called python analyses function successfully"<<std::endl;
 
   Py_DECREF(pValue);
-  std::cout << "xxxCalled python analyses function successfully"<<std::endl;
-  // We don't need to decref array_1d because PyTuple_SetItem steals a reference
 }

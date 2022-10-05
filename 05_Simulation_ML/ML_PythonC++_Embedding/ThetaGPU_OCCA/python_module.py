@@ -1,4 +1,4 @@
-print("From python: Within python module")
+print("Within Python Module File")
 
 import os,sys
 HERE = os.getcwd()
@@ -9,7 +9,7 @@ import cupy
 from cupy.cuda import memory
 import matplotlib.pyplot as plt
 
-data_array = cupy.zeros(shape=(2001,258))
+data_array = cupy.zeros(shape=(2001,258)) # matches the number of timesteps in the main solver
 x = np.arange(start=0,stop=2.0*3.1415926,step=2.0*3.1415926/256)
 iternum = 0
 
@@ -19,7 +19,7 @@ def collection_func(input_array):
                 input_array.__array_interface__['shape'][0],
                 cupy.dtype(input_array.dtype.name),
                 cupy.cuda.MemoryPointer(cupy.cuda.UnownedMemory(
-                                           input_array.__array_interface__['data'][0], #<---Pointer?
+                                           input_array.__array_interface__['data'][0],
                                            input_array.size,
                                            input_array,
                                            0), 0),
@@ -27,20 +27,6 @@ def collection_func(input_array):
     data_array[iternum,:] = b[:]
     iternum+=1
     return None
-
-#Consider inserting the following
-# -> from cupy.cuda import memory
-# def my_function(iary):
-#      a_cupy = cupy.ndarray(
-#               iary.shape,
-#               iary.dtype(iary.dtype.name),
-#               cupy.cuda.MemoryPointer(cupy.cuda.UnownedMemory(
-#               iary,
-#               ,
-#               a_chx,
-#               0), 0),
-#               strides=a_chx.strides,
-#               )
 
 def analyses_plotField():
     global data_array, x
@@ -77,22 +63,4 @@ def analyses_SVD():
     plt.savefig('SVD_Eigenvectors.png')
     plt.close()
 
-def my_function1(a):
-    b = cupy.asarray(a) #Host to device transfer
-    b *= 5 
-    b *= b 
-    b += b 
-
-def my_function2(a):
-    b = cupy.ndarray(
-                a.__array_interface__['shape'][0],
-                cupy.dtype(a.dtype.name),
-                cupy.cuda.MemoryPointer(cupy.cuda.UnownedMemory(
-                                           a.__array_interface__['data'][0], #<---Pointer?
-                                           a.size,
-                                           a,
-                                           0), 0),
-                strides=a.__array_interface__['strides'])
-    b *= 5 
-    b *= b 
-    b += b
+#DONE 
