@@ -33,12 +33,12 @@
    module load conda
    conda activate
    ```
-3. Run examples on a single node
+3. Run examples on a single node. Here we specified project name `mnist_hvd`.
       ```bash
       aprun -n 4 python pytorch_mnist.py --device gpu --wandb --project mnist_hvd
       ```
 4. Visualize the results (replace ```hzheng``` with your wandb username): 
-   https://wandb.ai/hzheng/mnist_hvd
+   https://wandb.ai/hzheng/mnist_hvd. If link didn't work you can open your dashboard at [wandb](https://wandb.ai/home) and check project `mnist_hvd`.
 
 5. Test scaling:
    ```bash
