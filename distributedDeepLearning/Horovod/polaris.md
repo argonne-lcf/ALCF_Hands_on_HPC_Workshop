@@ -25,7 +25,7 @@
       ```
    
       ```
-      $ qsub -l walltime=1:00:00 -A SDL_Workshop -q SDL_Workshop -l nodes=4:ppn=16 -I 
+      $ qsub -l walltime=1:00:00 -A SDL_Workshop -q SDL_Workshop -l nodes=2:ppn=4 -I 
       ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
