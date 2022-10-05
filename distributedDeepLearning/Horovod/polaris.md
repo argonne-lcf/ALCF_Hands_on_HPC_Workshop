@@ -17,8 +17,10 @@ https://docs.wandb.ai/quickstart
       ```bash 
       export WANDB_API_KEY=YOU_API_KEY
       ```
-      Connect to wandb
+      Connect to wandb (we need activate conda environment first)
       ```
+      $ module load conda/2022-09-08
+      $ conda activate
       $ wandb login
       ```
    
