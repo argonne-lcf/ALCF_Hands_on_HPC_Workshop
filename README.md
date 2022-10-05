@@ -5,12 +5,22 @@
 The ALCF regularly hosts a simulation, data, and learning workshop to help users scale their applications. We are currently updating the content for the 2022 agenda.
 
 ### The repo is divided by the workshop sessions:
-   * [Introductory material (review on your own prior to workshop)](00_pre_workshop_materials)
-   * [Distributed Deep Learning](01_distributedDeepLearning)
-   * [Building Effective Data Pipelines for CPU/GPU systems](02_dataPipelines)
-   * [Hyperparameter Optimization using DeepHyper on ALCF Systems](03_distributedHyperOpt)
-   * [Profiling Deep Learning applications](04_profilingDeepLearning)
-   * [Integrating inference in to simulation](05_Simulation_ML)
+Day 1 
+  * [Programming Models](programmingModels)
+
+Day 2
+   * [Learning Frameworks](learningFrameworks)
+   * [Distributed Deep Learning](distributedDeepLearning)
+   * [Building Data Pipelines](dataPipelines)
+   * [Hyperparameter Management](hyperparameterManagement)
+   * [Profiling Deep Learning](profilingDeepLearning)
+
+Day 3
+   * [Integrating Al and Simulations](couplingSimulationML)
+   * [Workflows](workflows)
+
+Plus bonus material that we will not cover during the workshop:
+   * [Supplementary machine learning materials](extraMachineLearningMaterials)
 
 Please clone the repo while on a Theta or Polaris login node:
 

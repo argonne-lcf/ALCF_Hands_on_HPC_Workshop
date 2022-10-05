@@ -1,0 +1,10 @@
+---
+setup:
+    id: null
+    save_code: true
+    sync_tensorboard: true
+    mode: online
+    resume: allow
+    magic: true
+    entity: saforem2
+    project: sdl_workshop_test
