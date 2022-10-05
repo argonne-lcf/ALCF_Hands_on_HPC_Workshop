@@ -72,6 +72,6 @@ It is easier to implement warmup epochs in tensorflow2 or keras. In this example
    do
       aprun -n $n -N 4 python tensorflow2_mnist.py --device gpu --wandb --project warmup_epoch
    done
-   aprun -n $n -N 4 python tensorflow2_mnist.py --device gpu --wandb --num_warmup_epochs 2 --project warmup_epoch 
+   aprun -n 8 -N 4 python tensorflow2_mnist.py --device gpu --wandb --num_warmup_epochs 2 --project warmup_epoch 
    ```
 ![mninst_scaling](./images/mnist_scaling.png)
