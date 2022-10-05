@@ -35,6 +35,7 @@ parser.add_argument('--num_inter', default=2, help='set number inter', type=int)
 parser.add_argument('--num_intra', default=0, help='set number intra', type=int)
 parser.add_argument('--wandb', action='store_true', 
                     help='whether to use wandb to log data')
+parser.add_argument('--project', default="sdl-tf2-mnist", type=str)
 parser.add_argument('--num_warmup_epochs', default=0, 
                     help='Number of warmup epochs', type=int)
 
@@ -46,7 +47,7 @@ print("I am rank %s of %s" %(hvd.rank(), hvd.size()))
 if args.wandb and hvd.rank()==0:
     try:
         import wandb
-        wandb.init(project="sdl-tf2-mnist")
+        wandb.init(project=args.project)
     except:
         args.wandb = False
     config = wandb.config          # Initialize config
