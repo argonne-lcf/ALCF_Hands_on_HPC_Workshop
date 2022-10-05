@@ -354,5 +354,6 @@ More examples and details of the new PyTorch profile can be found on its [github
 - [PyTorch autograd profiler example](https://pytorch.org/tutorials/beginner/profiler.html)
 - [PyTorch profiler](https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html)
 - [PyTorch profiler with TensorBoard](https://pytorch.org/tutorials/intermediate/tensorboard_profiler_tutorial.html?highlight=tensorboard)
+- [PyTorch TensorBoard Plugin usage instructions](https://github.com/pytorch/kineto/tree/main/tb_plugin)
 
 
