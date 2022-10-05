@@ -23,7 +23,7 @@ https://docs.wandb.ai/quickstart
       ```
    
       ```
-      $ qsub -l walltime=1:00:00 -A SDL_Workshop -q SDL_Workshop -l nodes=4:ppn=16 -I -l filesystems=eagle
+      $ qsub -l walltime=1:00:00 -A SDL_Workshop -q SDL_Workshop -l nodes=4:ppn=16 -I 
       ```
 
 2. Setup the Python environment to include TensorFlow, Keras, PyTorch, and Horovod:
