@@ -141,14 +141,13 @@ def train(epoch):
         running_loss += loss.item()
 
         if batch_idx % args.log_interval == 0:
-            # Horovod: use train_sampler to determine the number of examples in
-            # this worker's partition.
             print(' Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_sampler), 100. * batch_idx / len(train_loader), loss.item()/args.batch_size))
     running_loss = running_loss / len(train_sampler)
     training_acc = training_acc / len(train_sampler)
     print("Training set: Average loss: {:.4f}, Accuracy: {:.2f}%".format(running_loss, training_acc*100))
     return running_loss, training_acc
+
 def test():
     model.eval()
     test_loss = 0.
