@@ -249,14 +249,17 @@ With Sites established on multiple machines, we can submit jobs to multiple site
 #!/bin/bash
 
 # Create jobs at four sites
+echo Polaris
+balsam job create --site polaris_tutorial --app Hello --workdir multisite/polaris --param say_hello_to=polaris --tag workflow=hello_multisite --yes
+
+echo ThetaGPU
+balsam job create --site thetagpu_tutorial --app Hello --workdir multisite/thetagpu --param say_hello_to=thetagpu --tag workflow=hello_multisite --yes
+
 echo ThetaKNL
 balsam job create --site thetaknl_tutorial --app Hello --workdir multisite/thetaknl --param say_hello_to=thetaknl --tag workflow=hello_multisite --yes
 
 echo Cooley
 balsam job create --site cooley_tutorial --app Hello --workdir multisite/cooleylogin2 --param say_hello_to=cooleylogin2 --tag workflow=hello_multisite --yes
-
-echo ThetaGPU
-balsam job create --site thetagpu_tutorial --app Hello --workdir multisite/thetagpu --param say_hello_to=thetagpu --tag workflow=hello_multisite --yes
 
 echo Laptop
 balsam job create --site tom_laptop --app Hello --workdir multisite/tom_laptop --param say_hello_to=tom_laptop --tag workflow=hello_multisite --yes
@@ -271,8 +274,9 @@ Create a collection of jobs across Sites...
 #!/bin/bash
 
 # create jobs at four sites
-balsam job create --site thetagpu_tutorial --app Hello --workdir multisite/thetaknl --param say_hello_to=thetaknl --tag workflow=hello_multisite --yes
-balsam job create --site thetaknl_tutorial --app Hello --workdir multisite/thetagpu --param say_hello_to=thetagpu --tag workflow=hello_multisite --yes
+balsam job create --site polaris_tutorial --app Hello --workdir multisite/polaris --param say_hello_to=polaris --tag workflow=hello_multisite --yes
+balsam job create --site thetagpu_tutorial --app Hello --workdir multisite/thetaknl --param say_hello_to=thetagpu --tag workflow=hello_multisite --yes
+balsam job create --site thetaknl_tutorial --app Hello --workdir multisite/thetagpu --param say_hello_to=thetaknl --tag workflow=hello_multisite --yes
 balsam job create --site cooley_tutorial --app Hello --workdir multisite/cooleylogin2 --param say_hello_to=cooleylogin2 --tag workflow=hello_multisite --yes
 balsam job create --site tom_laptop --app Hello --workdir multisite/tom_laptop --param say_hello_to=tom_laptop --tag workflow=hello_multisite --yes
 
@@ -284,32 +288,39 @@ balsam job ls --tag workflow=hello_multisite
 #!/bin/bash
 
 # Submit BatchJobs at multiple sites
+# polaris
+balsam queue submit \
+  -n 1 -t 10 -q single-gpu -A SDL_Workshop \
+  --site polaris_tutorial \
+  --tag workflow=hello_multisite \
+  --job-mode mpi
+
 # theta gpu
 balsam queue submit \
-  -n 1 -t 10 -q single-gpu -A training-gpu \
+  -n 1 -t 10 -q single-gpu -A SDL_Workshop \
   --site thetagpu_tutorial \
-  --tag workflow=hello_multi \
+  --tag workflow=hello_multisite \
   --job-mode mpi
 
 # theta knl
 balsam queue submit \
-  -n 1 -t 10 -q debug-flat-quad -A training-gpu \
+  -n 1 -t 10 -q debug-flat-quad -A SDL_Workshop \
   --site thetaknl_tutorial \
-  --tag workflow=hello_multi \
+  --tag workflow=hello_multisite \
   --job-mode mpi
 
 # cooley
 balsam queue submit \
-  -n 1 -t 10 -q debug -A training-gpu \
+  -n 1 -t 10 -q debug -A SDL_Workshop \
   --site cooley_tutorial \
-  --tag workflow=hello_multi \
+  --tag workflow=hello_multisite \
   --job-mode mpi
 
 # tom laptop
 balsam queue submit \
   -n 1 -t 10 -q local -A local \
   --site tom_laptop \
-  --tag workflow=hello_multi \
+  --tag workflow=hello_multisite \
   --job-mode mpi \
 
 # List queues
