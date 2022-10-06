@@ -316,6 +316,32 @@ balsam queue submit \
 balsam queue ls
 ```
 
+## Note on using the SDL_Workshop queue on Polaris
+Balsam includes configuration details for multiple systems, including ALCF's Polaris, ThetaGPU, and Theta, as well as systems at other facilities. For each system, these details include available queues and their limits. If you are working within the SDL_Workshop queues, you'll need to edit the settings.yml file included in your Balsam Site directory, to include the following in the scheduler.allowed_queues section:
+
+```
+# Scheduler service syncs the Balsam API with local queues
+scheduler:
+    scheduler_class: balsam.platform.scheduler.PBSScheduler
+    sync_period: 10 # Scheduler polling / API update interval in seconds
+
+    # Configure the queues to which BatchJobs may be submitted at this Site
+    allowed_queues:
+        debug:
+            max_nodes: 2
+            max_queued_jobs: 100
+            max_walltime: 60
+        prod:
+            max_nodes: 496
+            max_queued_jobs: 100
+            max_walltime: 1440
+        # Add these lines
+        SDL_Workshop:
+            max_nodes: 1
+            max_queued_jobs: 100
+            max_walltime: 60
+```
+
 ## Next Steps 
 The examples above demonstrate the basic functionality of Balsam: defining applications, describing jobs, submitting batch jobs to run those jobs, and monitoring throughput, on one site or across multiple sites. With these capabilities, we can define more complex workflows that dynamically adapt as jobs run. For a more detailed application, see the [hyperparameter optimization example](https://github.com/argonne-lcf/balsam_tutorial/tree/main/hyperopt) in the ALCF github repository.
 
