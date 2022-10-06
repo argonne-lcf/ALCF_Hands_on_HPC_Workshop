@@ -1,0 +1,19 @@
+@kernel void update_burger(const int Npts,
+                           const double c1,  // inertial
+                           const double c2,  // viscous
+                           @restrict double *u_prev,
+                           @restrict double *RHS) {
+
+  for (int i = 0; i < Npts; ++i; @tile(4,@outer,@inner)) {
+
+    if (i > 0 && i < Npts-1 ) {
+        RHS[i] = u_prev[i] + c2*(u_prev[i+1] - 2.0*u_prev[i] + u_prev[i-1]) - u_prev[i]*c1*(u_prev[i+1] - u_prev[i-1]);
+    } else if (i == 0) {
+        RHS[i] = u_prev[Npts-2];
+    } else if (i >= Npts-1) {
+        RHS[i] = u_prev[1];
+    }
+
+  }
+
+}

@@ -31,17 +31,17 @@ class Net(nn.Module):
         self._with_cuda = torch.cuda.is_available()
         self.device = 'cuda' if self._with_cuda else 'cpu'
         if isinstance(config, (dict, DictConfig)):
-            self.config = instantiate(config)
-        elif isinstance(config, NetworkConfig):
-            self.config = config
-        assert isinstance(self.config, NetworkConfig)
+            config = instantiate(config)
+
+        assert isinstance(config, NetworkConfig)
+        self.config = config
+
         self.activation_fn = ACTIVATION_FNS.get(
             self.config.activation_fn.lower(),
             None
         )
         assert callable(self.activation_fn)
-        self.layers = nn.ModuleList()
-        self.layers.extend([
+        self.layers = nn.ModuleList([
             nn.LazyConv2d(self.config.filters1, 3),
             nn.LazyConv2d(self.config.filters2, 3),
             nn.MaxPool2d(2),

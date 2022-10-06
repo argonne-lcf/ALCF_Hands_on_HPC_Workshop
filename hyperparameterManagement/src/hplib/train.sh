@@ -56,6 +56,8 @@ HOST=$(hostname)
 TSTAMP=$(date "+%Y-%m-%d-%H%M%S")
 echo "Job started at: ${TSTAMP}"
 
+export NCPU_PER_RANK=$(getconf _NPROCESSORS_ONLN)
+
 if [[ $(hostname) == x* ]]; then
   # echo "Job ID: ${PBS_JOBID}"
   # echo Working directory is $PBS_O_WORKDIR
@@ -73,6 +75,7 @@ if [[ $(hostname) == x* ]]; then
   MPI_COMMAND=$(which mpiexec)
   MPI_FLAGS="--envall \
     -n ${NGPUS} \
+    --depth=${NCPU_PER_RANK} \
     --ppn ${NGPU_PER_RANK} \
     --hostfile ${PBS_NODEFILE}"
 elif [[ $(hostname) == theta* ]]; then
@@ -171,6 +174,6 @@ echo "┃  - MPI: ${MPI_COMMAND}"
 echo "┃  - exec: ${EXEC}"
 echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# unset PYTHONUSERBASE
+echo "Latest logfile: $(tail -1 ./logs/latest)"
 
-${EXEC} $@
+${EXEC} $@ > ${LOGFILE}
