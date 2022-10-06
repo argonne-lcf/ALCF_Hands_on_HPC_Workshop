@@ -69,7 +69,7 @@ Additionally, there are two approaches to deploying the SmartSim workflow, both 
 
 | ![clustered](figures/cl_vs_coDB_scaling.png) |
 | ---- |
-| Figure 4. Comparison of average data transfer cost from simulation ranks to database for the co-located approach, clustered approach with 1 database node, and clustered approach with 4 database nodes as the number of simulation nodes grow.  |
+| Figure 4. Comparison of average data transfer cost from simulation ranks to database for the co-located approach, clustered approach with 1 database node, and clustered approach with 4 database nodes as the number of simulation nodes grow. The number of simulation ranks increases proportionally with the number of simulation nodes, and therefore also does the total amount of data transferred between simulation and database.  |
 
 
 
@@ -102,6 +102,11 @@ In this first hands-on example, we will perform online training of a NN model of
 This example is available with both a Python and Fortran data producer, and implemented with both the clustered and co-located approaches at this [link](Polaris/).
 Today, we will go through the [clustered Fortran example](Polaris/Fortran/train_clDB/), but we encourage you to give all of them a try.
 
+You can run the example from the Polaris login nodes executing the following command *from the example directory*. This is valid for all examples.
+```
+qsub submit.sh
+```
+
 Here is some information about the example:
 - A Python driver script is used to launch the components of the workflow using the SmartSim API
 - First, we launch a clustered database, which runs on one entire node
@@ -113,6 +118,7 @@ Here is some information about the example:
   - It uses PyTorch and Horovod to perform data-parallel distributed training on the GPU
   - The model is a simple fully connected network with 2 hidden layers of 20 neurons, ReLU activatio functions, 1 input, $x$, and 1 output, $y=f(x)$
   - Training progresses until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
+- The outputs of the data producer and distributed training can be viewed in the `load_data.out` and `train_model.out` files, respectively, and the trained model is saved as `model_jit.pt`
 
 To build the Fortran data producer, follow the instructions below: 
 - Connect to a Polaris login or compute node, either will work for this example
@@ -129,15 +135,21 @@ For the second hands-on example, we will perform online inference with the model
 Similarly to online training, this example is available with a Fortran and Python reproducer of a simulation and is implemented with both approaches [here](Polaris/).
 Today, we will go through the [Fortran co-located example](Polaris/Fortran/inference_coDB/).
 
+You can run the example from the Polaris login nodes executing the following command *from the example directory*. This is valid for all examples.
+```
+qsub submit.sh
+```
+
 Here is some information about the example:
 - A Python driver script is used to launch the components of the workflow using the SmartSim API
 - The co-located database and simulation are launched simultaneously, each sharing CPU resources on the Polaris nodes
 - The model is evaluated on the GPU
 - The simulation connects the SmartRedis client to the on-node database, uploads the NN model to the database, and then iterates over a time step loop which generates inference data, sends it to the database, evaluates the model, and finally retreives the predictions
-- The predictions are saved to a file for plotting and comparison with the true polynomial values
+- The output of the simulation can be viewed in the file `inference.out`
+- The predictions are saved to the `.dat` files for plotting and comparison with the true polynomial values
 
 To build the Fortran simulation code, follow the build instructions from the previous example.
 
- 
+
 
 
