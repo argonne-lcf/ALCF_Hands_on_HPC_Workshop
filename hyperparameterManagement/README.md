@@ -32,6 +32,8 @@ We use [Hydra](https://hydra.cc) for configuration management.
   ```shell
   $ python3 -m venv venv
   $ source venv/bin/activate
+  $ python3 -m pip install --upgrade pip
+  $ python3 -m pip install -e .
   $ python3 -c "import hplib; print(hplib.__file__)"
   ```
 3. Run experiments:
@@ -60,8 +62,6 @@ defaults:
   - data: default.yaml
   - trainer: default.yaml
   - wandb: default.yaml
-  - optional local: default.yaml
-  - debug: null
   # Nicely formatted / colored logs
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
