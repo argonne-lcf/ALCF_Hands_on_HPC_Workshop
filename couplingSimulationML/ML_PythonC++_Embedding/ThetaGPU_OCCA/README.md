@@ -91,7 +91,7 @@ $ conda activate
 ```
 $ sh build.sh
 ```
-You should some output that looks something like:
+You should see some output that looks something like:
 ```
 -- Build files have been written to: ... 
 + cmake --build .../ML_PythonC++_Embedding/ThetaGPU_OCCA/build --parallel 4
