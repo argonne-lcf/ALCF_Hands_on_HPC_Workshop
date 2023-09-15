@@ -19,7 +19,7 @@ Day 2
    * [Tools (NVIDIA, Intel, TAU & HPC-Toolkit](tools)
 
 Day 3
-   * [Visualization, I/O & File System] (visualization_io)
+   * [Visualization, I/O & File System](visualization_io)
    * [File System & Sharing](fs_sharing)
    * [Workflows](workflows)
 
