@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/app.dir/app.cpp.o -o app  /usr/lib/x86_64-linux-gnu/libpython3.6m.so 

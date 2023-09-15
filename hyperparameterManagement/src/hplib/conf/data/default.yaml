@@ -1,4 +1,0 @@
-_target_: hplib.configs.DataConfig
-
-dataset: MNIST
-batch_size: 256
