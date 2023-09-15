@@ -16,7 +16,7 @@ Day 2
    * [LLM on Polaris](llm)
    * [AI Testbeds](aiTestbeds)
    * [Integrating Al and Simulations](couplingSimulationML)
-   * [Tools (NVIDIA, Intel, TAU & HPC-Toolkit](tools)
+   * [Tools (NVIDIA, Intel, TAU & HPC-Toolkit)](tools)
 
 Day 3
    * [Visualization, I/O & File System](visualization_io)
