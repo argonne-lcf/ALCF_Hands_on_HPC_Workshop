@@ -49,10 +49,9 @@ pip3 install /opt/cerebras/wheels/cerebras_tensorflow-1.9.1+1cf4d0632b-cp38-cp38
 pip install numpy==1.23.4
 ```
 
-## Clone the Cerebras modelzoo
+## Clone Cerebras modelzoo
 
-We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/modelzo) for this hands-on. 
-
+We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/modelzoo) for this hands-on. 
 Clone the modezoo repository.
 ```bash
 mkdir ~/R_1.9.1
@@ -69,10 +68,10 @@ The CS-2 cluster has its own Kubernetes-based system for job submission and queu
 
 Use Cerebras cluster command line tool to get addional information about the jobs.
 
-Jobs that have not yet completed can be listed as
-`(venv_pt) $ csctl get jobs`
-Jobs can be canceled as shown:
-`(venv_tf) $ csctl cancel job wsjob-eyjapwgnycahq9tus4w7id`
+* Jobs that have not yet completed can be listed as
+    `(venv_pt) $ csctl get jobs`
+* Jobs can be canceled as shown:
+    `(venv_tf) $ csctl cancel job wsjob-eyjapwgnycahq9tus4w7id`
 
 See `csctl -h` for more options.
 
