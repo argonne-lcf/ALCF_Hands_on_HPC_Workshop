@@ -1,0 +1,49 @@
+# Database config
+database:
+    launch: True # True,False - determine whether to launch SmartSim database
+    backend: "redis" # redis,keydb - launch Redis of KeyDB database
+    deployment: "colocated" # colocated,clustered - deployment of database
+    port: 6780
+    network_interface: "lo" # lo,hsn0,uds - network used for data transfer
+    # On Polaris: lo hsn0 for clustered, lo and uds for co-located
+    exp_name: "nekRS-ML" # string
+    launcher: "pbs" # pbs, cobalt - job scheduler
+
+# Run config
+run_args:
+    nodes: 1 # integer - total number of nodes for job
+    db_nodes: 1 # integer - number of nodes for database
+    sim_nodes: 1 # integer - number of nodes for simulation
+    ml_nodes: 1 # integer - number of nodes for ML training
+    cores_pn: 1 # integer - number of CPU cores per node.
+    simprocs: 1 # integer - number of MPI processes for simulation
+    simprocs_pn: 1 # integer - number of MPI processes per node for simulation
+    mlprocs: 1 # integer - number of MPI processes for ML training
+    mlprocs_pn: 1 # integer - number of MPI processes per node for ML training
+    dbprocs_pn: 4 # integer - number of threads for database
+    sim_cpu_bind: "numa" # none, core, list, numa - CPU binding for simulation
+    ml_cpu_bind: "numa" # none, core, list, numa - CPU binding for ML training
+
+# Simulation config
+sim:
+    executable: "" # string - path to simulation executable
+    arguments: "" # string - command line arguments to simulation
+    affinity: "" # string - GPU affinity script for simulation
+
+# Model Inference config
+inference:
+    model_path: "" # string - path to model to load for inference
+    backend: "TORCH" # TORCH - ML backend to use for inference
+    device: "GPU" # CPU,GPU - device on which to run inference
+    batch: 0 # integer - how many inference requests to batch before running model
+    devices_per_node: 1 # integer - number of GPU available for inference
+
+# Distributed training config
+train:
+    executable: "" # string - path to ML training executable
+    affinity: "" # string - GPU affinity script for training
+    device: "cuda" # cpu, cuda, xpu - device to train on
+    logging: "no" # no, verbose - collect or not performance stats on SmartRedis calls
+
+
+   
