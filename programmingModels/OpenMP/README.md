@@ -3,5 +3,4 @@
 
 # This hands tutorial covers
  - OpenMP 101 and basics on Polaris
- - GEMV on a single GPU using NVHPC Fortran/C++ compiler
- - Concurrent GEMV execution on multiple GPUs using LLVM C++ compiler
+ - Instructions for hands-on example
