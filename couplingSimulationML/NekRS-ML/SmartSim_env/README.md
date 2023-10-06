@@ -9,3 +9,4 @@
 ```
 source build_SSIM_Polaris.sh
 ```
+4. Apply the patch to the SmartSim source code outlined in [this PR](https://github.com/CrayLabs/SmartSim/pull/282)

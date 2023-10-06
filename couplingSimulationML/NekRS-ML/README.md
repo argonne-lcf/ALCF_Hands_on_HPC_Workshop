@@ -30,7 +30,7 @@ There are two main types of workflows for combining simulation and ML in situ wi
   - Training data is stored in-memory within the Orchestrator for the duration of the job, avoiding any I/O bottleneck and disk storage issues
   - Simulation and training are fully decoupled -- do not block each other and run on separate resources (CPU and/or GPU)
 - Online inference
-  - During online inference, the simulation uses an ML model to replace expensive or inacurate components
+  - During online inference, the simulation uses an ML model to replace expensive or inaccurate computations
   - There are two components: the simulation and the SmartSim Orchestrator
   - Simulation sends model inputs for inference to database, evaluates any model and any pre- and post-processing computations within database, retreives the predictions, and keeps going with rest of computations
   - Compatible TensorFlow, TensorFlow Lite, Torch, and ONNXRuntime backends for model evaluations
@@ -63,13 +63,10 @@ Additionally, there are two approaches to deploying the SmartSim workflow, both 
 | ---- |
 | Figure 2. Online training and inference with the clustered approach. |
 
-| ![clustered](figures/colocated_approach.png) |
-| ---- |
-| Figure 3. Online training and inference with the co-located approach. |
 
 | ![clustered](figures/cl_vs_coDB_scaling.png) |
 | ---- |
-| Figure 4. Comparison of average data transfer cost from simulation ranks to database for the co-located approach, clustered approach with 1 database node, and clustered approach with 4 database nodes as the number of simulation nodes grow. The number of simulation ranks increases proportionally with the number of simulation nodes, and therefore also does the total amount of data transferred between simulation and database.  |
+| Figure 4. Comparison of .  |
 
 
 
@@ -81,74 +78,23 @@ The examples below make use of this environment.
 You can activate it by executing
 ```
 module load conda/2022-09-08
-conda activate /lus/eagle/projects/SDL_Workshop/SmartSim/ssim
+conda activate /eagle/projects/fallwkshp23/SmartSim/ssim
 ```
 
 Please note that this environment does not contain all the modules available with the base env from the `conda/2022-09-08` module, however it contains many of the essential packages, such as PyTorch, TensorFlow, Horovod, and MPI4PY.
-If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](Polaris/Installation/build_SSIM_Polaris_SDL2022.sh) and executing it *from a compute node* with the command
+If you wish to expand upon this Conda env, feel free to clone it or build your own version of it following this [installation script](SmartSim_env/build_SSIM_Polaris.sh) and executing it *from a compute node* with the command
 ```
-source build_SSIM_Polaris_SDL2022.sh /path/to/conda/env
+source build_SSIM_Polaris.sh
 ```
 It is recommended you build the Conda env inside a project space rather than your home space on ALCF systems because it will produce a lot of files and consume disk space. 
-You can use [this script](Polaris/submit_interactive.sh) to submit an interactive job on Polaris.
-
-If you wish to use SmartSim on other ALCF systems (Theta and ThetaGPU), you can find instructions [here](https://github.com/rickybalin/ALCF/tree/main/SmartSim).
 
 
 
-## Online Training of Turbulence Closure Model
 
-In this first hands-on example, we will perform online training of a NN model of a polynomial function $y = f(x) = x^2 + 3x + 1$ in the domain $x \in [0, 10)$.
-This example is available with both a Python and Fortran data producer, and implemented with both the clustered and co-located approaches at this [link](Polaris/).
-Today, we will go through the [clustered Fortran example](Polaris/Fortran/train_clDB/), but we encourage you to give all of them a try.
-
-You can run the example from the Polaris login nodes executing the following command *from the example directory*. This is valid for all examples.
-```
-qsub submit.sh
-```
-
-Here is some information about the example:
-- A Python driver script is used to launch the components of the workflow using the SmartSim API
-- First, we launch a clustered database, which runs on one entire node
-- Second, we launch the data producer, which is a Fortran program that performs the role of the simulation
-  - This runs in parallel using MPI on a separate Polaris node. It uses the CPU of the node
-  - It connects the SmartRedis client to the database, sends some useful meta-data, and then iterates over a time step loop which generates and sends training data to the database until training is complete
-- Lastly, we launch the distributed training program that trains the NN model
-  - This runs in parallel on another separate node
-  - It uses PyTorch and Horovod to perform data-parallel distributed training on the GPU
-  - The model is a simple fully connected network with 2 hidden layers of 20 neurons, ReLU activatio functions, 1 input, $x$, and 1 output, $y=f(x)$
-  - Training progresses until a tolerance on the average loss is reached, at which point a JIT-traced checkpoint of the model is saved to the disk and the simulator is told to quit
-- The outputs of the data producer and distributed training can be viewed in the `load_data.out` and `train_model.out` files, respectively, and the trained model is saved as `model_jit.pt`
-
-To build the Fortran data producer, follow the instructions below: 
-- Connect to a Polaris login or compute node, either will work for this example
-- Change directory to `Polaris/Fortran/train_clDB/src`
-- Make sure the working directory is clean, if not run `./clean.sh`
-- Make sure the environment is already set, if not run `source env_Polaris.sh`
-- Build the executable by running `./doConfig.sh`
-- The executable is called `dataLoaderFtn.exe`
+## Online Training from NekRS of Wall Shear Stress Model
 
 
-## Online Inference of Turbulence Closure Model
-
-For the second hands-on example, we will perform online inference with the model for the polynomial we just trained in the previous example.
-Similarly to online training, this example is available with a Fortran and Python reproducer of a simulation and is implemented with both approaches [here](Polaris/).
-Today, we will go through the [Fortran co-located example](Polaris/Fortran/inference_coDB/).
-
-You can run the example from the Polaris login nodes executing the following command *from the example directory*. This is valid for all examples.
-```
-qsub submit.sh
-```
-
-Here is some information about the example:
-- A Python driver script is used to launch the components of the workflow using the SmartSim API
-- The co-located database and simulation are launched simultaneously, each sharing CPU resources on the Polaris nodes
-- The model is evaluated on the GPU
-- The simulation connects the SmartRedis client to the on-node database, uploads the NN model to the database, and then iterates over a time step loop which generates inference data, sends it to the database, evaluates the model, and finally retreives the predictions
-- The output of the simulation can be viewed in the file `inference.out`
-- The predictions are saved to the `.dat` files for plotting and comparison with the true polynomial values
-
-To build the Fortran simulation code, follow the build instructions from the previous example.
+## Online Inference from NekRS of Wall Shear Stress Model
 
 
 
