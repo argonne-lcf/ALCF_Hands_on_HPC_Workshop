@@ -1,6 +1,6 @@
 # GPT on Sambanova
 
-Goto direcotry with GPT
+Go to direcotry with GPT
 ```bash
 cd ~/apps/nlp/Gpt1.5B_single
 ```
