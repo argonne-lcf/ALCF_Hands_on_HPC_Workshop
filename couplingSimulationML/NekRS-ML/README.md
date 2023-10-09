@@ -37,9 +37,9 @@ There are two main types of workflows for combining simulation and ML in situ wi
   - Supports both both CPU and GPU backends enabling model evaluation on GPU
   - Simulation and model evaluation are loosely coupled -- run on separate resources but inference blocks simulation progress
 
-| ![worflows](figures/train_inf_workflows.png) |
+| ![worflows](figures/smartsim_workflow_diagram.png) |
 | ---- |
-| Figure 1. Online training and inference workflows with SmartSim. |
+| Figure 1. Online training and inference workflows with SmartSim. Taken from [Balin et al. 2023](https://arxiv.org/abs/2306.12900v1). |
 
 Additionally, there are two approaches to deploying the SmartSim workflow, both for training and inference: clustered and co-located.
 - Clustered
@@ -59,14 +59,22 @@ Additionally, there are two approaches to deploying the SmartSim workflow, both 
     - Training/inference data is distributed across the various databases, accessing off-node data is non-trivial
     - This limits complexity of workflow and number of components deployed
 
-| ![clustered](figures/clustered_approach.png) |
+| ![clustered](figures/colocated_vs_clustered.png) |
 | ---- |
-| Figure 2. Online training and inference with the clustered approach. |
+| Figure 2. Online training and inference with the colocated and clustered approaches on Polaris. Taken from [Balin et al. 2023](https://arxiv.org/abs/2306.12900v1). |
 
 
-| ![clustered](figures/cl_vs_coDB_scaling.png) |
+| ![clustered](figures/colocated_dataTransfer_weakScale.png) |
 | ---- |
-| Figure 4. Comparison of .  |
+| Figure 3. Weak scaling of data send and retrieve operations between simulation reproducer and SmartSim database with the colocated deployment. Tests used up to 448 nodes of Polaris. Taken from [Balin et al. 2023](https://arxiv.org/abs/2306.12900v1). |
+
+| ![clustered](figures/clustered_dataTransfer_weakScale.png) |
+| ---- |
+| Figure 4. Weak scaling of data send and retrieve operations between simulation reproducer and SmartSim database with the clustered deployment. Tests used up to 464 nodes of Polaris. Taken from [Balin et al. 2023](https://arxiv.org/abs/2306.12900v1). |
+
+| ![clustered](figures/colocated_inference_scale.png) |
+| ---- |
+| Figure 4. Weak and strong scaling of ML model inference from simulation reproducer on SmartSim database with the clustered deployment. Tests used up to 448 nodes of Polaris and performed inference of the ResNet50 model. Taken from [Balin et al. 2023](https://arxiv.org/abs/2306.12900v1). |
 
 
 
