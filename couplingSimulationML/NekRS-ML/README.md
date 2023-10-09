@@ -128,8 +128,9 @@ Details of the example are as follows:
   * The default deployment is with the colocated database, but the driver script can also deploy the clustered database by changing the `database.deployment` configuration argument, however a minimum of 3 nodes are needed in this case.
 * NekRS communicates to the SmartSim database through a [SmartRedis plugin](https://github.com/argonne-lcf/nekRS-ML/blob/smartredis/src/plugins/smartRedis.hpp) that was added to the code. The functions from this plugin are then called within the `turbChannel.udf` file in the `UDF_Setup()` and `UDF_ExecuteStep()` functions.
 * The training script also communicates with the SmartSim database using the SmartRedis API, with the key components being 1) a custom PyTorch Dataset which generates the key strings of the tensors to retrieve from the database and 2) a nested loop over Dataloaders in order to first retrieve all the tensors and then perform mini-batch SGD on the collected data.
-* With a sucessful run, nekRS will run ... and the training script will converge the model within ...
-  * Note: due to an issue with the strain rate computation within nekRS, the value of the wall-shear stress is currently set to the analytical value based on the Reynolds number of the channel instead of the instantaneous value computed from the local flow, so the model trains very quickly and reaches very low values of the loss. 
+* With a sucessful run, nekRS will run ... and the training script will converge the model within ... . Note:
+  * The first time executing the example, nekRS will have to perform a JIT compilation of the kernels before starting the simulation and this will take a few minutes. Since the training script is waiting for data to be populated in the database to start training, the training program is also waiting on nekRS for a few minutes. Successive runs won't have this issue and will start the simulation and training right away.
+  * Due to an issue with the strain rate computation within nekRS, the value of the wall-shear stress is currently set to the analytical value based on the Reynolds number of the channel instead of the instantaneous value computed from the local flow, so the model trains very quickly and reaches very low values of the loss. 
 
 ## Online Inference from NekRS of Wall Shear Stress Model
 
@@ -153,8 +154,9 @@ Details of the example are as follows:
   * The path to the ML model to load is set with the `inference.model_path` config argument and the hardware on which to perform inference is set with `inference.device`. Use `CPU` to perform inference on the CPU and `GPU:X` to targer the GPU, where X is the GPU ID on the node.
   * The default deployment is with the colocated database, but the driver script can also deploy the clustered database by changing the `database.deployment` configuration argument, however a minimum of 2 nodes are needed in this case.
 * NekRS communicates to the SmartSim database through a [SmartRedis plugin](https://github.com/argonne-lcf/nekRS-ML/blob/smartredis/src/plugins/smartRedis.hpp) that was added to the code. The functions from this plugin are then called within the `turbChannel.udf` file in the `UDF_Setup()` and `UDF_ExecuteStep()` functions.
-* With a sucessful run, nekRS will run ... 
-  * Note: due to an issue with the strain rate computation within nekRS, the target value of the wall-shear stress for comparison with the model predictions is currently set to the analytical value based on the Reynolds number of the channel instead of the instantaneous value computed from the local flow. This is consistent with the training example above. 
+* With a sucessful run, nekRS will run ... . Note:
+  * The first time executing the example, nekRS will have to perform a JIT compilation of the kernels before starting the simulation and this will take a few minutes. Successive runs won't have this issue and will start the simulation right away.
+  * Due to an issue with the strain rate computation within nekRS, the target value of the wall-shear stress for comparison with the model predictions is currently set to the analytical value based on the Reynolds number of the channel instead of the instantaneous value computed from the local flow. This is consistent with the training example above. 
 
 
 
