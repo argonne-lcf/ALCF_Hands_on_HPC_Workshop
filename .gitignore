@@ -136,3 +136,20 @@ dmypy.json
 
 # MacOS
 .DS_Store
+
+# Coupling simulation and AI material
+couplingSimulationML/NekRS-ML/inference_example/.colocated_launcher.sh
+couplingSimulationML/NekRS-ML/train_example/.colocated_launcher.sh
+couplingSimulationML/NekRS-ML/inference_example/nekrs.*
+couplingSimulationML/NekRS-ML/train_example/nekrs.*
+couplingSimulationML/NekRS-ML/train_example/train_model.*
+couplingSimulationML/NekRS-ML/inference_example/outputs/
+couplingSimulationML/NekRS-ML/train_example/outputs/
+couplingSimulationML/NekRS-ML/train_example/model*
+couplingSimulationML/NekRS-ML/train_example/turbChannel0.f00001
+couplingSimulationML/NekRS-ML/inference_example/turbChannel.nek5000
+couplingSimulationML/NekRS-ML/inference_example/turbChannel0.f00001
+couplingSimulationML/NekRS-ML/train_example/turbChannel.nek5000
+couplingSimulationML/NekRS-ML/train_example/cmake.log
+couplingSimulationML/NekRS-ML/inference_example/cmake.log
+
