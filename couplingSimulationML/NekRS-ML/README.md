@@ -101,9 +101,44 @@ It is recommended you build the Conda env inside a project space rather than you
 
 ## Online Training from NekRS of Wall Shear Stress Model
 
+This [example](train_example) demonstrates how online training of an ML model can be performed concurrently with a simulation using the SmartSim/SmartRedis libraries on Polaris.
+The example comes from the fields of computational fluid dynamics (CFD) and turbulence modeling, specifically wall-shear modeling or wall-modeling. The goal is to estimate the wall-shear stress of a turbulent channel flow (i.e., the turbulent flow between two parallel plates) using the velocity at a prescribed location above the wall as the input.
+The example will use the highly-scalable and efficient CFD solver [nekRS](https://github.com/Nek5000/nekRS), and in particular an ALCF fork of the official repo made specifically to be a sand box for ways of coupling AI/ML and HPC simulation called [nekRS-ML](https://github.com/argonne-lcf/nekRS-ML). 
+The `smartredis` branch of nekRS-ML will be used, and the binary has already been built for you and is located at
+```
+/eagle/projects/fallwkshp23/NekRS-ML/exe/Polaris/smartredis/bin/nekrs
+```
+
+To run the example from an interactive node on Polaris:
+1. Get an interactive allocation running `./subInteractive.sh`
+2. Change directory to the training example
+3. Source the environment with `source env.sh`
+4. Execute the run script with `./run.sh`
+
+To run the example from a batch script:
+1. Change directory to the training example
+2. Submit the script to the Polaris queue with `qsub submit.sh`
+
+Details of the example are as follows:
+* The run and submit scripts execute 
 
 ## Online Inference from NekRS of Wall Shear Stress Model
 
+This [example](inference_example) demonstrates how online inference of an ML model can be performed from a simulation using the SmartSim/SmartRedis libraries on Polaris.
+The example follows the training one described above, therefore still uses the `smartredis` branch of nekRS-ML and the executable at the same path.
+
+To run the example from an interactive node on Polaris:
+1. Get an interactive allocation running `./subInteractive.sh`
+2. Change directory to the training example
+3. Source the environment with `source env.sh`
+4. Execute the run script with `./run.sh`
+
+To run the example from a batch script:
+1. Change directory to the training example
+2. Submit the script to the Polaris queue with `qsub submit.sh`
+
+Details of the example are as follows:
+* The run and submit scripts execute 
 
 
 
