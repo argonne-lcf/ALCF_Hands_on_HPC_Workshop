@@ -32,6 +32,7 @@
  This should be in by default, but just in case:
  ```
  module load PrgEnv-nvhpc
+ module swap nvhpc/21.9 nvhpc/23.3
  cp Makefile.nvidia Makefile
  ```
 
