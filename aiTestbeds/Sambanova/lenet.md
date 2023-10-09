@@ -1,6 +1,6 @@
 # Lenet on Sambanova
 
-Goto direcotry with Lenet
+Go to direcotry with Lenet
 ```bash
 cd ~/apps/starters/lenet
 ```
