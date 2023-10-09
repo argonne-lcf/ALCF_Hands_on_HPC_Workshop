@@ -1,5 +1,5 @@
 # Containers at ALCF
-A container encapsulates an application and its dependencies into a "container". It runs natively on the operating system's kernel, sharing the kernel with other containers. 
+A container is a software package that wraps a software process or microservice to make it executable in all computing environments. It encapsulates an application and its dependencies into a "container". It runs natively on the operating system's kernel, sharing the kernel with other containers. 
 
 Ideally, a container can be copied from one system to another, and the contained software runs without changes to the installation. [Containers are often compared to virtual machines (VMs)](https://www.ibm.com/blog/containers-vs-vms/) 
 
