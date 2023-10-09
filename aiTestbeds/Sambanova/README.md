@@ -1,6 +1,6 @@
 # Sambanova
 
-## Connection to Graphcore 
+## Connection to Sambanova 
 
 ![Sambanova connection diagram](./sambanova_login.jpg)
 
