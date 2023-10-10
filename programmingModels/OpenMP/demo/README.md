@@ -12,7 +12,7 @@
  3. Mapping data
 
  ```
-  qsub -I -q fallws23single -t 60 -n 1 -A fallwkshp23 --attrs filesystems=home
+  qsub -I -q fallws23single -A fallwkshp23 -l select=1:system=polaris,filesystems=home -l walltime=0:30:00
  ```
 
  ## Set environment
@@ -22,11 +22,9 @@
  - LLVM environment:
  ```
  module load mpiwrappers/cray-mpich-llvm 
- module load cudatoolkit-standalone
+ module load cudatoolkit-standalone/11.8.0
  cp Makefile.llvm Makefile
  ```
- Note: You may need to use the nsys from a different module
- to get it to show the kernel: /opt/nvidia/hpc_sdk/Linux_x86_64/23.3/compilers/bin/nsys
 
 - PrgEnv-nvhpc:
  This should be in by default, but just in case:
