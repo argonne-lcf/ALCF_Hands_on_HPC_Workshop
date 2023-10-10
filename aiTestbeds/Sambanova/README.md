@@ -14,6 +14,13 @@ ssh sn30-r1-h1
 ```
 You can also ssh to `sn30-r1-h1 , sn30-r1-h2, sn30-r2-h1, sn30-r2-h2, sn30-r3-h1, sn30-r3-h2, sn30-r4-h1, sn30-r4-h2`
 
+## Sambanova Examples
+
+We use examples from Sambanova for this hands-on. 
+Copy those examples to your home directpry. 
+```bash
+cp -r /opt/sambaflow/apps/ ~
+```
 
 ## Create Virtual Environment 
 
@@ -24,14 +31,7 @@ Sambanova software stack and associated environmental variables are setup at log
 python -m venv --system-site-packages my_env 
 source my_env/bin/activate
 ```
-
-## Sambanova Examples
-
-We use examples from Sambanova for this hands-on. 
-Copy those examples to your home directpry. 
-```bash
-cp -r /opt/sambaflow/apps/ ~
-```
+Each of the samples or application examples provided by SambaNova has its own pre-built virtual environment which can be readily used. They are present in the /opt/sambaflow/apps/ directory tree within each of the applications. 
 
 ## Run Examples 
 
