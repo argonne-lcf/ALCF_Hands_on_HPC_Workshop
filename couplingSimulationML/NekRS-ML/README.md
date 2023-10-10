@@ -139,7 +139,7 @@ The example follows the training one described above, therefore still uses the `
 
 To run the example from an interactive node on Polaris:
 1. Get an interactive allocation running `./subInteractive.sh`
-2. Change directory to the training example
+2. Change directory to the inference example
 3. Source the environment with `source env.sh`
 4. Execute the run script with `./run.sh`
 
