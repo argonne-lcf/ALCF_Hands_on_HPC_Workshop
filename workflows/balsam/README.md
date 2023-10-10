@@ -1,4 +1,4 @@
-Balsam: ALCF Simulation, Data, and Learning Workshop
+Balsam Workflow Tool for HPC
 ===============================================
 
 [Balsam](https://github.com/argonne-lcf/balsam) is a toolkit for describing and managing large-scale computational campaigns on supercomputers. The command line interface and Python API make it easy for users to adopt: after wrapping the command line in a few lines of Python code, users describe jobs with accompanying command-line options, which are stored persistently in the Balsam database. A Balsam site runs on a login node or service node of a cluster. When the user submits a batch job through Balsam, the Site pulls jobs from the database and executes them within the batch job, achieving high throughput while incurring only a single wait-time in the queue.
@@ -30,12 +30,20 @@ To work through this tutorial (or any Balsam functionality), you first need to g
 ssh polaris.alcf.anl.gov
 
 # clone this repo
-git clone git@github.com:argonne-lcf/sdl_workshop.git
-cd sdl_workshop/workflows/balsam
+git clone git@github.com:argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
+cd ALCF_Hands_on_HPC_Workshop/workflows/balsam
 ```
 
-## Set up Balsam and supporting codes
+## Set up environment
+
+### Workshop setup
+During this workshop, you can use a python virtual environment that has all the necessary modules installed.
+```shell
+source /eagle/fallwkshp23/workflows/env/bin/activate
 ```
+
+### Creating your own setup
+```shell
 # Create a virtual environment
 module load conda
 conda activate base
@@ -47,13 +55,19 @@ pip install matplotlib
 
 # Install Balsam
 pip install --pre balsam
+```
 
-# Login to the Balsam server. This will prompt you to visit an ALCF login page; this command will
-# block until you've logged in on the webpage.
+## Set up Balsam
+
+Login to the Balsam server. This will prompt you to visit an ALCF login page; this command will block until you've logged in on the webpage.
+```shell
 balsam login
+```
 
-# Create a Balsam site
-# Note: The "-n" option specifies the site name; the last argument specifies the directory name                              
+Create a Balsam site
+Note: The "-n" option specifies the site name; the last argument specifies the directory name    
+
+```shell       
 balsam site init -n polaris_tutorial polaris_tutorial
 cd polaris_tutorial
 balsam site start
@@ -103,7 +117,7 @@ We submit a batch job via the command line, and then list BatchJobs and the stat
 # Note: the command-line parameters are similar to scheduler command lines
 # Note: this job will run only jobs with a matching tag
 balsam queue submit \
-    -n 1 -t 10 -q SDL_Workshop -A SDL_Workshop \
+    -n 1 -t 10 -q fallws23single -A fallwkshp23 \
     --site polaris_tutorial \
     --tag workflow=hello \
     --job-mode mpi
@@ -120,7 +134,6 @@ balsam job ls --tag workflow=hello
 We create a collection of jobs, one per GPU on a Polaris node. Though this code doesn't use the GPU, your code will; in the face of a larger collection of Balsam jobs and imbalance in runtimes, Balsam will target GPUs as they become available by setting CUDA_VISIBLE_DEVICES appropriately; the Hello app echoes this variable to illustrate GPU assignment.
 
 ```python
-#!/usr/bin/env python
 from balsam.api import Job
 
 jobs = [
@@ -138,12 +151,11 @@ jobs = [
 jobs = Job.objects.bulk_create(jobs)
 ```
 
-## Create a collection of Hello jobs with dependencies (4_create_multiple_jobs_with_deps.py)
-Similar to the example above, we create a collection of jobs but this time with inter-job dependencies: a simple linear workflow. The jobs will run in order, honoring the job dependency setting (even though the jobs could all run simultaneously). In this case, we use the Python API to define jobs and batch jobs. 
+## Create a collection of Hello jobs with dependencies (4_create_job_dependencies.py)
+Similar to the example above, we create a collection of jobs but this time with inter-job dependencies: a simple linear workflow. The jobs will run in order, honoring the job dependency setting (even though the jobs could all run simultaneously). In this case, we use the Python API to define jobs. 
 
 ```python
-#!/usr/bin/env python
-from balsam.api import Job,BatchJob,Site
+from balsam.api import Job
 
 # Create a collection of jobs, each one depending on the job before it
 n=0
@@ -165,6 +177,14 @@ for n in range(1,8):
                gpus_per_rank=1, 
                parent_ids=[job.id])  # Sets a dependency on the prior job
     job.save()
+```
+
+## Create a Batch Job with the python API (5_submit_batchjob.py)
+This script uses the python API to create a Batch Job on the Polaris scheduler.  This Batch Job will only run jobs with the tag `workflow=hello_deps`.
+
+
+```python
+from balsam.api import BatchJob,Site
 
 # Get the id for your site
 site = Site.objects.get("polaris_tutorial")
@@ -173,19 +193,18 @@ site = Site.objects.get("polaris_tutorial")
 BatchJob.objects.create(
     num_nodes=1,
     wall_time_min=10,
-    queue="SDL_Workshop",
-    project="SDL_Workshop",
+    queue="fallws23single",
+    project="fallwkshp23",
     site_id=site.id,
     filter_tags={"workflow":"hello_deps"},
     job_mode="mpi"
 )
 ```
 
-## Use the Python API to monitor jobs (5_monitor_jobs.py)
+## Use the Python API to examine job progress (6_examine_timestamps.py)
 As Balsam runs jobs, they advance through states that include transferring input files, job submission, execution, and transferring output files. Users can monitor these events programmatically, to build dynamic workflows or to monitor throughput of their jobs.
 
 ```python
-#!/usr/bin/env python
 from datetime import datetime,timedelta
 from balsam.api import EventLog
 
@@ -199,12 +218,10 @@ for evt in EventLog.objects.filter(timestamp_after=yesterday):
     print(evt.data)           # optional payload
 ```
 
-
-## The Python API includes analytics support for utilization and throughput (6_analytics.py)
-This example will query the Hello jobs run with the tag workflow=hello_deps, to produce plots of utilization and throughput.
+## Making plots of utilization and throughput (7_analytics_example.py)
+This example will query the `Hello` jobs run with the tag `workflow=hello_deps`, to produce plots of utilization and throughput.
 
 ```python
-#!/usr/bin/env python
 from balsam.api import models
 from balsam.api import EventLog,Job
 from balsam.analytics import throughput_report
@@ -240,82 +257,119 @@ plt.ylabel("Utilization")
 plt.savefig("utilization.png")
 ```
 
-## Supplemental: Create a collection of jobs at multiple sites (7_create_jobs_at_multiple_sites.sh)
-With Sites established on multiple machines, we can submit jobs to multiple sites from wherever Balsam is installed: here on Polaris, or on your laptop. This example creates jobs at four different sites (including my laptop), and submits batch jobs to run them. As these jobs run, they can be monitored using `balsam job ls --tag workflow=hello_multisite --site all`. 
+## Supplemental: Create jobs at multiple sites (8_multi_machine_workflow.sh)
+With Sites established on multiple machines, we can submit jobs to multiple sites from wherever Balsam is installed: here on Polaris, or on your laptop. This example creates jobs at ThetaGPU and Polaris, and submits batch jobs to run them. A job dependency is created between the Polaris job and the ThetaGPU job; the ThetaGPU job will only complete after the Polaris job completes. 
 
-> **⚠ WARNING: Extra Setup Required **  
-> This example will only work for you if you replicate this site/app setup
 ```python
-#!/bin/bash
+#!/usr/bin/env python
+from balsam.api import Job,BatchJob,Site
 
-# Create jobs at four sites
-echo ThetaKNL
-balsam job create --site thetaknl_tutorial --app Hello --workdir multisite/thetaknl --param say_hello_to=thetaknl --tag workflow=hello_multisite --yes
+# Create a collection of jobs, each one depending on the job before it
 
-echo Cooley
-balsam job create --site cooley_tutorial --app Hello --workdir multisite/cooleylogin2 --param say_hello_to=cooleylogin2 --tag workflow=hello_multisite --yes
+polaris_job = Job( site_name="polaris_tutorial",
+           app_id="Hello", 
+           workdir=f"demo/multi_machine", 
+           parameters={"say_hello_to": f"Polaris"},
+           tags={"workflow":"multi_machine"}, 
+           node_packing_count=4, 
+           gpus_per_rank=1)
+polaris_job.save()
 
-echo ThetaGPU
-balsam job create --site thetagpu_tutorial --app Hello --workdir multisite/thetagpu --param say_hello_to=thetagpu --tag workflow=hello_multisite --yes
+thetagpu_job = Job( site_name="thetagpu_tutorial",
+                    app_id="Hello", 
+                    workdir=f"demo/multi_machine", 
+                    parameters={"say_hello_to": f"ThetaGPU"},
+                    tags={"workflow":"multi_machine"}, 
+                    node_packing_count=4, 
+                    gpus_per_rank=1,
+                    parent_ids=[polaris_job.id])
+thetagpu_job.save()
 
-echo Laptop
-balsam job create --site tom_laptop --app Hello --workdir multisite/tom_laptop --param say_hello_to=tom_laptop --tag workflow=hello_multisite --yes
+# Get the ids for your sites
+polaris_site = Site.objects.get("polaris_tutorial")
+thetagpu_site = Site.objects.get("thetagpu_tutorial")
 
-# List the jobs
-balsam job ls --tag workflow=hello_multisite
+# Create a BatchJob to run jobs on Polaris
+BatchJob.objects.create(
+    num_nodes=1,
+    wall_time_min=5,
+    queue="fallws23single",
+    project="fallwkshp23",
+    site_id=polaris_site.id,
+    filter_tags={"workflow":"multi_machine"},
+    job_mode="mpi"
+)
+
+# Create a BatchJob to run jobs on ThetaGPU once the polaris job finishes
+polaris_job_unfinished = True
+while polaris_job_unfinished:
+    if Job.objects.get(id=polaris_job.id).state == "JOB_FINISHED":
+        polaris_job_unfinished = False
+        BatchJob.objects.create(
+            num_nodes=1,
+            wall_time_min=10,
+            queue="single-gpu",
+            project="datascience",
+            site_id=thetagpu_site.id,
+            filter_tags={"workflow":"multi_machine"},
+            job_mode="mpi"
+        )
 ```
+## A Complete Example for Running Multi-node MPI Jobs on Polaris (9_complete_example.py)
+
+This example runs instances of [hello_affinity](https://github.com/argonne-lcf/GettingStarted/tree/master/Examples/Polaris/affinity_gpu) on 2 Polaris nodes with 4 ranks per node.
+
+```python
+from balsam.api import ApplicationDefinition, Site, Job, BatchJob
+
+site_name = "polaris_tutorial"
+site = Site.objects.get(site_name)
 
 
-Create a collection of jobs across Sites...
-```bash
-#!/bin/bash
+# Define the App that wraps around a compiled executable
+# It also loads a module before the app execution
+# In this case where the application is using all the GPUs of a node,
+# we will wrap the executable with a gpu affinity script
+class HelloAffinity(ApplicationDefinition):
+    site = "polaris_tutorial"
 
-# create jobs at four sites
-balsam job create --site thetagpu_tutorial --app Hello --workdir multisite/thetaknl --param say_hello_to=thetaknl --tag workflow=hello_multisite --yes
-balsam job create --site thetaknl_tutorial --app Hello --workdir multisite/thetagpu --param say_hello_to=thetagpu --tag workflow=hello_multisite --yes
-balsam job create --site cooley_tutorial --app Hello --workdir multisite/cooleylogin2 --param say_hello_to=cooleylogin2 --tag workflow=hello_multisite --yes
-balsam job create --site tom_laptop --app Hello --workdir multisite/tom_laptop --param say_hello_to=tom_laptop --tag workflow=hello_multisite --yes
+    def shell_preamble(self):
+        return '''
+            module load PrgEnv-nvhpc
+            export PATH=$PATH:/home/csimpson/polaris/GettingStarted/Examples/Polaris/affinity_gpu/
+        '''
 
-# list the jobs
-balsam job ls --tag workflow=hello_multisite
-```
-...and submit BatchJobs to run them
-```bash
-#!/bin/bash
+    command_template = "set_affinity_gpu_polaris.sh hello_affinity"
 
-# Submit BatchJobs at multiple sites
-# theta gpu
-balsam queue submit \
-  -n 1 -t 10 -q single-gpu -A training-gpu \
-  --site thetagpu_tutorial \
-  --tag workflow=hello_multi \
-  --job-mode mpi
 
-# theta knl
-balsam queue submit \
-  -n 1 -t 10 -q debug-flat-quad -A training-gpu \
-  --site thetaknl_tutorial \
-  --tag workflow=hello_multi \
-  --job-mode mpi
+HelloAffinity.sync()
 
-# cooley
-balsam queue submit \
-  -n 1 -t 10 -q debug -A training-gpu \
-  --site cooley_tutorial \
-  --tag workflow=hello_multi \
-  --job-mode mpi
+# Create 8 jobs running that app,
+# 2 nodes per job, 4 ranks per node, 1 gpu per rank
+for i in range(8):
+    Job.objects.create( app_id="HelloAffinity",
+                        site_name="polaris_tutorial",
+                        workdir=f"affinity/{i}",
+                        gpus_per_rank=1,
+                        threads_per_rank=16,
+                        threads_per_core=2,
+                        ranks_per_node=4,
+                        node_packing_count=1,
+                        num_nodes=2,
+                        launch_params={"cpu_bind": "depth"},
+                        tags={"test": "affinity"},)
 
-# tom laptop
-balsam queue submit \
-  -n 1 -t 10 -q local -A local \
-  --site tom_laptop \
-  --tag workflow=hello_multi \
-  --job-mode mpi \
-
-# List queues
-balsam queue ls
+# Run the jobs by creating a batch job
+BatchJob.objects.create(
+    site_id=site.id,
+    num_nodes=4,
+    wall_time_min=10,
+    filter_tags={"test": "affinity"},
+    job_mode="mpi",
+    queue="fallws23scaling",
+    project="fallwkshp23",)
 ```
 
 ## Next Steps 
-The examples above demonstrate the basic functionality of Balsam: defining applications, describing jobs, submitting batch jobs to run those jobs, and monitoring throughput, on one site or across multiple sites. With these capabilities, we can define more complex workflows that dynamically adapt as jobs run. For a more detailed application, see the [hyperparameter optimization example](https://github.com/argonne-lcf/balsam_tutorial/tree/main/hyperopt) in the ALCF github repository.
+The examples above demonstrate the basic functionality of Balsam: defining applications, describing jobs, submitting batch jobs to run those jobs, and monitoring throughput, on one site or across multiple sites. With these capabilities, we can define more complex workflows that dynamically adapt as jobs run. For a more detailed application, see the [hyperparameter optimization example](https://github.com/argonne-lcf/balsam_tutorial/tree/main/hyperopt) in the ALCF github repository or the [LAMMPS example](https://github.com/CrossFacilityWorkflows/DOE-HPC-workflow-training/tree/main/Balsam/ALCF) from the recent DOE Joint-lab workflows workshop.
 

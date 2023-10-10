@@ -1,43 +1,48 @@
-from balsam.api import ApplicationDefinition,Site,Job,BatchJob
+from balsam.api import ApplicationDefinition, Site, Job, BatchJob
 
-site_name = "polaris-testing"
+site_name = "polaris_tutorial"
 site = Site.objects.get(site_name)
 
-# Define the App
-class Hello(ApplicationDefinition):
-    site = site_name
-   
-   # The shell preamble allows you to execute shell commands prior to the job running
+
+# Define the App that wraps around a compiled executable
+# It also loads a module before the app execution
+# In this case where the application is using all the GPUs of a node,
+# we will wrap the executable with a gpu affinity script
+class HelloAffinity(ApplicationDefinition):
+    site = "polaris_tutorial"
+
     def shell_preamble(self):
-        return'''
-            source /home/csimpson/polaris/setup.sh
+        return '''
+            module load PrgEnv-nvhpc
+            export PATH=$PATH:/home/csimpson/polaris/GettingStarted/Examples/Polaris/affinity_gpu/
         '''
 
-    # The command template is your executable
-    command_template = 'echo "Hello Polaris CUDA device "$CUDA_VISIBLE_DEVICES'
+    command_template = "set_affinity_gpu_polaris.sh hello_affinity"
 
-Hello.sync() 
 
-# Create 8 jobs running that app, 1 gpu per rank, 4 ranks per node
+HelloAffinity.sync()
+
+# Create 8 jobs running that app,
+# 2 nodes per job, 4 ranks per node, 1 gpu per rank
 for i in range(8):
-  Job.objects.create(app_id="Hello",
-                    site_name=site_name,
-                    workdir=f"test/{i}",
-                    gpus_per_rank=1,
-                    ranks_per_node=4,
-                    node_packing_count=1,
-                    num_nodes=1,
-                    tags={"test":"hello"},
-                    )
+    Job.objects.create( app_id="HelloAffinity",
+                        site_name="polaris_tutorial",
+                        workdir=f"affinity/{i}",
+                        gpus_per_rank=1,
+                        threads_per_rank=16,
+                        threads_per_core=2,
+                        ranks_per_node=4,
+                        node_packing_count=1,
+                        num_nodes=2,
+                        launch_params={"cpu_bind": "depth"},
+                        tags={"test": "affinity"},)
 
 # Run the jobs by creating a batch job
 BatchJob.objects.create(
     site_id=site.id,
-    num_nodes=1,
+    num_nodes=4,
     wall_time_min=10,
-    filter_tags={"test":"hello"},
+    filter_tags={"test": "affinity"},
     job_mode="mpi",
-    queue="debug",  
-    project="datascience",  
-)
-  
+    queue="fallws23scaling",
+    project="fallwkshp23",)

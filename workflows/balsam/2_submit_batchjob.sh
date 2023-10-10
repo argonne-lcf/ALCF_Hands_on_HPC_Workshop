@@ -4,8 +4,8 @@
 # Note: the command-line parameters are similar to scheduler command lines
 # Note: this job will run only jobs with a matching tag
 balsam queue submit \
-    -n 1 -t 10 -q debug -A datascience \
-    --site polaris-testing \
+    -n 1 -t 5 -q fallws23single -A fallwkshp23 \
+    --site polaris_tutorial \
     --tag workflow=hello \
     --job-mode mpi
   
