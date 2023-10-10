@@ -9,7 +9,7 @@ Once you are on the login node, ssh to one of the sambanova nodes.
 
 ```bash
 local > ssh ALCFUserID@sambanova.alcf.anl.gov
-sm-login-1 >        
+sm-login-1 > ssh sn30-r1-h1       
 ```
 
 You can also ssh to `sn30-r1-h1 , sn30-r1-h2, sn30-r2-h1, sn30-r2-h2, sn30-r3-h1, sn30-r3-h2, sn30-r4-h1, sn30-r4-h2`
