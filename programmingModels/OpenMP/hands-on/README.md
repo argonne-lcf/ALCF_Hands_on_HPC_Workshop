@@ -9,7 +9,7 @@ $ git clone https://github.com/jkwack/GAMESS_RI-MP2_MiniApp.git --branch ECP2023
 
 2. Submit an interactive job
 ```
-$ qsub -l select=1:system=polaris -l walltime=0:30:00 -l filesystems=home -q fallws23single -A fallwkshp23 -I
+$ qsub -I -q fallws23single -A fallwkshp23 -l select=1:system=polaris,filesystems=home -l walltime=0:30:00
 ```
 
 
