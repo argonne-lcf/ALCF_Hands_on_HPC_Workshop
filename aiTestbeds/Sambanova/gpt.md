@@ -1,7 +1,8 @@
 # GPT on Sambanova
 
-Go to direcotry with GPT
+Create and and move to the following directory.
 ```bash
+mkdir ~/apps/nlp/Gpt1.5B_single
 cd ~/apps/nlp/Gpt1.5B_single
 ```
 
