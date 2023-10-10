@@ -83,12 +83,11 @@ void UDF_Setup(nrs_t *nrs)
     udf.uEqnSource = &userf;
   }
 
-  //useric(nrs);
+  useric(nrs);
 
   // Initialize SmartRedis client
   smartredis::init_client(nrs);
   smartredis::init_check_run();
-  //smartredis::init_velNpres_train(nrs); // model for pointwise pressure
   smartredis::init_wallModel_train(nrs); // model for the wall shear stress
 }
 
@@ -98,7 +97,6 @@ void UDF_ExecuteStep(nrs_t *nrs, dfloat time, int tstep)
   if (tstep%10==0 && tstep>0) {
     //postProcessing::strainRate(nrs, false, nrs->cds->o_S);
     nek::ocopyToNek(time, tstep);
-    //smartredis::put_velNpres_data(nrs, tstep); // model for pointwise pressure
     smartredis::put_wallModel_data(nrs, tstep); // model for the wall shear stress
     MPI_Barrier(platform->comm.mpiComm);
     smartredis::put_step_num(tstep);

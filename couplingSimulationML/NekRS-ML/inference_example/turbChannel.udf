@@ -83,7 +83,7 @@ void UDF_Setup(nrs_t *nrs)
     udf.uEqnSource = &userf;
   }
 
-  //useric(nrs);
+  useric(nrs);
 
   // Initialize SmartRedis client
   smartredis::init_client(nrs);
