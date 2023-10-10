@@ -4,6 +4,7 @@ from parsl.app.app import join_app, python_app
 # Scripts adapted from Parsl docs
 # https://parsl.readthedocs.io/en/stable/1-parsl-introduction.html
 
+
 @python_app
 def add(*args):
     """Add all of the arguments together. If no arguments, then
@@ -23,7 +24,8 @@ def fibonacci(n):
         return add(1)
     else:
         return add(fibonacci(n - 1), fibonacci(n - 2))
-    
+
+
 parsl.load()
 
 fib_series = fibonacci(10)

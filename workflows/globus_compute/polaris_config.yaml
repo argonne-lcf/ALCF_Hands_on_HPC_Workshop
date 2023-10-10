@@ -5,7 +5,6 @@ engine:
     available_accelerators: 4 # Assign one worker per GPU
     cpu_affinity: block-reverse  # Assigns cpus in reverse sequential order                                                   
     prefetch_capacity: 0  # Increase if you have many more tasks than workers                                                    
-    cores_per_worker: 8
 
     address:
         type: address_by_interface
@@ -22,20 +21,20 @@ engine:
             type: MpiExecLauncher
             # Ensures 1 manger per node, work on all 64 cores
             bind_cmd: --cpu-bind
-            overrides: --depth=32 --ppn 1
+            overrides: --ppn 1
 
-        account: IRIBeta
+        account: datascience
         queue: debug
-        cpus_per_node: 32
+        cpus_per_node: 64
         select_options: ngpus=4
 
         # e.g., "#PBS -l filesystems=home:grand:eagle\n#PBS -k doe"
         scheduler_options: "#PBS -l filesystems=home:eagle"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "module load conda; conda activate /eagle/IRIBeta/fusion_env; cd <YOUR_RUN_DIRECTORY>"
+        worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate"
 
-        walltime: 00:60:00
+        walltime: 00:05:00
         nodes_per_block: 1
         init_blocks: 0
         min_blocks: 0
