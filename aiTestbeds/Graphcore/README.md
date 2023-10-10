@@ -71,5 +71,5 @@ ALCF's Graphcore POD64 system uses Slurm for job submission and queueing. Below 
 
 Refer to respective instrcutions below 
 * [MNIST](./mnist.md)
-!<--- * [Resnet50 using replication factor](./resnet50.md) --->
+<!--- * [Resnet50 using replication factor](./resnet50.md) --->
 * [GPT2](./gpt2.md)
