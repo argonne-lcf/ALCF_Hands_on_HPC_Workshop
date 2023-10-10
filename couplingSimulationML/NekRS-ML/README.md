@@ -120,7 +120,39 @@ To run the example from a batch script:
 2. Submit the script to the Polaris queue with `qsub submit.sh`
 
 Details of the example are as follows:
-* The run and submit scripts execute 
+* The run and submit scripts execute a Python driver script (`ssim_driver_polaris.sh`) which uses the SmartSim API to set up and deploy the workflow. It launches the nekRS and colocated database together with a single `mpiexec` command, followed by the distributed training Python script (`trainer.py`) which is launched separately with another `mpiexec` command.
+* The default run configuration arguments are contained in the `yaml` [config file](train_example/conf/ssim_config.yaml), but the settings for this specific example are passed as command line arguments to the driver script and place nekRS on the first 2 A100 GPU of a node and the distributed training on the other 2 GPU of the same node. The database always runs on the CPU. This example therefore couples a parallel CFD simulation with a parallel ML training application sharing data with each other through the SmartSim database. Note:
+  * The example is set to run on a single Polaris node, but the config settings can be changed to run on multiple nodes by increasing the `run_args.simprocs` and `run_args.mlprocs` parameters while keeping `run_args.simprocs_pn=2` and `run_args.mlprocs_pn=2`.
+  * In order to place the ML training on the GPU not occupied by nekRS, the `affinity_ml.sh` script is used.
+  * When scaling out the example, the number of nekRS processes should be greater than or equal to the number of ML processes.
+  * The default deployment is with the colocated database, but the driver script can also deploy the clustered database by changing the `database.deployment` configuration argument, however a minimum of 3 nodes are needed in this case.
+* NekRS communicates to the SmartSim database through a [SmartRedis plugin](https://github.com/argonne-lcf/nekRS-ML/blob/smartredis/src/plugins/smartRedis.hpp) that was added to the code. The functions from this plugin are then called within the `turbChannel.udf` file in the `UDF_Setup()` and `UDF_ExecuteStep()` functions.
+* The training script also communicates with the SmartSim database using the SmartRedis API, with the key components being 1) a custom PyTorch Dataset which generates the key strings of the tensors to retrieve from the database and 2) a nested loop over Dataloaders in order to first retrieve all the tensors and then perform mini-batch SGD on the collected data.
+* With a sucessful run, nekRS will run around 70 time steps and the training script will converge the model within a few epochs. Note:
+  * You should see the following lines in the nekRS output file `nekrs.out` every 10 time steps
+```
+copying solution to nek
+
+Sending field with key x.0.10 
+Done
+
+
+Sending time step number ...
+Done
+```
+  * You should see the following in the training output file `train_model.out` indicating new training data is being considered for training
+```
+Getting new training data from DB ... 
+Added time step 30 to training data
+
+
+ Epoch 3
+-------------------------------
+[0]: Grabbing tensors with key ['x.0.30', 'x.1.20', 'x.1.10']
+[1]: Grabbing tensors with key ['x.0.10', 'x.0.20', 'x.1.30']
+```
+  * The first time executing the example, nekRS will have to perform a JIT compilation of the kernels before starting the simulation and this will take a few minutes. Since the training script is waiting for data to be populated in the database to start training, the training program is also waiting on nekRS for a few minutes. Successive runs won't have this issue and will start the simulation and training right away.
+  * Due to an issue with the strain rate computation within nekRS, the value of the wall-shear stress is currently set to the analytical value based on the Reynolds number of the channel instead of the instantaneous value computed from the local flow, so the model trains very quickly and reaches very low values of the loss. 
 
 ## Online Inference from NekRS of Wall Shear Stress Model
 
@@ -129,7 +161,7 @@ The example follows the training one described above, therefore still uses the `
 
 To run the example from an interactive node on Polaris:
 1. Get an interactive allocation running `./subInteractive.sh`
-2. Change directory to the training example
+2. Change directory to the inference example
 3. Source the environment with `source env.sh`
 4. Execute the run script with `./run.sh`
 
@@ -138,7 +170,29 @@ To run the example from a batch script:
 2. Submit the script to the Polaris queue with `qsub submit.sh`
 
 Details of the example are as follows:
-* The run and submit scripts execute 
+* The run and submit scripts execute a Python driver script (`ssim_driver_polaris.sh`) which uses the SmartSim API to set up and deploy the workflow. It launches the nekRS and colocated database together with a single `mpiexec` command, as well as uploading a pre-trained ML model from file onto the database.
+* The default run configuration arguments are contained in the `yaml` [config file](inference_example/conf/ssim_config.yaml), but the settings for this specific example are passed as command line arguments to the driver script and place nekRS on the first 3 A100 GPU of a node and leave the fourth GPU on the same node to perform inference. The database always runs on the CPU. This example therefore couples a parallel CFD simulation with a SmartSim database containing an ML model, which allows the simulation to send/retrieve data and execute the model on that data. Note:
+  * The example is set to run on a single Polaris node, but the config settings can be changed to run on multiple nodes by increasing the `run_args.simprocs` parameter while keeping `run_args.simprocs_pn=3`.
+  * The path to the ML model to load is set with the `inference.model_path` config argument and the hardware on which to perform inference is set with `inference.device`. Use `CPU` to perform inference on the CPU and `GPU:X` to targer the GPU, where X is the GPU ID on the node.
+  * The default deployment is with the colocated database, but the driver script can also deploy the clustered database by changing the `database.deployment` configuration argument, however a minimum of 2 nodes are needed in this case.
+* NekRS communicates to the SmartSim database through a [SmartRedis plugin](https://github.com/argonne-lcf/nekRS-ML/blob/smartredis/src/plugins/smartRedis.hpp) that was added to the code. The functions from this plugin are then called within the `turbChannel.udf` file in the `UDF_Setup()` and `UDF_ExecuteStep()` functions.
+* With a sucessful run, nekRS will run 66 time steps performing inference every 10 steps. Note:
+  * You should see the following lines in the nekRS output file `nekrs.out` every 10 time steps
+```
+Sending field with key x.0 
+Done
+
+
+Running ML model ...
+Done
+
+
+Retrieving field with key y.0 
+Done
+```
+  * The first time executing the example, nekRS will have to perform a JIT compilation of the kernels before starting the simulation and this will take a few minutes. Successive runs won't have this issue and will start the simulation right away.
+  * Due to an issue with the strain rate computation within nekRS, the target value of the wall-shear stress for comparison with the model predictions is currently set to the analytical value based on the Reynolds number of the channel instead of the instantaneous value computed from the local flow. This is consistent with the training example above. 
+
 
 
 
