@@ -26,10 +26,6 @@ cp -r /opt/sambaflow/apps/ ~
 
 Sambanova software stack and associated environmental variables are setup at login. 
 
-```bash
-python -m venv --system-site-packages my_env 
-source my_env/bin/activate
-```
 Each of the samples or application examples provided by SambaNova has its own pre-built virtual environment which can be readily used. They are present in the `/opt/sambaflow/apps/` directory tree within each of the applications. 
 
 ## Run Examples 
