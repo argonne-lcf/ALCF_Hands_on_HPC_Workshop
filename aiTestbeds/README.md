@@ -25,6 +25,6 @@ We present an overview of novel AI accelerators namely, SambaNova, Cerebras, and
 + [Link to Presentation Slides]()
 + [ALCF Hands-on  HPC Workshop Agenda](https://www.alcf.anl.gov/events/alcf-hands-hpc-workshop)
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
-+ [ALCF AI Testbed Documentation](https://www.alcf.anl.gov/support/ai-testbed-userdocs/)
++ [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
 + [Join Slack Workspace]()
