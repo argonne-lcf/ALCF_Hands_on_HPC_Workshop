@@ -1,15 +1,13 @@
 #!/bin/bash -l
 #PBS -S /bin/bash
 #PBS -N nekRS_train
-#PBS -l walltime=00:30:00
-#PBS -l select=2:ncpus=64:ngpus=4
+#PBS -l walltime=01:00:00
+#PBS -l select=1:ncpus=64:ngpus=4
 #PBS -l filesystems=eagle:home
 #PBS -k doe
 #PBS -j oe
-##PBS -A fallwkshp23
-##PBS -q fallws23scaling
-#PBS -A datascience
-#PBS -q debug-scaling
+#PBS -A fallwkshp23
+#PBS -q fallws23scaling
 #PBS -V
 
 module load conda/2022-09-08

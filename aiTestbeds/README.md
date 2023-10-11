@@ -2,7 +2,7 @@
 
 Scientific applications are increasingly adopting Artificial Intelligence (AI) techniques to advance science. There are specialized hardware accelerators designed and built to efficiently run AI applications. With the diverse hardware and software stacks of these systems, it is challenging to comprehend their capabilities, programming approaches, and measure performance. 
 
-We present an overview of novel AI accelerators namely, SambaNova, Cerebras, and Graphcore. We present steps on how to program these systems by porting deep learning models with any refactoring of codes implemented in standard DL framework implementations, compiling and running on the accelerator hardware. Hands-on session on SambaNova, Graphcore, and Cerebras provides the attendees with an understanding of the key capabilities of emerging AI accelerators and their performance implications for scientific applications.
+We present an overview of novel AI accelerators namely, SambaNova, Graphcore and Cerebras. We present steps on how to program these systems by porting deep learning models with any refactoring of codes implemented in standard DL framework implementations, compiling and running on the accelerator hardware. Hands-on session on SambaNova, Graphcore, and Cerebras provides the attendees with an understanding of the key capabilities of emerging AI accelerators and their performance implications for scientific applications.
 
 * **Time:** October 11, 2023. 
   * 11-12 PM : ALCF AI Testbeds (Talk)
@@ -25,6 +25,6 @@ We present an overview of novel AI accelerators namely, SambaNova, Cerebras, and
 + [Link to Presentation Slides]()
 + [ALCF Hands-on  HPC Workshop Agenda](https://www.alcf.anl.gov/events/alcf-hands-hpc-workshop)
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
-+ [ALCF AI Testbed Documentation](https://www.alcf.anl.gov/support/ai-testbed-userdocs/)
++ [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
 + [Join Slack Workspace]()
