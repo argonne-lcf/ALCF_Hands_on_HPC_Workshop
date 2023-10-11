@@ -1,6 +1,8 @@
 # LLMs on Polaris
-Sam Foreman
-2023-10-11
+
+## Sam Foreman
+### 2023-10-11
+<span style="display:inline-block;height:1.25em!important;"><img src="https://raw.githubusercontent.com/saforem2/llm-lunch-talk/main/docs/assets/anl_logo.svg" height="150px" align="right" /></span>
 
 # 
 
@@ -17,15 +19,19 @@ Sam Foreman
 
 <span style="font-size: 1.75em; font-weight: 600; border-bottom: 1px solid white; color: #F8F8F8">October
 10 – 12, 2023 $\hspace{5pt}$ </span>
-<span style="display:inline-block;">![](https://raw.githubusercontent.com/saforem2/llm-lunch-talk/main/docs/assets/anl_logo.svg)</span>
+
 
 </div>
 
-<span style="font-size: 3.0em; font-weight: 700; color: white">ALCF
-Hands-on</span>  
+
 <br>
+
+<!--<span style="font-size: 3.0em; font-weight: 700; color: white">-->
+# ALCF Hands-on Workshop
+<!--<br>
 <span style="font-size: 3.0em; font-weight: 700; color: #FFFFFF">HPC
 Workshop</span>
+-->
 
 </div>
 
