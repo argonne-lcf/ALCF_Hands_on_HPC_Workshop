@@ -1,8 +1,9 @@
-# LLMs on Polaris
-Sam Foreman
-2023-10-11
+# [LLMs on Polaris](https://github.com/saforem2/llm-lunch-talk)
 
-# 
+- Slides: [LLMs on Polaris](https://github.com/saforem2/llm-lunch-talk)
+
+
+Sam Foreman
 
 <!-- # {.centerdslide background-image="https://www.alcf.anl.gov/sites/default/files/2023-08/ALCF-HandsOnHPCWksp-LL.png?itok=6qi5GY6y" height="80%"} -->
 <!-- # {.centeredslide background-image="./assets/massstar_science_highlights_2017_01.png" loading="lazy"} -->
@@ -21,11 +22,8 @@ Sam Foreman
 
 </div>
 
-<span style="font-size: 3.0em; font-weight: 700; color: white">ALCF
-Hands-on</span>  
-<br>
-<span style="font-size: 3.0em; font-weight: 700; color: #FFFFFF">HPC
-Workshop</span>
+<span style="font-size: 3.0em; font-weight: 700; color: white">ALCF Hands-on</span>  
+<span style="font-size: 3.0em; font-weight: 700; color: #FFFFFF">HPC Workshop</span>
 
 </div>
 
