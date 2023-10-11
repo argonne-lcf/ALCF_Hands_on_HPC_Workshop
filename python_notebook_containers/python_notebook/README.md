@@ -24,7 +24,7 @@ ALCF has prebuilt environments containing GPU-supported builds of torch, tensorf
 To use a prebuilt conda environment do the following:
 
 ```
-module load conda/2023-01-10-unstable
+module load conda/2023-10-04
 conda activate
 ``` 
 If you need to load an earlier conda environment for your application you can search for available conda environments via:
@@ -41,7 +41,7 @@ module load conda/2022-09-08
 If you need more flexibility to install your own packages (e.g. using conda install, pip install), then you can clone the base conda environment:
 
 ```
-module load conda/2023-01-10-unstable
+module load conda/2023-10-04
 conda activate
 conda create --clone base --prefix /path/to/envs/base-clone
 conda activate /path/to/envs/base-clone
