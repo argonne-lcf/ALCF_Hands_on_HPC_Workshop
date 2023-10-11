@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -l select=4:system=polaris
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=0:15:00
+#PBS -A fallwkshp23
+#PBS -q fallws23scaling
+
+cd ${PBS_O_WORKDIR}
+
+# make sure scratch dir exists
+SCRATCHDIR=/eagle/projects/fallwkshp23/$USER
+mkdir -p $SCRATCHDIR
+# set striping parameters to use all servers
+lfs setstripe -c -1 $SCRATCHDIR
+
+# delete old file if present
+rm -rf $SCRATCHDIR/helloworld
+
+# submit job
+mpiexec -n 256 --ppn 64 ./helloworld $SCRATCHDIR
+
+# delete the new file to avoid exhausing the project quota
+rm -rf $SCRATCHDIR/helloworld
