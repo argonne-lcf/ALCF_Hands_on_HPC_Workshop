@@ -73,3 +73,9 @@ Refer to respective instrcutions below
 * [MNIST](./mnist.md)
 <!--- * [Resnet50 using replication factor](./resnet50.md) --->
 * [GPT2](./gpt2.md)
+
+## Useful Resources 
+
+* [Graphcore Documentation](https://docs.graphcore.ai/en/latest/)
+* [Graphcore Examples Repository](https://github.com/graphcore/examples)
+* Graphcore SDK Path: `/software/graphcore/poplar_sdk`

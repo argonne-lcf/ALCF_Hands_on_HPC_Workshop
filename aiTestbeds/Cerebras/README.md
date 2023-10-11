@@ -80,3 +80,9 @@ See `csctl -h` for more options.
 Refer to respective instrcutions below 
 * [FC-MNIST](./fc-mnist.md)
 * [BERT-Large](./bert-large.md)
+
+# Useful Resources 
+
+* [Cerebras Documntation](https://docs.cerebras.net/en/latest/wsc/index.html)
+* [Cerebras Modelzoo Repo](https://github.com/Cerebras/modelzoo/tree/main/modelzoo)
+* Datasets Path: `/software/cerebras/dataset`
