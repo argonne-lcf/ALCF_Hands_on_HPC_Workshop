@@ -9,12 +9,12 @@ from parsl import python_app, bash_app
 # to be loaded.  We'll cover this later.
 parsl.load()
 
-
+# Python app type for running native python code
 @python_app
 def hello_python(message):
     return 'Hello %s' % message
 
-
+# Bash app type for wrapping around calls to compiled code
 @bash_app
 def hello_bash(message, stdout='hello-stdout'):
     return 'echo "Hello %s"' % message

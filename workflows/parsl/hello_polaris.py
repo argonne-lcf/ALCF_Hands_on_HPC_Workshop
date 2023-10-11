@@ -10,26 +10,19 @@ working_directory = os.getcwd()
 parsl.load(polaris_config)
 
 
-# Application that reports which GPU is assigned to the worker
-@bash_app
-def hello_device(stdout='hello.stdout', stderr='hello.stderr'):
-    return 'echo Hello Polaris CUDA device $CUDA_VISIBLE_DEVICES on host $HOSTNAME'
-
-
-# Application that reports which GPU is assigned to the worker
+# Application that reports which worker affinities
 @bash_app
 def hello_affinity(stdout='hello.stdout', stderr='hello.stderr'):
-    # return 'echo Hello Polaris CUDA device $CUDA_VISIBLE_DEVICES on host $HOSTNAME'
-    return '/home/csimpson/polaris/GettingStarted/Examples/Polaris/affinity_gpu/hello_affinity'
+    return '/eagle/fallwkshp23/workflows/affinity_gpu/hello_affinity'
 
 
-# Create futures calling 'hello_device', store them in list 'tasks'
+# Create futures calling 'hello_affinity', store them in list 'tasks'
 tasks = []
 for i in range(4):
     tasks.append(hello_affinity(stdout=f"{working_directory}/output/hello_{i}.stdout",
                                 stderr=f"{working_directory}/output/hello_{i}.stderr"))
 
-# Wait on futures to return, when they do, print stdout if successful, error otherwise
+# Wait on futures to return, and print results
 for i, t in enumerate(tasks):
     t.result()
     with open(f"{working_directory}/output/hello_{i}.stdout", "r") as f:
