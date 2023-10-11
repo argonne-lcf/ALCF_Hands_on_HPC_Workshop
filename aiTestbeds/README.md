@@ -22,9 +22,8 @@ We present an overview of novel AI accelerators namely, SambaNova, Graphcore and
 
 ## Useful Links 
 
-+ [Link to Presentation Slides]()
++ [Link to Presentation Slides](https://www.alcf.anl.gov/support-center/training-assets/alcf-ai-testbeds)
 + [ALCF Hands-on  HPC Workshop Agenda](https://www.alcf.anl.gov/events/alcf-hands-hpc-workshop)
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
 + [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
-+ [Join Slack Workspace]()
