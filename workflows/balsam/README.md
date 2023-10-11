@@ -336,7 +336,7 @@ class HelloAffinity(ApplicationDefinition):
     def shell_preamble(self):
         return '''
             module load PrgEnv-nvhpc
-            export PATH=$PATH:/home/csimpson/polaris/GettingStarted/Examples/Polaris/affinity_gpu/
+            export PATH=$PATH:/eagle/fallwkshp23/workflows/affinity_gpu/
         '''
 
     command_template = "set_affinity_gpu_polaris.sh hello_affinity"
@@ -344,7 +344,7 @@ class HelloAffinity(ApplicationDefinition):
 
 HelloAffinity.sync()
 
-# Create 8 jobs running that app,
+# Create 8 jobs running the HelloAffinity app,
 # 2 nodes per job, 4 ranks per node, 1 gpu per rank
 for i in range(8):
     Job.objects.create( app_id="HelloAffinity",

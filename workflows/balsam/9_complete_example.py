@@ -4,17 +4,17 @@ site_name = "polaris_tutorial"
 site = Site.objects.get(site_name)
 
 
-# Define the App that wraps around a compiled executable
-# It also loads a module before the app execution
+# Define an App that wraps around the compilied executable hello_affinity
+# It also loads a module before the app execution and adds the executable path to PATH
 # In this case where the application is using all the GPUs of a node,
-# we will wrap the executable with a gpu affinity script
+# we will wrap the executable with a gpu affinity script that places ranks on gpus
 class HelloAffinity(ApplicationDefinition):
     site = "polaris_tutorial"
 
     def shell_preamble(self):
         return '''
             module load PrgEnv-nvhpc
-            export PATH=$PATH:/home/csimpson/polaris/GettingStarted/Examples/Polaris/affinity_gpu/
+            export PATH=$PATH:/eagle/fallwkshp23/workflows/affinity_gpu/
         '''
 
     command_template = "set_affinity_gpu_polaris.sh hello_affinity"
@@ -22,7 +22,7 @@ class HelloAffinity(ApplicationDefinition):
 
 HelloAffinity.sync()
 
-# Create 8 jobs running that app,
+# Create 8 jobs running the HelloAffinity app,
 # 2 nodes per job, 4 ranks per node, 1 gpu per rank
 for i in range(8):
     Job.objects.create( app_id="HelloAffinity",
