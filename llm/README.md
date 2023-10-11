@@ -1,9 +1,4 @@
 # LLMs on Polaris
-
-- Slides: [LLMs on Polaris](https://saforem2.github.io/llm-lunch-talk/#/training-llms)
-- GitHub: [`saforem2/llm-lunch-talk`](https://github.com/saforem2/llm-lunch-talk)
-
-
 Sam Foreman
 2023-10-11
 
@@ -22,7 +17,7 @@ Sam Foreman
 
 <span style="font-size: 1.75em; font-weight: 600; border-bottom: 1px solid white; color: #F8F8F8">October
 10 – 12, 2023 $\hspace{5pt}$ </span>
-<span style="display:inline-block;">![](./assets/anl_logo.svg)</span>
+<span style="display:inline-block;">![](https://raw.githubusercontent.com/saforem2/llm-lunch-talk/main/docs/assets/anl_logo.svg)</span>
 
 </div>
 
@@ -49,7 +44,7 @@ community~~ **world** by storm[^1]
 
 <div width="66%" style="text-align: center;">
 
-<img src="./assets/emergent-abilities.gif" height="75%" />
+<img src="https://github.com/saforem2/llm-lunch-talk/blob/main/docs/assets/emergent-abilities.gif?raw=true" height="75%" />
 
 [Emergent abilities of Large Language
 Models](https://arxiv.org/abs/2206.07682) Yao et al. (2023)
@@ -77,7 +72,9 @@ data-cites="yang2023harnessing">Yang et al. (2023)</span></p>
 </div></td>
 <td style="text-align: center;"><div width="45.0%"
 data-layout-align="center">
-<p><img src="./assets/it_hungers.jpeg" data-fig.extended="false" /></p>
+<p><img
+src="https://github.com/saforem2/llm-lunch-talk/blob/main/docs/assets/it_hungers.jpeg?raw=true"
+data-fig.extended="false" /></p>
 </div></td>
 </tr>
 </tbody>
@@ -245,7 +242,7 @@ weights to make the model better at a certain task.
 
 <!-- # {.centeredslide} -->
 
-![](./assets/diagrams/transformer.svg)
+![](https://raw.githubusercontent.com/saforem2/llm-lunch-talk/main/docs/assets/diagrams/transformer.svg)
 
 Vaswani et al. (2017)
 
@@ -368,17 +365,19 @@ by [@anton-l](https://github.com/anton-l)
 
 - `DP` + `TP` + `PP` (3D) Parallelism
 
-::: {style=“text-align:center!important; width: 90%;}
+<div id="3dparallel-1" style="text-align:center!important; width:90%;">
 
-<img src="https://www.microsoft.com/en-us/research/uploads/prod/2020/09/Blog_DeepSpeed3_Figure-1_highres-2048x1230.png" align="center" />
+![](https://www.microsoft.com/en-us/research/uploads/prod/2020/09/Blog_DeepSpeed3_Figure-1_highres-2048x1230.png)
 
-:::
+3D Parallelism illustration. Figure from: <https://www.deepspeed.ai/>
+
+</div>
 
 # 3D Parallelism
 
 - `DP` + `TP` + `PP` (3D) Parallelism
 
-<div id="3dparallel">
+<div id="3dparallel" style="text-align:center!important;">
 
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/parallelism-deepspeed-3d.png)
 
@@ -394,7 +393,7 @@ models](https://www.microsoft.com/en-us/research/blog/deepspeed-extreme-scale-mo
   [
   `argonne-lcf/Megatron-DeepSpeed`](https://github.com/argonne-lcf/Megatron-DeepSpeed)
 
-  ``` bash
+  ```bash
   # navigate to directory
   WORKSHOP_DIR="/lus/grand/projects/fallwkshp23/"
   PROJECTS_DIR="${WORKSHOP_DIR}/foremans/locations/polaris/projects/"
@@ -419,7 +418,7 @@ models](https://www.microsoft.com/en-us/research/blog/deepspeed-extreme-scale-mo
 
 - Executable:
 
-  ``` bash
+  ```bash
   MODEL_SIZE_KEY="GPT1_5B" SEQ_LEN=1024 MICRO_BATCH=1 SP_TYPE="megatron" ./ALCF/train-gpt3.sh
   ```
 
@@ -428,7 +427,7 @@ models](https://www.microsoft.com/en-us/research/blog/deepspeed-extreme-scale-mo
 <b>Output</b>
 </summary>
 
-``` bash
+```bash
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ALCF_DIR: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argonne-lcf/Megatron-DeepSpeed/ALCF
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -455,7 +454,7 @@ similar to the following:
 
 <div class="code" style="font-size:0.8em;">
 
-``` bash
+```bash
 Job started at: 2023-10-11-092906 on x3210c0s1b0n0
 [...]
 Writing logs to: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argonne-lcf/Megatron-DeepSpeed/outputs/gpt_SP_actCkpt_GPT13B_z1_seqlen1024_mp8_pp1_sp1_nl40_hs5120_gb1_mb1
@@ -467,7 +466,7 @@ i.e. tail -f /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects
 
 - To watch / view the output:
 
-  ``` bash
+  ```bash
   tail -fn 1000 $(tail -1 logfiles) | less
   ```
 
@@ -475,7 +474,7 @@ i.e. tail -f /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects
 
 <div class="code" style="font-size:0.8em;">
 
-``` bash
+```bash
 Job started at: 2023-10-11-092906 on x3210c0s1b0n0
 Training GPT-3 with GPT13B parameters
 Writing logs to: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argonne-lcf/Megatron-DeepSpeed/outputs/gpt_SP_actCkpt_GPT13B_z1_seqlen1024_mp8_pp1_sp1_nl40_hs5120_gb1_mb1
@@ -496,14 +495,14 @@ using: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argon
 
   1.   Clone GitHub repo:
 
-  ``` bash
+  ```bash
   git clone https://github.com/argonne-lcf/Megatron-DeepSpeed
   ```
 
   2.  Load Conda module:
       - Polaris:
 
-        ``` bash
+        ```bash
         if [[ "$(hostname)==x3*" ]]; then
             export MACHINE="Polaris"
             export CONDA_DATE="2023-10-04"
@@ -514,7 +513,7 @@ using: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argon
 
       - ThetaGPU:
 
-        ``` bash
+        ```bash
         if [[ "$(hostname)==theta*" ]]; then
             export MACHINE="ThetaGPU"
             export CONDA_DATE="2023-01-10"
@@ -527,7 +526,7 @@ using: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argon
 
 3.  Setup virtual environment[^7]:
 
-    ``` bash
+    ```bash
     cd Megatron-DeepSpeed
     # create a new virtual environment
     mkdir -p "venvs/${MACHINE}/${CONDA_DATE}"
@@ -537,7 +536,7 @@ using: /lus/grand/projects/fallwkshp23/foremans/locations/polaris/projects/argon
 
 4.  Create a new folder where we’ll install dependencies:
 
-    ``` bash
+    ```bash
     mkdir -p "deps/${MACHINE}"
     cd "deps/${MACHINE}"
     ```
@@ -560,13 +559,13 @@ style="font-size: 0.8em; width: 100%!important; height: 100%!important;">
 
   - `v1.0.4`:
 
-    ``` bash
+    ```bash
     python3 -m pip install flash-attn==1.0.4
     ```
 
   - `v2.x`:
 
-    ``` bash
+    ```bash
     git clone https://github.com/Dao-AILab/flash-attention
     cd flash-attention
     python3 setup.py install
@@ -574,7 +573,7 @@ style="font-size: 0.8em; width: 100%!important; height: 100%!important;">
 
   - `openai/triton`:
 
-    ``` bash
+    ```bash
     git clone -b legacy-backend https://github.com/openai/triton
     cd triton/python
     python3 -m pip install cmake pybind11
@@ -587,7 +586,7 @@ style="font-size: 0.8em; width: 100%!important; height: 100%!important;">
 
 - [ `saforem2/ezpz`](https://github.com/saforem2/ezpz)
 
-  ``` bash
+  ```bash
   python3 -m pip install -e "git+https://github.com/saforem2/ezpz.git#egg=ezpz"
   ```
 
