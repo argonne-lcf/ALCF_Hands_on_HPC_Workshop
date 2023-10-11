@@ -131,7 +131,7 @@ globus-compute-endpoint restart workshop-endpoint
 
 You can also verify that your endpoint is communicating with the Globus Service by looking at https://app.globus.org/compute.
 
-## Remote execution of a simple function (0_remote_adder.py)
+# Remote execution of a simple function (0_remote_adder.py)
 
 We can send a simple function, adding two numbers to your endpoint.  To run this script, paste your endpoint's id into the script below.  Like Parsl functions, a Globus Compute function returns a future.  Include a call that waits on the result of the future to make your script wait for the result to return.
 
@@ -159,7 +159,7 @@ with Executor(endpoint_id=endpoint_id) as gce:
     print(future.result())
 ```
 
-## Register a function with Globus Service (1_register_function.py)
+# Register a function with Globus Service (1_register_function.py)
 
 A function can be registered with the Globus service to be executed later.  It can be called with an id.
 
@@ -203,7 +203,7 @@ fusion_func = gc.register_function(hello_affinity)
 print(f"Registered hello_affinity; id {fusion_func}")
 ```
 
-## Call registered function (2_call_registered_function.py)
+# Call registered function (2_call_registered_function.py)
 
 This script shows how to call the function registered in the previous example.  Copy the function id printed from that example in the script below.  Also paste in your endpoint id.
 
