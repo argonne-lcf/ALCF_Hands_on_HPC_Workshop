@@ -30,7 +30,7 @@ pip3 install /opt/cerebras/wheels/cerebras_pytorch-1.9.1+1cf4d0632b-cp38-cp38-li
 pip install numpy==1.23.4
 pip install datasets transformers
 ```
-
+<!---
 ### Tensorflow Virtual environment
 
 ```bash
@@ -48,7 +48,7 @@ source venv_tf/bin/activate
 pip3 install /opt/cerebras/wheels/cerebras_tensorflow-1.9.1+1cf4d0632b-cp38-cp38-linux_x86_64.whl --find-links=/opt/cerebras/wheels/
 pip install numpy==1.23.4
 ```
-
+--->
 ## Clone Cerebras modelzoo
 
 We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/modelzoo) for this hands-on. 
