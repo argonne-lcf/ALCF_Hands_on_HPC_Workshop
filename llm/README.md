@@ -1,7 +1,8 @@
 # LLMs on Polaris
 
-- Slides: https://saforem2.github.io/llm-lunch-talk/
-- GitHub: https://github.com/saforem2/llm-lunch-talk
+- Slides: [LLMs on Polaris](https://saforem2.github.io/llm-lunch-talk/#/training-llms)
+- GitHub: [`saforem2/llm-lunch-talk`](https://github.com/saforem2/llm-lunch-talk)
+
 
 Sam Foreman
 2023-10-11
