@@ -23,8 +23,8 @@ engine:
             bind_cmd: --cpu-bind
             overrides: --ppn 1
 
-        account: datascience
-        queue: debug
+        account: fallwkshp23
+        queue: fallws23single
         cpus_per_node: 64
         select_options: ngpus=4
 
@@ -32,7 +32,7 @@ engine:
         scheduler_options: "#PBS -l filesystems=home:eagle"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate"
+        worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
 
         walltime: 00:05:00
         nodes_per_block: 1
