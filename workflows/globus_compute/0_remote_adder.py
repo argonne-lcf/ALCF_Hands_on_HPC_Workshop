@@ -5,9 +5,11 @@ from globus_compute_sdk import Executor
 # Scripts adapted from Globus Compute docs
 # https://globus-compute.readthedocs.io/en/latest/quickstart.html
 
+
 # First, define the function ...
 def add_func(a, b):
     return a + b
+
 
 # Paste your endpoint id here, e.g.
 # endpoint_id = 'c0396551-2870-45f2-a2aa-70991eb120a4'
