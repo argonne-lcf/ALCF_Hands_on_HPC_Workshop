@@ -16,5 +16,5 @@ aprun -n 2 -N 2 --cc depth -d 32 python pytorch_cnn_ddp.py >& pytorch_cnn_ddp.py
 aprun -n 4 -N 4 --cc depth -d 16 python pytorch_cnn_ddp.py >& pytorch_cnn_ddp.py.4.out
 
 # PyTorch data loader does not work for num_workers>0 for multiple node
-aprun -n 8 -N 4 --cc depth -d 16 python pytorch_cnn_ddp.py --num_workers 0 >& pytorch_cnn_ddp.py.8.out
+aprun -n 8 -N 4 --cc depth -d 16 python pytorch_cnn_ddp.py --num_workers 0 --num_threads 0 >& pytorch_cnn_ddp.py.8.out
 

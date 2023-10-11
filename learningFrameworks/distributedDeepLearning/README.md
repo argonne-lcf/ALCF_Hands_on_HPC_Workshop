@@ -284,80 +284,37 @@ Epoch 14/49
 ```
 ## VI. MPI Communication profiling
 * MPI profiling -- to see the MPI calls involved
-   * running on GPU
 ```bash
   LD_PRELOAD=/soft/perftools/mpitrace/lib/libmpitrace.so aprun -n 8 -N 4 --cc depth -d 16 python keras_cnn_concise_hvd.py --epochs 10
 ```
-  0.09 second per epoch. 
-
+This will generate files mpi_profile.*, which show the MPI flat profiling information. Please notice that this does not show NCCL communication calls. 
 ```
-Times and statistics from MPI_Init() to MPI_Finalize().
 -----------------------------------------------------------------------
 MPI Routine                        #calls     avg. bytes      time(sec)
 -----------------------------------------------------------------------
-MPI_Comm_rank                           5            0.0          0.000
-MPI_Comm_size                           3            0.0          0.000
-MPI_Bcast                             111       259530.7          0.019
-MPI_Barrier                             1            0.0          0.081
-MPI_Allreduce                       12506           15.9          5.887
-MPI_Gather                             30            4.0          0.006
-MPI_Gatherv                            30            0.0          0.000
-MPI_Allgather                           2            4.0          0.000
------------------------------------------------------------------
-total communication time = 5.994 seconds.
-total elapsed time       = 18.068 seconds.
-...
-MPI_Allreduce             #calls    avg. bytes      time(sec)
-                             102           4.0          0.001
-                           12404          16.0          5.885
-```
-
-
-  * running on CPU
-```
-LD_PRELOAD=/soft/perftools/hpctw/lib/libmpitrace.so aprun -n 8 -N 4 --cc depth -d 16 python 03_keras_cnn_concise_hvd.py --device cpu --epochs 10
-```
-2.44 second per epoch
-  
-```
-Times and statistics from MPI_Init() to MPI_Finalize().
+MPI_Comm_rank                           7            0.0          0.000
+MPI_Comm_size                           4            0.0          0.000
+MPI_Bcast                             153       188295.1          0.014
+MPI_Barrier                             1            0.0          0.000
+MPI_Allreduce                       12170            8.0         12.775
+MPI_Gather                             51            4.0          0.001
+MPI_Gatherv                            51            0.0          0.015
+MPI_Allgather                           3            5.3          0.000
 -----------------------------------------------------------------------
-MPI Routine                        #calls     avg. bytes      time(sec)
------------------------------------------------------------------------
-MPI_Comm_rank                           5            0.0          0.000
-MPI_Comm_size                           3            0.0          0.000
-MPI_Bcast                             150       192058.6          0.021
-MPI_Allreduce                       77340        44324.1        106.664
-MPI_Gather                             50            4.0          0.003
-MPI_Gatherv                            50            0.0          0.001
-MPI_Allgather                           2            4.0          0.000
------------------------------------------------------------------
-total communication time = 106.689 seconds.
-total elapsed time       = 128.903 seconds.
+total communication time = 12.805 seconds.
+total elapsed time       = 13.899 seconds.
+user cpu time            = 15.336 seconds.
+system time              = 10.047 seconds.
+max resident set size    = 4451.586 MiB.
 
 ...
 MPI_Allreduce             #calls    avg. bytes      time(sec)
-                             102           4.0          0.001
-                           72893          16.0         86.606
-                              16          40.0          0.003
-                             709         128.0          0.093
-                             709         256.0          0.149
-                              10         512.0          0.002
-                              76         552.0          0.075
-                             713        1154.2          0.069
-                             684        5607.9          0.645
-                             714       73730.2          0.176
-                             714     4718824.9         18.844
+                              20           4.0          0.000
+                           12150           8.0         12.775
 ```
-
 * Horovod Timeline -- to see when MPI communication happens. 
-To get the timeline trace, simply set the environment variable ```HOROVOD_TIMELINE``` to the output file name. Then copy the json file to your local machine, and visualize using Chrome trace (open your chrome and type chrome://tracing/ in the address bar, and then load the json file). 
+To get the timeline trace, simply set the environment variable ```HOROVOD_TIMELINE``` to the output file name. Then copy the json file to your local machine, and visualize using Chrome trace (open your chrome and type chrome://tracing/ in the address bar, and then load the json file).
 ```bash
-HOROVOD_TIMELINE=gpu.json mpirun -np 8 python Horovod/04_keras_cnn_concise_hvd.py 
-HOROVOD_TIMELINE=cpu.json mpirun -np 8 python Horovod/04_keras_cnn_concise_hvd.py --device cpu 
+HOROVOD_TIMELINE=gpu.json mpirun -np 8 python Horovod/keras_cnn_concise_h
 ```
-  - GPU Horovod timeline
-  	![GPU timeline](./figures/gpu_horovodtimeline.png)
-  - CPU Horovod timeline
-	![CPU timeline](./figures/cpu_horovodtimeline.png)
-As we can see, that CPU and GPU behaves differently. One GPU, the Allreduce is performed by NCCL backend (Nvidia communication library). 
+![GPU timeline](./figures/gpu_horovodtimeline.png)

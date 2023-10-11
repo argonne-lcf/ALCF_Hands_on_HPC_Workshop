@@ -16,4 +16,4 @@ aprun -n 1 -N 1 --cc depth -d 64 python pytorch_cnn_ds.py --deepspeed_config ds_
 aprun -n 2 -N 2 --cc depth -d 32 python pytorch_cnn_ds.py --deepspeed_config ds_config.json >& pytorch_cnn_ds.py.2.out
 aprun -n 4 -N 4 --cc depth -d 16 python pytorch_cnn_ds.py --deepspeed_config ds_config.json >& pytorch_cnn_ds.py.4.out
 # PyTorch Data Loader does not work for num_workers>0 on multiple node
-aprun -n 8 -N 4 --cc depth -d 16 python pytorch_cnn_ds.py --deepspeed_config ds_config.json >& pytorch_cnn_ds.py.8.out
+aprun -n 8 -N 4 --cc depth -d 16 python pytorch_cnn_ds.py --deepspeed_config ds_config.json --num_workers 0 --num_threads 0 >& pytorch_cnn_ds.py.8.out
