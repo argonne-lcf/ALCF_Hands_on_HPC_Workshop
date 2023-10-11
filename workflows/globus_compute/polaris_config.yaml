@@ -34,7 +34,7 @@ engine:
         # Node setup: activate necessary conda environment and such
         worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
 
-        walltime: 00:05:00
+        walltime: 00:30:00
         nodes_per_block: 1
         init_blocks: 0
         min_blocks: 0
