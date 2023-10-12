@@ -31,9 +31,9 @@ polaris_config = Config(
             start_method="spawn",
             provider=PBSProProvider(
                 # Project name
-                account="datascience",
+                account="fallwkshp23",
                 # Submission queue
-                queue="debug",
+                queue="fallws23single",
                 # Commands run before workers launched
                 worker_init=f'''source /eagle/fallwkshp23/workflows/env/bin/activate;
                             module load PrgEnv-nvhpc;

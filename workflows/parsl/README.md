@@ -1,7 +1,7 @@
 Parsl: Deploying Tasks with Parsl on ALCF Machines
 ===============================================
 
-[Parsl](https://parsl.readthedocs.io/en/stable/) is a parallel programming library for Python.  It can be used to deploy large numbers of tasks with complex dependencies on ALCF machines, and is particularly well suited to run high-throughput workflows.  Parsl uses Python's concurrent futures module to create functions that return a Python futures object.  A Parsl workflow operates by creating futures for tasks that the Parsl executor will then fulfill by running the tasks on available compute resources.
+[Parsl](https://parsl.readthedocs.io/en/stable/) is a parallel programming library for Python.  It can be used to deploy large numbers of tasks with complex dependencies on ALCF machines, and is particularly well suited to run high-throughput workflows.  Parsl uses Python's concurrent futures module to create functions that return a Python futures object.  A Parsl workflow operates by creating futures for tasks that the Parsl executor will then fulfill by running them on available compute resources.
 
 When a Parsl program runs and is configured to use Polaris compute resources, it will dynamically and elastically create batch jobs under the user's account on the Polaris scheduler.  These batch jobs will communicator with the Parsl process that launched then to acquire work and run it.
 
@@ -11,11 +11,38 @@ A Parsl workflow contains two parts:
 
 We will begin by exploring how to define functions and dependencies.  Then we will describe how to configure resources to run the workflow on Polaris compute nodes.
 
+# Setup and installation
+
+First, login to Polaris and clone this repo:
+
+```bash
+# Login to Polaris
+ssh polaris.alcf.anl.gov
+
+# Clone the repo
+git clone git@github.com:argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
+cd ALCF_Hands_on_HPC_Workshop/workflows/parsl
+```
+
+For the workshop, you can use the workshop python virtual environment that has parsl installed:
+```bash
+source /eagle/fallwkshp23/workflows/env/bin/activate
+```
+
+To create your own environment:
+```bash
+module load conda
+conda activate base
+python -m venv env
+source env/bin/activate
+pip install parsl
+```
+
 # Parsl functions and logic
 
 ## Function app types (0_getting_started.py)
 
-Parsl supports two main function types: the `python_app` type for running native python functions and the `bash_app` type that can be used to wrap around calls to a compiled executable.
+Parsl supports two main function types: the `python_app` type for running native python functions and the `bash_app` type that can be used to wrap around calls to a compiled executables.
 
 This example demonstrates both app types:
 ```python
@@ -53,7 +80,7 @@ with open('hello-stdout', 'r') as f:
 
 ## Running parallel tasks (1_parallel_workflow.py)
 
-To run many tasks in parallel, create futures that call the relevant apps.  Once all futures have been created, only then wait on the results.
+To run many tasks in parallel, create futures that call your app.  Once all futures have been created, only then wait on the results.
 
 ```python
 import parsl
@@ -172,7 +199,7 @@ print(fib_series.result())
 
 # Parsl Configuration and Running on Polaris
 
-The previous examples used Parsl's default configuration that runs tasks on local threads (in our case the polaris login node).
+The previous examples used Parsl's default configuration that runs tasks on local threads (in our case, threads on the polaris login node).
 
 To run tasks on compute nodes we need to load a Polaris specific config object at the start of the Parsl workflow, e.g.:
 ```python
@@ -185,8 +212,8 @@ Here we describe how to write a config for Polaris and demonstrate how to run ta
 
 The Parsl Config object describes how compute resources are assigned to Parsl workers.  Each Parsl worker will run one task at a time.  It contains many options, but the main aspects that need to be specified in the Config are:
 * Executor: the executor describes how many workers will be available to the workflow and what Provider and Launcher will allocate and start workers.
-* Provider: The provider describes how the Executor will get compute resources through the scheduler
-* Launcher: the Launcher describes how the Provider will place worker processes on compute resources, typically with an MPI executor in the HPC context.
+* Provider: The provider describes how the Executor will get compute resources through the scheduler.
+* Launcher: the Launcher describes how the Provider will place worker processes on compute resources, typically with an MPI in the HPC context.
 
 On Polaris, we recommend using the [`HighThroughputExecutor`](https://parsl.readthedocs.io/en/stable/stubs/parsl.executors.HighThroughputExecutor.html#parsl.executors.HighThroughputExecutor), the [`PbsProProvider`](https://parsl.readthedocs.io/en/stable/stubs/parsl.providers.PBSProProvider.html), and the [`MpiExecLauncher`](https://parsl.readthedocs.io/en/stable/stubs/parsl.launchers.MpiExecLauncher.html).
 
@@ -228,7 +255,7 @@ polaris_config = Config(
                 # Project name
                 account="fallwkshp23",
                 # Submission queue
-                queue="debugfallws23single",
+                queue="fallws23single",
                 # Commands run before workers launched
                 worker_init=f'''source /eagle/fallwkshp23/workflows/env/bin/activate;
                             module load PrgEnv-nvhpc;
