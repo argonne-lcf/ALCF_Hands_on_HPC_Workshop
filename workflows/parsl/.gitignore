@@ -1,0 +1,9 @@
+*stdout
+*stderr
+*.txt
+runinfo
+*~
+__pycache__
+output
+cmd_*
+*.nodes

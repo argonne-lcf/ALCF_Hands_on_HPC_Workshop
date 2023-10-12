@@ -1,0 +1,41 @@
+engine:
+    # This engine uses the HighThroughputExecutor
+    type: GlobusComputeEngine
+    
+    available_accelerators: 4 # Assign one worker per GPU
+    cpu_affinity: block-reverse  # Assigns cpus in reverse sequential order                                                   
+    prefetch_capacity: 0  # Increase if you have many more tasks than workers                                                    
+
+    address:
+        type: address_by_interface
+        ifname: bond0
+
+    strategy:
+        type: SimpleStrategy
+        max_idletime: 300
+
+    provider:
+        type: PBSProProvider
+
+        launcher:
+            type: MpiExecLauncher
+            # Ensures 1 manger per node, work on all 64 cores
+            bind_cmd: --cpu-bind
+            overrides: --ppn 1
+
+        account: fallwkshp23
+        queue: fallws23single
+        cpus_per_node: 64
+        select_options: ngpus=4
+
+        # e.g., "#PBS -l filesystems=home:grand:eagle\n#PBS -k doe"
+        scheduler_options: "#PBS -l filesystems=home:eagle"
+
+        # Node setup: activate necessary conda environment and such
+        worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
+
+        walltime: 00:30:00
+        nodes_per_block: 1
+        init_blocks: 0
+        min_blocks: 0
+        max_blocks: 1
