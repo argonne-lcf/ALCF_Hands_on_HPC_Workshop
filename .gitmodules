@@ -1,0 +1,6 @@
+[submodule "visualization_io/mpiio-hdf5/hands-on"]
+	path = visualization_io/mpiio-hdf5/hands-on
+	url = https://github.com/radix-io/hands-on.git
+[submodule "visualization_io/mpiio-hdf5/io-sleuthing"]
+	path = visualization_io/mpiio-hdf5/io-sleuthing
+	url = https://github.com/radix-io/io-sleuthing.git
