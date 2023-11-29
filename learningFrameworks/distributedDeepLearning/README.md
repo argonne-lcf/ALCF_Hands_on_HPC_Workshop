@@ -174,8 +174,8 @@ We provided some examples in: We provided some examples in: [04_keras_cnn_concis
 
 ## III. Other frameworks examples
 For Pytorch, one can also use DDP and DeepSpeed to parallelize the code. The instruction on how to parallelize the code using DDP and DeepSpeed can be found here: 
-* DDP: https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop/tree/master/distributedDeepLearning/DDP
-* DeepSpeed: https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop/tree/master/distributedDeepLearning/DeepSpeed
+* DDP: https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop/tree/master/learningFrameworks/distributedDeepLearning/DDP
+* DeepSpeed: https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop/tree/master/learningFrameworks/distributedDeepLearning/DeepSpeed
 
 We also provde examples in this GitHub repo
 * DDP: 
