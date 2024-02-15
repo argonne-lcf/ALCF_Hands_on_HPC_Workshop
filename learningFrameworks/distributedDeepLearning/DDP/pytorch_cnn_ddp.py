@@ -112,7 +112,7 @@ if rank==0:
     print(" Number of threads: ", torch.get_num_threads())
 
 
-kwargs = {'num_workers': args.num_workers, 'pin_memory': True} if args.device == 'gpu' else {}
+kwargs = {'num_workers': args.num_workers, 'pin_memory': True} if args.device == 'gpu' else {'num_workers': args.num_workers}
 train_dataset = \
     datasets.MNIST('datasets/', train=True, download=True,
                    transform=transforms.Compose([
