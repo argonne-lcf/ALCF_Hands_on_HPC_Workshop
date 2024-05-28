@@ -1,3 +1,4 @@
+from mpi4py import MPI
 from __future__ import print_function
 import os
 import argparse
@@ -15,7 +16,6 @@ import torch.utils.data.distributed
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 # Set global variables for rank, local_rank, world size
-from mpi4py import MPI
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
