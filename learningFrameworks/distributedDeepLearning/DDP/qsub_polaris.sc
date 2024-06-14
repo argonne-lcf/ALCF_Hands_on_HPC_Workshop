@@ -10,7 +10,7 @@
 
 cd $PBS_O_WORKDIR
 
-module load conda/2023-10-04; conda activate
+module use /soft/modulefiles; module load conda; conda activate
 aprun -n 1 -N 1 --cc depth -d 64 python pytorch_cnn_ddp.py >& pytorch_cnn_ddp.py.1.out
 aprun -n 2 -N 2 --cc depth -d 32 python pytorch_cnn_ddp.py >& pytorch_cnn_ddp.py.2.out
 aprun -n 4 -N 4 --cc depth -d 16 python pytorch_cnn_ddp.py >& pytorch_cnn_ddp.py.4.out
