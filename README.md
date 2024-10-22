@@ -1,10 +1,14 @@
 # ALCF Hands-on HPC Workshop
-### October 10 - 12, 2023
-### Agenda: https://www.alcf.anl.gov/events/alcf-hands-hpc-workshop
+### October 29 - 31, 2024
+### Agenda: https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop
 
-The ALCF is hosting an in-person Hands-on HPC Workshop on October 10-12, 2023, at the TCS Conference Center at Argonne National Laboratory.
+The ALCF is hosting an in-person Hands-on HPC Workshop on October 29--31, 2024, at the TCS Conference Center at Argonne National Laboratory.
 
 The workshop will provide an opportunity for hands-on time on Polaris and AI Testbeds focusing on porting applications to heterogeneous architectures (CPU + GPU), improving code performance, and exploring AI/ML applications development on ALCF systems.
+
+<!--
+The agenda below needs to be updated to reflect this years schedule
+-->
 
 ### The repo is divided by the workshop sessions:
 Day 1 
