@@ -12,7 +12,7 @@
  3. Mapping data
 
  ```
-  qsub -I -q fallws23single -A alcf_training -l select=1:system=polaris,filesystems=home -l walltime=0:30:00
+  qsub -I -q HandsOnHPC -A alcf_training -l select=1:system=polaris,filesystems=home -l walltime=0:30:00
  ```
 
  ## Set environment
