@@ -1,11 +1,10 @@
-# Machine Learning at Scale
+# Machine Learning and Foundation Models at Scale
 
 Sam Foreman  
 [2024 ALCF Hands-on HPC Workshop](https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop)
 
 - Slides: <https://samforeman.me/talks/alcf-hpc-workshop-2024/slides>
     - HTML version: <https://samforeman.me/talks/alcf-hpc-workshop-2024>
-
 
 ## Hands On
 
