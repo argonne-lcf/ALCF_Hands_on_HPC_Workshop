@@ -38,6 +38,12 @@ Sam Foreman
     python3 -m pip install -e .
     ```
 
+1. On Polaris:
+
+    ```bash
+    unset NCCL_COLLNET_ENABLE NCCL_CROSS_NIC NCCL_NET NCCL_NET_GDR_LEVEL
+    ```
+
 1. Test Distributed Setup:
 
     ```bash
