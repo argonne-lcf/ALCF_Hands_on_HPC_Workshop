@@ -21,16 +21,16 @@
 
  - LLVM environment:
  ```
+ module use /soft/modulefiles
  module load mpiwrappers/cray-mpich-llvm 
- module load cudatoolkit-standalone/11.8.0
+ module load cudatoolkit-standalone
  cp Makefile.llvm Makefile
  ```
 
 - PrgEnv-nvhpc:
  This should be in by default, but just in case:
  ```
- module load PrgEnv-nvhpc
- module swap nvhpc/21.9 nvhpc/23.3
+ module swap ... PrgEnv-nvhpc
  cp Makefile.nvidia Makefile
  ```
 
