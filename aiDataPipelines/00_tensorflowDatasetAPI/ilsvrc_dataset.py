@@ -241,12 +241,16 @@ if __name__ == '__main__':
 
    args = parser.parse_args()
 
-   gpus = tf.config.experimental.list_physical_devices('GPU')
+   gpus = tf.config.list_physical_devices('GPU')
    for gpu in gpus:
-      tf.config.experimental.set_memory_growth(gpu, True)
+      tf.config.set_memory_growth(gpu, True)
    if gpus:
-      tf.config.experimental.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
+      tf.config.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
+   
+   # log device placement
+   tf.debugging.set_log_device_placement(True)
 
+   print("Num GPUs Available: %d" % len(tf.config.list_physical_devices('GPU')))
    print("GPUs Available: %s" % tf.config.get_visible_devices('GPU'))
 
    # parse config file
@@ -275,6 +279,10 @@ if __name__ == '__main__':
       # profile data pipeline
       with tf.profiler.experimental.Trace('train_%02d' % i, step_num=i, _r=1):
          inputs,labels = next(trainds)
+
+         # print data device location
+         if hvd.rank() == 0:
+            print(f'batch_number = {i} input device = {inputs.device} labels device = {labels.device}')
       
       # print('batch_number = %s input shape = %s    labels shape = %s' %(i,inputs.shape,labels.shape))
       # print('batch_number = %s labels = %s' %(i,labels))
