@@ -1,0 +1,83 @@
+// Copyright 2024 Cerebras Systems.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Struct containing parameters for memcpy layout
+param memcpy_params: comptime_struct;
+
+// memcpy module provides infrastructure for copying data
+// and launching functions from the host
+const sys_mod = @import_module("<memcpy/memcpy>", memcpy_params);
+
+// Constants definining dimensions of our matrix
+const M: i16 = 4;
+const N: i16 = 6;
+
+// 48 kB of global memory contain A, x, b, y
+var A: [M*N]f32; // A is stored row major
+var x: [N]f32;
+var b: [M]f32;
+var y: [M]f32;
+
+// Ptr to y will be exported as symbol to host
+// Ptr is const, so host can read but not write to y
+const y_ptr: [*]f32 = &y;
+
+// Initialize matrix and vectors
+fn initialize() void {
+  // for loop with range syntax
+  for (@range(i16, M*N)) |idx| {
+    A[idx] = @as(f32, idx);
+  }
+
+  for (@range(i16, N)) |j| {
+    x[j] = 1.0;
+  }
+
+  // while loop with iterator syntax
+  var i: i16 = 0;
+  while (i < M) : (i += 1) {
+    b[i] = 2.0;
+    y[i] = 0.0;
+  }
+}
+
+// Compute gemv
+fn gemv() void {
+  for (@range(i16, M)) |i| {
+    var tmp: f32 = 0.0;
+    for (@range(i16, N)) |j| {
+      tmp += A[i*N + j] * x[j];
+    }
+    y[i] = tmp + b[i];
+  }
+}
+
+// Call initialize and gemv functions
+fn init_and_compute() void {
+  initialize();
+  gemv();
+
+  // After this function finishes, memcpy's cmd_stream must
+  // be unblocked on all PEs for further memcpy commands
+  // to execute
+  sys_mod.unblock_cmd_stream();
+}
+
+comptime {
+  // Export symbol pointing to y so it is host-readable
+  @export_symbol(y_ptr, "y");
+
+  // Export function so it is host-callable by RPC mechanism
+  @export_symbol(init_and_compute);
+}

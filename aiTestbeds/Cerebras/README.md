@@ -11,57 +11,6 @@ To connect to a CS-2 login, ssh to login nodes:
 ssh ALCFUserID@cerebras.ai.alcf.anl.gov
 ```
 
-## Create Virtual Environment 
-
-### PyTorch virtual environment
-
-```bash
-#Make your home directory navigable
-chmod a+xr ~/
-mkdir ~/R_1.9.1
-chmod a+x ~/R_1.9.1/
-cd ~/R_1.9.1
-# Note: "deactivate" does not actually work in scripts.
-deactivate
-rm -r venv_pt
-/software/cerebras/python3.8/bin/python3.8 -m venv venv_pt
-source venv_pt/bin/activate
-pip3 install /opt/cerebras/wheels/cerebras_pytorch-1.9.1+1cf4d0632b-cp38-cp38-linux_x86_64.whl --find-links=/opt/cerebras/wheels
-pip install numpy==1.23.4
-pip install datasets transformers
-```
-<!---
-### Tensorflow Virtual environment
-
-```bash
-chmod a+xr ~/
-mkdir ~/R_1.9.1
-chmod a+x ~/R_1.9.1/
-cd ~/R_1.9.1
-# Note: "deactivate" does not actually work in scripts.
-deactivate
-rm -r venv_tf
-/software/cerebras/python3.8/bin/python3.8 -m venv venv_tf
-source venv_tf/bin/activate
-#pip install tensorflow_datasets
-#pip install spacy
-pip3 install /opt/cerebras/wheels/cerebras_tensorflow-1.9.1+1cf4d0632b-cp38-cp38-linux_x86_64.whl --find-links=/opt/cerebras/wheels/
-pip install numpy==1.23.4
-```
---->
-## Clone Cerebras modelzoo
-
-We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/modelzoo) for this hands-on. 
-Clone the modezoo repository.
-```bash
-mkdir ~/R_1.9.1
-cd ~/R_1.9.1
-git clone https://github.com/Cerebras/modelzoo.git
-cd modelzoo
-git tag
-git checkout Release_1.9.1
-```
-
 ## Job Queuing and Submission
 
 The CS-2 cluster has its own Kubernetes-based system for job submission and queuing. Jobs are started automatically through the Python scripts. 
@@ -71,18 +20,14 @@ Use Cerebras cluster command line tool to get addional information about the job
 * Jobs that have not yet completed can be listed as
     `(venv_pt) $ csctl get jobs`
 * Jobs can be canceled as shown:
-    `(venv_tf) $ csctl cancel job wsjob-eyjapwgnycahq9tus4w7id`
+    `(venv_pt) $ csctl cancel job wsjob-eyjapwgnycahq9tus4w7id`
 
 See `csctl -h` for more options.
 
-## Run Examples
+## Hands-On Content  
 
-Refer to respective instrcutions below 
-* [FC-MNIST](./fc-mnist.md)
-* [BERT-Large](./bert-large.md)
+The Cerebras Hands-on section consists of examples using Cerebras ML software stack and Cerebras SDK. 
 
-# Useful Resources 
+* [Cerebras ML Software](./PyTorch/README.md)
+* [Cerebras SDK](./SDK/README.md)
 
-* [Cerebras Documntation](https://docs.cerebras.net/en/latest/wsc/index.html)
-* [Cerebras Modelzoo Repo](https://github.com/Cerebras/modelzoo/tree/main/modelzoo)
-* Datasets Path: `/software/cerebras/dataset`

@@ -7,7 +7,7 @@ We present an overview of novel AI accelerators namely, Cerebras, SambaNova, Gra
 * **Time:** October 30, 2024. 
   * 1.30 - 5.15 PM : ALCF AI Testbeds Deep Dive and Hands-On
 * **Location:** TCS 1416 
-* **Slack Channel:** #ai-testbeds : Use to post questions, exact error messages etc. 
+* **Slack Channel:** [#ai-testbeds](https://join.slack.com/share/enQtNzk0NTczODk1MzIzNy03ODEyOTEyZjUzOWNhODZkMGE0YWY2YTRlZTkyZDZhMGQ1ZDVlMWYyYzI1NGRkM2QwMjZmZmQ4ZTI0ZGUzMGEz) : Use to get help, post questions, error messages etc. 
 
 ## Agenda
 
@@ -16,8 +16,8 @@ We present an overview of novel AI accelerators namely, Cerebras, SambaNova, Gra
 | 1.30 - 2.30 | [Cerebras](./Cerebras/README.md)        |
 | 2.30 - 3.30 | [Graphcore](./Graphcore/README.md)      |
 | 3:45 - 4:00 | Break                                   |
-| 4.00 - 4.30 | [Sambanova](./Sambanova/README.md)      |
-| 4.30 - 5.00 | [Groq](./Groq/README.md)                |
+| 4.00 - 4.40 | [Sambanova](./Sambanova/README.md)      |
+| 4.40 - 5.15 | [Groq](./Groq/README.md)                |
 
 
 ## Useful Links 
