@@ -14,15 +14,14 @@ def generate(limit, delay):
     return randint(1, limit)
 
 
-parsl.load()
+with parsl.load():
+    # Generate 5 random numbers between 1 and 10
+    rand_nums = []
+    for i in range(5):
+        rand_nums.append(generate(10, i))
 
-# Generate 5 random numbers between 1 and 10
-rand_nums = []
-for i in range(5):
-    rand_nums.append(generate(10, i))
+    # Wait for all apps to finish and collect the results
+    outputs = [i.result() for i in rand_nums]
 
-# Wait for all apps to finish and collect the results
-outputs = [i.result() for i in rand_nums]
-
-# Print results
-print(outputs)
+    # Print results
+    print(outputs)

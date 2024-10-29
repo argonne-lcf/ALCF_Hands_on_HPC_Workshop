@@ -8,8 +8,6 @@ from parsl.executors import HighThroughputExecutor
 # Use the MPI launcher
 from parsl.launchers import MpiExecLauncher
 
-from parsl.addresses import address_by_interface
-
 # These options will run work in 1 node batch jobs run one at a time
 nodes_per_job = 1
 max_num_jobs = 1
@@ -20,28 +18,27 @@ execute_dir = os.getcwd()
 polaris_config = Config(
     executors=[
         HighThroughputExecutor(
-            # Ensures one worker per accelerator
+            # Ensures one worker per GPU
             available_accelerators=4,
-            address=address_by_interface('bond0'),
-            # Distributes threads to workers sequentially in reverse order
-            cpu_affinity="block-reverse",
+            max_workers_per_node=4,
+            # Distributes threads to workers/GPUs in a way optimized for Polaris 
+            cpu_affinity="list:24-31,56-63:16-23,48-55:8-15,40-47:0-7,32-39",
             # Increase if you have many more tasks than workers
             prefetch_capacity=0,
             # Needed to avoid interactions between MPI and os.fork
-            start_method="spawn",
             provider=PBSProProvider(
                 # Project name
-                account="fallwkshp23",
+                account="alcf_training",
                 # Submission queue
-                queue="fallws23single",
+                queue="HandsOnHPC",
                 # Commands run before workers launched
-                worker_init=f'''source /eagle/fallwkshp23/workflows/env/bin/activate;
-                            module load PrgEnv-nvhpc;
+                # Make sure to activate your environment where Parsl is installed
+                worker_init=f'''source /grand/alcf_training/workflows_2024/_env/bin/activate;
                             cd {execute_dir}''',
                 # Wall time for batch jobs
                 walltime="0:05:00",
                 # Change if data/modules located on other filesystem
-                scheduler_options="#PBS -l filesystems=home:eagle",
+                scheduler_options="#PBS -l filesystems=home:eagle:grand",
                 # Ensures 1 manger per node and allows it to divide work to all 64 threads
                 launcher=MpiExecLauncher(bind_cmd="--cpu-bind", overrides="--ppn 1"),
                 # options added to #PBS -l select aside from ncpus
@@ -57,6 +54,7 @@ polaris_config = Config(
             ),
         ),
     ],
-    # Retry failed tasks once
-    retries=1,
+    # How many times to retry failed tasks
+    # this is necessary if you have tasks that are interrupted by a batch job ending
+    retries=0,
 )
