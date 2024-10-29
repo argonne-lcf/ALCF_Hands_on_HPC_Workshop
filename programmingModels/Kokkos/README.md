@@ -1,8 +1,10 @@
 # Tutorial
+[KokkosTutorial_Short](https://github.com/kokkos/kokkos-tutorials/blob/main/Intro-Short/KokkosTutorial_Short.pdf)
+
 ```
 git clone git@github.com:kokkos/kokkos-tutorials.git
 cd kokkos-tutorials/Intro-Short
-KokkosTutorial_Short.pdf  # This tutorial
+# KokkosTutorial_Short.pdf
 ```
 
 ## Exercises
@@ -34,5 +36,5 @@ cmake --build "${MYKOKKOS_BUILD}"/ -- install
 ```
 cd "${MYKOKKOS_EXERCISES}"/01/Begin
 cmake -B build-nvhpc -DKokkkos_DIR="${MYKOKKOS_DIR}"
-cmake --build build-nvhpc
+cmake --build build-nvhpc/
 ```
