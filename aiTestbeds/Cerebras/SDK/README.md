@@ -25,15 +25,16 @@ Cerebras SDK depends on a singularity container and scripts that are part of Cer
 ### Setup on ALCF Cerebras System
 
 * Setup 
-    On ALCF Cerebras System, Cerebras SDK is available at `/software/cerebras/cs_sdk` for your conveneince. You simply add this location to your `$PATH` and you are ready go. 
+    On ALCF Cerebras System, Cerebras SDK is available at `/software/cerebras/cs_sdk` for your conveneince. Make a copy of it in your `$HOME` directory and add that location to your `$PATH` and you are ready go. 
 
     ```bash
-    export PATH=/software/cerebras/cs_sdk-1.2.0:$PATH
+    cp -r /software/cerebras/cs_sdk-1.2.0 ~
+    export PATH=~/cs_sdk-1.2.0:$PATH
     ```
 
 * Test Installation 
     ```bash
-    $ sdk_debug_shell smoke /software/cerebras/cs_sdk-1.2.0/csl-extras-202406260214-4-70afe120
+    $ sdk_debug_shell smoke ~/cs_sdk-1.2.0/csl-extras-202406260214-4-70afe120
     ```
 
 * Run Hands-on Session Example
