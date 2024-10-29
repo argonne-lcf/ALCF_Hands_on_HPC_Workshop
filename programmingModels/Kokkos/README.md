@@ -48,10 +48,10 @@ cmake --build build-cuda/ -- install
 ```
 cd "${MYKOKKOS_EXERCISES}"/01/Begin
 
-cmake -B build-openmp -DKokkkos_DIR="${MYKOKKOS}/build-openmp/install/lib64/cmake/Kokkos
+cmake -B build-openmp -DKokkkos_DIR="${MYKOKKOS}"/build-openmp/install/lib64/cmake/Kokkos
 cmake --build build-openmp/
 
-cmake -B build-cuda -DKokkkos_DIR="${MYKOKKOS}/build-cuda/install/lib64/cmake/Kokkos
+cmake -B build-cuda -DKokkkos_DIR="${MYKOKKOS}"/build-cuda/install/lib64/cmake/Kokkos
 cmake --build build-cuda/
 
 ```
