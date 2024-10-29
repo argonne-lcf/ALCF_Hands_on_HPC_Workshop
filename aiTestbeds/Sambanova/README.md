@@ -28,10 +28,13 @@ Sambanova software stack and associated environmental variables are setup at log
 
 Each of the samples or application examples provided by SambaNova has its own pre-built virtual environment which can be readily used. They are present in the `/opt/sambaflow/apps/` directory tree within each of the applications. 
 
-## Run Examples 
+## Hands-on Session Example 
+
+* [GPT](./gpt.md)
+
+## Next Steps 
 
 * [Lenet](./lenet.md)
-* [GPT](./gpt.md)
 
 ## Useful Directories 
 
