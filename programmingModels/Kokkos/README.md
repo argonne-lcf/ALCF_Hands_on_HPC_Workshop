@@ -31,7 +31,7 @@ export MYKOKKOS="${PWD}"
 ## Build OpenMP CPU Backend
 
 ```
-cmake -B build-openmp -D Kokkos_ENABLE_OPENMP=ON -D Kokkos_ARCH_AMPERE80=ON -D CMAKE_CXX_COMPILER=CC -DCMAKE_INSTALL_PREFIX=build-openmp/install
+cmake -B build-openmp -D Kokkos_ENABLE_OPENMP=ON -D Kokkos_ARCH_AMPERE80=ON -D CMAKE_CXX_COMPILER=CC -D CMAKE_INSTALL_PREFIX=build-openmp/install
 cmake --build build-openmp/ -- install
 
 ```
@@ -39,7 +39,7 @@ cmake --build build-openmp/ -- install
 ## Build CUDA GPU Backend
 
 ```
-cmake -B build-cuda -D Kokkos_ENABLE_CUDA=ON -D Kokkos_ARCH_AMPERE80=ON -D CMAKE_CXX_COMPILER=CC -DCMAKE_INSTALL_PREFIX=build-cuda/install
+cmake -B build-cuda -D Kokkos_ENABLE_CUDA=ON -D Kokkos_ARCH_AMPERE80=ON -D CMAKE_CXX_COMPILER=CC -D CMAKE_INSTALL_PREFIX=build-cuda/install
 cmake --build build-cuda/ -- install
 
 ```
