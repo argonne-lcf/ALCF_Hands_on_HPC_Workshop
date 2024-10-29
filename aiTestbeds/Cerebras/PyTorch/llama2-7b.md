@@ -5,7 +5,7 @@ Go to directory with llama2-7b example.
 cd ~/R_2.3.0/modelzoo/src/cerebras/modelzoo/models/nlp/llama
 ```
 
-Activate PyTroch virtual Environment 
+Activate PyTorch virtual Environment 
 ```bash
 source ~/R_2.3.0/venv_cerebras_pt/bin/activate
 ```
