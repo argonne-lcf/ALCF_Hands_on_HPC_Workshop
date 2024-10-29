@@ -2,12 +2,12 @@
 
 These instructions are to train a GPT-2 pytorch model on the POD16. 
 
-Go to direcotry with GPT2 example 
+##### Go to direcotry with GPT2 example 
 ```bash
 cd ~/graphcore/examples/nlp/gpt2/pytorch
 ```
 
-Create a new PopTorch Environment 
+##### Create a new PopTorch Environment 
 ```bash
 POPLAR_SDK_ROOT=/software/graphcore/poplar_sdk/3.3.0/
 export POPLAR_SDK_ROOT=$POPLAR_SDK_ROOT
@@ -18,17 +18,25 @@ pip install $POPLAR_SDK_ROOT/poptorch-3.3.0+113432_960e9c294b_ubuntu_20_04-cp38-
 export PYTHONPATH=$POPLAR_SDK_ROOT/python:$PYTHONPATH
 ```
 
-Install Requirements 
+##### Install Requirements 
 
 ```bash
 pip3 install -r requirements.txt
 ```
-Run GPT2 on 4 IPUs (single Instance)
+
+##### Run GPT2 on 4 IPUs (single Instance)
+
+* Compile and Run from scratch
 ```bash
-/opt/slurm/bin/srun --ipus=4 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py --model gpt2 --ipus-per-replica 4 --replication-factor 1 --gradient-accumulation 2048 --device-iterations 8 --batch-size 1 --layers-per-ipu 0 4 4 4 --matmul-proportion 0.15 0.15 0.15 0.15 --max-len 1024 --optimizer AdamW --learning-rate 0.00015 --lr-schedule cosine --lr-warmup 0.01 --remap-logit True --enable-sequence-serialized True --embedding-serialization-factor 4 --recompute-checkpoint-every-layer True --enable-half-partials True --repl
+/opt/slurm/bin/srun --ipus=4 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py --model gpt2 --ipus-per-replica 4 --replication-factor 1 --gradient-accumulation 2048 --device-iterations 8 --batch-size 1 --layers-per-ipu 0 4 4 4 --matmul-proportion 0.15 0.15 0.15 0.15 --max-len 1024 --optimizer AdamW --learning-rate 0.00015 --lr-schedule cosine --lr-warmup 0.01 --remap-logit True --enable-sequence-serialized True --embedding-serialization-factor 4 --recompute-checkpoint-every-layer True --enable-half-partials True --replicated-tensor-sharding True --dataset 'generated' --epochs 1
+```
+* Run from Precompiled Artifacts 
+```bash
+Note: Precompiled artifacts are present at the /software/graphcore/projects/models_compile location for the above models.
+copy them to your ~/tmp and set export POPTORCH_CACHE_DIR=~/tmp to skip the compile process.
 ```
 
-Run GPT2 on 16 IPUs (4 Instances)
+##### Run GPT2 on 16 IPUs (4 Instances)
 ```bash
 /opt/slurm/bin/srun --ipus=16 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py --model gpt2 --ipus-per-replica 4 --replication-factor 4 --gradient-accumulation 2048 --device-iterations 8 --batch-size 1 --layers-per-ipu 0 4 4 4 --matmul-proportion 0.15 0.15 0.15 0.15 --max-len 1024 --optimizer AdamW --learning-rate 0.00015 --lr-schedule cosine --lr-warmup 0.01 --remap-logit True --enable-sequence-serialized True --embedding-serialization-factor 4 --recompute-checkpoint-every-layer True --enable-half-partials True --replicated-tensor-sharding True --dataset 'generated' --epochs 1
 ```
@@ -64,4 +72,3 @@ Run GPT2 on 16 IPUs (4 Instances)
     step 3 of epoch 0, loss: 10.829034805297852, acc: 1.990795135498047e-05, lr: 0.0, throughput: 1059.6762623043378 samples/sec
   ```
 </details>
-
