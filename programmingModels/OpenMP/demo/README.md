@@ -12,7 +12,7 @@
  3. Mapping data
 
  ```
-  qsub -I -q HandsOnHPC -A alcf_training -l select=1:system=polaris,filesystems=home -l walltime=0:30:00
+  qsub -I -q HandsOnHPC -A alcf_training -l select=1:system=polaris,filesystems=home:grand:eagle -l walltime=0:30:00
  ```
 
  ## Set environment
@@ -21,16 +21,16 @@
 
  - LLVM environment:
  ```
+ module use /soft/modulefiles
  module load mpiwrappers/cray-mpich-llvm 
- module load cudatoolkit-standalone/11.8.0
+ module load cudatoolkit-standalone
  cp Makefile.llvm Makefile
  ```
 
 - PrgEnv-nvhpc:
  This should be in by default, but just in case:
  ```
- module load PrgEnv-nvhpc
- module swap nvhpc/21.9 nvhpc/23.3
+ module swap ... PrgEnv-nvhpc
  cp Makefile.nvidia Makefile
  ```
 
