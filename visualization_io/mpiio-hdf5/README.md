@@ -17,6 +17,14 @@ You'll need a few modules loaded:
 * cray-mpich
 * cray-parallel-netcdf
 
+The project name for the workshop is “fallwkshp23” and we have two queues
+* fallws23single for single-node jobs
+* fallws23scaling for multi-node (up to 128 nodes) jobs
+
+For example to submit job you could
+
+    qsub -I -q fallws23single -t 60 -n 1 -A fallwkshp23
+
 ## MPI-IO
 
 The I/O chapter of the MPI standard.  The most commonly available
