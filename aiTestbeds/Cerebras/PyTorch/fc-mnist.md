@@ -5,12 +5,12 @@ A simple multi-layer perceptron model composed of fully-connected layers for per
 
 Go to directory with fc_mnist example. 
 ```bash
-cd ~/R_1.9.1/modelzoo/modelzoo/fc_mnist/pytorch
+cd ~/R_2.3.0/modelzoo/modelzoo/fc_mnist/pytorch
 ```
 
 Activate PyTroch virtual Environment 
 ```bash
-source ~/R_1.9.1/venv_pt/bin/activate
+source ~/R_2.3.0/venv_pt/bin/activate
 ```
 
 Edit configs/params.yaml, making the following changes:
@@ -31,7 +31,7 @@ Following commands Compile and Execute models.
 export MODEL_DIR=model_dir
 # deletion of the model_dir is only needed if sample has been previously run
 if [ -d "$MODEL_DIR" ]; then rm -Rf $MODEL_DIR; fi
-python run.py CSX --job_labels name=pt_smoketest --params configs/params.yaml --num_csx=1 --mode train --model_dir $MODEL_DIR --mount_dirs /home/ /software --python_paths /home/$(whoami)/R_1.9.1/modelzoo --compile_dir /$(whoami) |& tee mytest.log
+python run.py CSX --job_labels name=pt_smoketest --params configs/params.yaml --num_csx=1 --mode train --model_dir $MODEL_DIR --mount_dirs /home/ /software --python_paths /home/$(whoami)/R_2.3.0/modelzoo --compile_dir /$(whoami) |& tee mytest.log
 ```
 <details>
   <summary>Sample Output</summary>
