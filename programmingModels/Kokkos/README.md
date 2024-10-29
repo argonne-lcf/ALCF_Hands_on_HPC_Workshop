@@ -3,14 +3,10 @@
 
 ```
 git clone git@github.com:kokkos/kokkos-tutorials.git
-cd kokkos-tutorials/Intro-Short
-# KokkosTutorial_Short.pdf
-```
-
-## Exercises
-```
-cd ../Exercises
+cd kokkos-tutorials/Exercises
 export MYKOKKOS_EXERCISES="${PWD}"
+cd ../Intro-Short
+# KokkosTutorial_Short.pdf
 ```
 
 # Building
