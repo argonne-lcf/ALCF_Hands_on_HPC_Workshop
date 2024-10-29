@@ -9,9 +9,9 @@ TMP_EXE=tmp_rpds.sh
 cat > ${TMP_EXE} << EOF
 #!/bin/bash
 if [ \$PMI_RANK == 0 ]; then
-    ./activate_rapids_env_polaris.sh ./start_daskmpi_rank.sh SCHEDULER
+    ~/activate_rapids_env_polaris.sh ~/start_daskmpi_rank.sh SCHEDULER
 else
-    ./activate_rapids_env_polaris.sh ./start_daskmpi_rank.sh
+    ~/activate_rapids_env_polaris.sh ~/start_daskmpi_rank.sh
 fi
 EOF
 
