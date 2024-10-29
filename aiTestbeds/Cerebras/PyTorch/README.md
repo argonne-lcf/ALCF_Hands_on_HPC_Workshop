@@ -33,10 +33,10 @@ We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/m
     git checkout Release_2.3.0
     ```
 
-* Activate PyTroch virtual Environment 
+* Activate PyTorch virtual Environment 
     ```bash
-    source ~/R_2.2.1/venv_cerebras_pt/bin/activate
-    pip install -r ~/R_2.2.1/modelzoo/requirements.txt
+    source ~/R_2.3.0/venv_cerebras_pt/bin/activate
+    pip install -r ~/R_2.3.0/modelzoo/requirements.txt
     ```
 
 ## Hands-on Session Example
