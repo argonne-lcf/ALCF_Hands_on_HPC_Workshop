@@ -2,7 +2,7 @@
 ```
 git clone git@github.com:kokkos/kokkos-tutorials.git
 cd kokkos-tutorials/Intro-Short
-KokkosTutorial_Short.pdf -- This tutorial
+KokkosTutorial_Short.pdf  # This tutorial
 ```
 
 ## Exercises
@@ -33,6 +33,6 @@ cmake --build "${MYKOKKOS_BUILD}"/ -- install
 ## Building Exercise #1 on Polaris (other exercises are similar)
 ```
 cd "${MYKOKKOS_EXERCISES}"/01/Begin
-cmake -B build-nvhpc -DKokkkos_DIR="${KOKKOS_DIR}"
+cmake -B build-nvhpc -DKokkkos_DIR="${MYKOKKOS_DIR}"
 cmake --build build-nvhpc
 ```
