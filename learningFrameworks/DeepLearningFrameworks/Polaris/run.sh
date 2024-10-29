@@ -3,7 +3,10 @@
 #PBS -A alcf_training
 #PBS -q HandsOnHPC
 #PBS -l select=2
-#PBS -l filesystems=home,eagle
+#PBS -l filesystems=home:eagle
 
-module load frameworks
+module use /soft/modulefiles 
+module load conda
+conda activate
+
 python3 run.py

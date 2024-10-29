@@ -3,7 +3,7 @@
 #PBS -A alcf_training
 #PBS -q HandsOnHPC
 #PBS -l select=2
-#PBS -l filesystems=home,eagle
+#PBS -l filesystems=home:eagle
 
 export MASTER_ADDR=$(hostname)
 export MASTER_PORT=29401
