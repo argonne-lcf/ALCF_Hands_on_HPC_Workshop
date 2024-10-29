@@ -7,8 +7,8 @@ site = Site.objects.get("polaris_tutorial")
 BatchJob.objects.create(
     num_nodes=1,
     wall_time_min=5,
-    queue="fallws23single",
-    project="fallwkshp23",
+    queue="HandsOnHPC",
+    project="alcf_training",
     site_id=site.id,
     filter_tags={"workflow": "hello_deps"},
     job_mode="mpi"
