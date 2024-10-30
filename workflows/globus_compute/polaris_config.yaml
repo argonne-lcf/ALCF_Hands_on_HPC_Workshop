@@ -3,16 +3,17 @@ engine:
     type: GlobusComputeEngine
     
     available_accelerators: 4 # Assign one worker per GPU
-    cpu_affinity: block-reverse  # Assigns cpus in reverse sequential order                                                   
-    prefetch_capacity: 0  # Increase if you have many more tasks than workers                                                    
+    max_workers_per_node: 4
+    
+    cpu_affinity: "list:24-31,56-63:16-23,48-55:8-15,40-47:0-7,32-39"
+    
+    prefetch_capacity: 0  # Increase if you have many more tasks than workers                                              
+    max_retries_on_system_failure: 2
 
-    address:
-        type: address_by_interface
-        ifname: bond0
-
-    strategy:
-        type: SimpleStrategy
+    strategy: simple
+    job_status_kwargs:
         max_idletime: 300
+        strategy_period: 60
 
     provider:
         type: PBSProProvider
@@ -23,16 +24,16 @@ engine:
             bind_cmd: --cpu-bind
             overrides: --ppn 1
 
-        account: fallwkshp23
-        queue: fallws23single
+        account: alcf_training
+        queue: HandsOnHPC
         cpus_per_node: 64
         select_options: ngpus=4
 
         # e.g., "#PBS -l filesystems=home:grand:eagle\n#PBS -k doe"
-        scheduler_options: "#PBS -l filesystems=home:eagle"
+        scheduler_options: "#PBS -l filesystems=home:eagle:grand"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
+        worker_init: "source /grand/alcf_training/workflows_2024/_env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
 
         walltime: 00:30:00
         nodes_per_block: 1

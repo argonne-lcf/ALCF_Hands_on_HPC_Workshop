@@ -22,7 +22,7 @@ On Polaris, you will need to create a python virtual environment or a conda envi
 
 For the workshop, you can use the workshop python virtual environment:
 ```bash
-source /eagle/fallwkshp23/workflows/env/bin/activate
+source /grand/alcf_training/workflows_2024/_env/bin/activate
 ```
 
 To create your own environment:
@@ -60,7 +60,7 @@ git clone git@github.com:argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
 cd ALCF_Hands_on_HPC_Workshop/workflows/globus_compute
 
 # If you haven't already, activate the environment
-source /eagle/fallwkshp23/workflows/env/bin/activate
+source /grand/alcf_training/workflows_2024/_env/bin/activate
 ```
 
 Use the sample config [polaris_config.yaml](polaris_config.yaml) provided to configure and start your endpoint.  The sample config has similar features to the Parsl config and looks like this:
@@ -70,16 +70,17 @@ engine:
     type: GlobusComputeEngine
     
     available_accelerators: 4 # Assign one worker per GPU
-    cpu_affinity: block-reverse  # Assigns cpus in reverse sequential order                                                   
-    prefetch_capacity: 0  # Increase if you have many more tasks than workers                                                    
+    max_workers_per_node: 4
+    
+    cpu_affinity: "list:24-31,56-63:16-23,48-55:8-15,40-47:0-7,32-39"
+    
+    prefetch_capacity: 0  # Increase if you have many more tasks than workers                                              
+    max_retries_on_system_failure: 2
 
-    address:
-        type: address_by_interface
-        ifname: bond0
-
-    strategy:
-        type: SimpleStrategy
+    strategy: simple
+    job_status_kwargs:
         max_idletime: 300
+        strategy_period: 60
 
     provider:
         type: PBSProProvider
@@ -90,18 +91,18 @@ engine:
             bind_cmd: --cpu-bind
             overrides: --ppn 1
 
-        account: fallwkshp23
-        queue: fallws23single
+        account: alcf_training
+        queue: HandsOnHPC
         cpus_per_node: 64
         select_options: ngpus=4
 
         # e.g., "#PBS -l filesystems=home:grand:eagle\n#PBS -k doe"
-        scheduler_options: "#PBS -l filesystems=home:eagle"
+        scheduler_options: "#PBS -l filesystems=home:eagle:grand"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "source /eagle/fallwkshp23/workflows/env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
+        worker_init: "source /grand/alcf_training/workflows_2024/_env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
 
-        walltime: 00:05:00
+        walltime: 00:30:00
         nodes_per_block: 1
         init_blocks: 0
         min_blocks: 0
@@ -180,7 +181,7 @@ def hello_affinity(run_directory):
     os.chdir(os.path.expandvars(run_directory))
 
     # This is the command that calls the compiled executable
-    command = f"/eagle/fallwkshp23/workflows/affinity_gpu/hello_affinity"
+    command = f"/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu/hello_affinity"
 
     # This runs the application command
     res = subprocess.run(command.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)

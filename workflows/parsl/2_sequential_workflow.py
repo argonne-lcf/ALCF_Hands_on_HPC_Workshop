@@ -19,16 +19,15 @@ def save(variable, outputs=[]):
     return 'echo %s &> %s' % (variable, outputs[0])
 
 
-parsl.load()
+with parsl.load():
+    # Generate a random number between 1 and 10
+    random = generate(10)
 
-# Generate a random number between 1 and 10
-random = generate(10)
+    # This call will make the script wait before continuing
+    print(f"Random number: {random.result()}")
 
-# This call will make the script wait before continuing
-print(f"Random number: {random.result()}")
-
-# Now, random has returned save the random number to a file
-saved = save(random, outputs=[File("sequential-output.txt")])
+    # Now, random has returned save the random number to a file
+    saved = save(random, outputs=[File("sequential-output.txt")])
 
 # Print the output file
 with open(saved.outputs[0].result(), 'r') as f:

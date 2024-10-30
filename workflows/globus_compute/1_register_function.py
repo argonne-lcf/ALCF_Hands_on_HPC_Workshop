@@ -13,7 +13,7 @@ def hello_affinity(run_directory):
     os.chdir(os.path.expandvars(run_directory))
 
     # This is the command that calls the compiled executable
-    command = "/eagle/fallwkshp23/workflows/affinity_gpu/hello_affinity"
+    command = "/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu/hello_affinity"
 
     # This runs the application command
     res = subprocess.run(command.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)

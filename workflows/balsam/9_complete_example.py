@@ -14,7 +14,7 @@ class HelloAffinity(ApplicationDefinition):
     def shell_preamble(self):
         return '''
             module load PrgEnv-nvhpc
-            export PATH=$PATH:/eagle/fallwkshp23/workflows/affinity_gpu/
+            export PATH=$PATH:/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu/
         '''
 
     command_template = "set_affinity_gpu_polaris.sh hello_affinity"
@@ -44,5 +44,5 @@ BatchJob.objects.create(
     wall_time_min=10,
     filter_tags={"test": "affinity"},
     job_mode="mpi",
-    queue="fallws23scaling",
-    project="fallwkshp23",)
+    queue="debug-scaling",
+    project="alcf_training",)

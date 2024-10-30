@@ -26,8 +26,7 @@ def fibonacci(n):
         return add(fibonacci(n - 1), fibonacci(n - 2))
 
 
-parsl.load()
+with parsl.load():
+    fib_series = fibonacci(10)
 
-fib_series = fibonacci(10)
-
-print(fib_series.result())
+    print(fib_series.result())
