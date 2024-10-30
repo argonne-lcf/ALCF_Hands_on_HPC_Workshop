@@ -29,10 +29,10 @@ Pattern of compute operations:
 
 Data and Input shapes:
     - All Gather Buffer (A) shape: (S, 1, H) == (d1, 1, d2)
-    - Input per rank: (S/NGPUS, 1, H) == (d1//12, 1, d2)
-    - Weight matrix 1, mm1: (H//12, H) == (d2//12, d1)
+    - Input per rank: (S/NGPUS, 1, H) == (d1//4, 1, d2)
+    - Weight matrix 1, mm1: (H//12, H) == (d2//4, d1)
     - Weight matrix 2, mm2: (H, H//12) == (d1, d2//12)
-    - Result after application of mm1, A*mm1^T == (S, 1, H//12) == (d1, 1, d2//12)
+    - Result after application of mm1, A*mm1^T == (S, 1, H//4) == (d1, 1, d2//4)
     - Result after application of mm2, A*mm1^T*mm2^T == (S, 1, H) == (d1, 1, d2)
 """
 #print("being import", flush=True)
