@@ -1,7 +1,7 @@
 # Profiling a simple PyTorch example
-In the hands on session we will try to profile a simple PyTorch example. This mini-application (mini-benchmark) mimics the sequence parallelism strategy that we use for our auroraGPT training. Very similar strategy is adopted by Megatron-DeepSpeed as well. 
+In the hands on session we will try to profile a simple PyTorch example. This mini-application (mini-benchmark) mimics the sequence parallelism strategy that we use for our auroraGPT training. A similar strategy is adopted by Megatron-DeepSpeed as well. 
 
-A request to an user would be to try and run the run the scripts both from an interactive session and a batch submission *before* jumping on to using the profilers! 
+A request to an user would be to try and run the run the scripts either from an interactive session or a batch submission *before* jumping on to using the profilers! 
 
 ## Content of the repository 
 In this repository we have a few scripts. We will quickly give a brief introduction to them.
