@@ -44,5 +44,5 @@ BatchJob.objects.create(
     wall_time_min=10,
     filter_tags={"test": "affinity"},
     job_mode="mpi",
-    queue="HandsOnHPCScale",
+    queue="debug-scaling",
     project="alcf_training",)

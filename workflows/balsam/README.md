@@ -39,7 +39,7 @@ cd ALCF_Hands_on_HPC_Workshop/workflows/balsam
 ### Workshop setup
 During this workshop, you can use a python virtual environment that has all the necessary modules installed.
 ```shell
-source /eagle/fallwkshp23/workflows/env/bin/activate
+source /grand/alcf_training/workflows_2024/_env/bin/activate
 ```
 
 ### Creating your own setup
@@ -65,7 +65,7 @@ balsam login
 ```
 
 Create a Balsam site
-Note: The "-n" option specifies the site name; the last argument specifies the directory name    
+Note: The "-n" option specifies the site name; the last argument specifies the directory name.  When prompted for your primary allocation, put in the workshop project `alcf_training`.    
 
 ```shell       
 balsam site init -n polaris_tutorial polaris_tutorial
@@ -73,6 +73,8 @@ cd polaris_tutorial
 balsam site start
 cd ..
 ```
+
+Note: By default, Balsam will setup sites on Polais to use the `debug`, `prod` and `preemptable` queues.  The python virtual environment setup for this workshop has also been configured to set up sites to use `HandsOnHPC` and `HandsOnHPCScale`.  If you want to configure your site to use other queues, edit the `settings.yml` file in the site directory and restart the site.
 
 ## Create a Hello application in Balsam (hello.py)
 We define an application by wrapping the command line in a small amount of Python code. Note that the command line is directly represented, and the say_hello_to parameter will be supplied when a job uses this application. Note that we print the available GPUs; this is just to highlight GPU scheduling.
@@ -95,14 +97,23 @@ python hello.py
 ## Create a Hello job using the Balsam CLI interface (1_create_job.sh)
 We create a job using the command line interface, providing the say_hello_to parameter, and then list Balsam jobs with the related tag.
 ```bash
-#!/bin/bash -x 
+#!/bin/bash
+
+# Create the Hello app
+python hello.py
 
 # List apps
 balsam app ls --site polaris_tutorial
 
 # Create a Hello job
 # Note: tag it with the key-value pair workflow=hello for easy querying later
-balsam job create --site polaris_tutorial --app Hello --workdir=demo/hello --param say_hello_to=world --tag workflow=hello --yes
+balsam job create --site polaris_tutorial \
+                  --app Hello \
+                  --gpus-per-rank=1 \
+                  --workdir=demo/hello \
+                  --param say_hello_to=world \
+                  --tag workflow=hello \
+                  --yes
 
 # The job resides in the Balsam server now; list the job
 balsam job ls --tag workflow=hello
@@ -110,6 +121,8 @@ balsam job ls --tag workflow=hello
 
 ## Submit a BatchJob to run the Hello job (2_submit_batchjob.sh)
 We submit a batch job via the command line, and then list BatchJobs and the status of the job. Following a short delay, Balsam will submit the job to PBS, and the job will appear in the usual `qstat` output. The job status command can be run periodically to monitor the job.
+
+This example runs the application in `mpi` mode.  In `mpi` mode the application `command_template` is executed with `mpiexec`.
 ```bash
 #!/bin/bash
 
@@ -117,13 +130,13 @@ We submit a batch job via the command line, and then list BatchJobs and the stat
 # Note: the command-line parameters are similar to scheduler command lines
 # Note: this job will run only jobs with a matching tag
 balsam queue submit \
-    -n 1 -t 10 -q fallws23single -A fallwkshp23 \
+    -n 1 -t 5 -q HandsOnHPC -A alcf_training \
     --site polaris_tutorial \
     --tag workflow=hello \
     --job-mode mpi
   
 # List the Balsam BatchJob
-# Note: Balsam will submit this job to Cobalt, so it will appear in qstat output after a short delay
+# Note: Balsam will submit this job to PBS, so it will appear in qstat output after a short delay
 balsam queue ls 
 
 # List status of the Hello job
@@ -182,9 +195,8 @@ for n in range(1,8):
 ## Create a Batch Job with the python API (5_submit_batchjob.py)
 This script uses the python API to create a Batch Job on the Polaris scheduler.  This Batch Job will only run jobs with the tag `workflow=hello_deps`.
 
-
 ```python
-from balsam.api import BatchJob,Site
+from balsam.api import BatchJob, Site
 
 # Get the id for your site
 site = Site.objects.get("polaris_tutorial")
@@ -192,11 +204,11 @@ site = Site.objects.get("polaris_tutorial")
 # Create a BatchJob to run jobs with the workflow=hello_deps tag
 BatchJob.objects.create(
     num_nodes=1,
-    wall_time_min=10,
-    queue="fallws23single",
-    project="fallwkshp23",
+    wall_time_min=5,
+    queue="HandsOnHPC",
+    project="alcf_training",
     site_id=site.id,
-    filter_tags={"workflow":"hello_deps"},
+    filter_tags={"workflow": "hello_deps"},
     job_mode="mpi"
 )
 ```
@@ -326,17 +338,17 @@ site_name = "polaris_tutorial"
 site = Site.objects.get(site_name)
 
 
-# Define the App that wraps around a compiled executable
-# It also loads a module before the app execution
+# Define an App that wraps around the compilied executable hello_affinity
+# It also loads a module before the app execution and adds the executable path to PATH
 # In this case where the application is using all the GPUs of a node,
-# we will wrap the executable with a gpu affinity script
+# we will wrap the executable with a gpu affinity script that places ranks on gpus
 class HelloAffinity(ApplicationDefinition):
     site = "polaris_tutorial"
 
     def shell_preamble(self):
         return '''
             module load PrgEnv-nvhpc
-            export PATH=$PATH:/eagle/fallwkshp23/workflows/affinity_gpu/
+            export PATH=$PATH:/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu/
         '''
 
     command_template = "set_affinity_gpu_polaris.sh hello_affinity"
@@ -366,10 +378,9 @@ BatchJob.objects.create(
     wall_time_min=10,
     filter_tags={"test": "affinity"},
     job_mode="mpi",
-    queue="fallws23scaling",
-    project="fallwkshp23",)
+    queue="HandsOnHPCScale",
+    project="alcf_training",)
 ```
 
 ## Next Steps 
 The examples above demonstrate the basic functionality of Balsam: defining applications, describing jobs, submitting batch jobs to run those jobs, and monitoring throughput, on one site or across multiple sites. With these capabilities, we can define more complex workflows that dynamically adapt as jobs run. For a more detailed application, see the [hyperparameter optimization example](https://github.com/argonne-lcf/balsam_tutorial/tree/main/hyperopt) in the ALCF github repository or the [LAMMPS example](https://github.com/CrossFacilityWorkflows/DOE-HPC-workflow-training/tree/main/Balsam/ALCF) from the recent DOE Joint-lab workflows workshop.
-
