@@ -32,7 +32,7 @@ In this repository we have a few scripts. We will quickly give a brief introduct
 - `nsys_wrapper.sh` \
     This is the wrapper that we will be using to run the profiler on more than 1 node. In principle, this should be usable for deploying the profiler in more than 1 rank. An user may have to perform a `chmod +rwx` on the scripts. This script has a few directory paths, which all needs to be changed accordingly. This script is set to track the Rank 0 on each node. For example, if we deploy the application in 2 nodes, 4 ranks (GPUs) each, then the wrapper, as is, will trace, Rank 0 and Rank 4.
 - `ncu_wrapper.sh` \
-    Similar to `nsys_wrapper.sh`. But for profiling a GPU kernel.
+    Similar to `nsys_wrapper.sh`, but for profiling a GPU kernel.
 - `qsub_profile_polaris_sequence_parallelism.sh` \
     This script gives a demonstration of launching the `nsys` profiler without the wrapper. It traces all the ranks that the application is deployed to.
 - `qsub_nsys_wrapper_polaris_sequence_parallelism.sh` \
