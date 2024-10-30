@@ -31,7 +31,7 @@ Refer to respective instrcutions below
 ## Next Steps 
 
 Try additonal examples in this repo. 
-* [MNIST](./mnist.md) -->
+* [MNIST](./mnist.md)
 * [Resnet50 using replication factor](./resnet50.md)
 * Go through tutorials and examples from [Graphcore Examples Repository](https://github.com/graphcore/examples)
 

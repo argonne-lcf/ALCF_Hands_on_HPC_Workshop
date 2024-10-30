@@ -1,25 +1,34 @@
 # LLAMA2-7B on Cerebras
 
-Go to directory with llama2-7b example. 
+##### Go to directory with llama2-7b example. 
 ```bash
 cd ~/R_2.3.0/modelzoo/src/cerebras/modelzoo/models/nlp/llama
 ```
 
-Activate PyTorch virtual Environment 
+#####  Activate PyTorch virtual Environment 
 ```bash
 source ~/R_2.3.0/venv_cerebras_pt/bin/activate
 ```
 
-Replace config file with correct configurations file. 
+#####  Replace config file with correct configurations file. 
 ```bash
 cp /software/cerebras/dataset/params_llama_7b.yaml configs/params_llama_7b.yaml
 ```
 
-Run Training Job
+#####  Run Training Job
 ```bash
 export MODEL_DIR=model_dir_llamma
 if [ -d "$MODEL_DIR" ]; then rm -Rf $MODEL_DIR; fi
-python run.py CSX --job_labels name=llama_7b --params configs/params_llama_7b.yaml --num_csx=1 --mode train --model_dir $MODEL_DIR --mount_dirs /projects /home/ /software --python_paths /home/$(whoami)/R_2.3.0/modelzoo/src  --compile_dir $(whoami) |& tee mytest.log
+
+python run.py CSX \
+  --job_labels name=llama_7b \
+  --params configs/params_llama_7b.yaml \
+  --num_csx=1 \
+  --mode train \
+  --model_dir $MODEL_DIR \
+  --mount_dirs /projects /home/ /software \
+  --python_paths /home/$(whoami)/R_2.3.0/modelzoo/src \
+  --compile_dir $(whoami) |& tee mytest.log
 ```
 <details>
   <summary>Sample Output</summary>

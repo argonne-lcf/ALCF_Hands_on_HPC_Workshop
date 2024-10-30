@@ -28,17 +28,62 @@ pip3 install -r requirements.txt
 
 * Compile and Run from scratch
 ```bash
-/opt/slurm/bin/srun --ipus=4 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py --model gpt2 --ipus-per-replica 4 --replication-factor 1 --gradient-accumulation 2048 --device-iterations 8 --batch-size 1 --layers-per-ipu 0 4 4 4 --matmul-proportion 0.15 0.15 0.15 0.15 --max-len 1024 --optimizer AdamW --learning-rate 0.00015 --lr-schedule cosine --lr-warmup 0.01 --remap-logit True --enable-sequence-serialized True --embedding-serialization-factor 4 --recompute-checkpoint-every-layer True --enable-half-partials True --replicated-tensor-sharding True --dataset 'generated' --epochs 1
+/opt/slurm/bin/srun --ipus=4 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py \
+  --model gpt2 \
+  --ipus-per-replica 4 \
+  --replication-factor 1 \
+  --gradient-accumulation 2048 \
+  --device-iterations 8 \
+  --batch-size 1 \
+  --layers-per-ipu 0 4 4 4 \
+  --matmul-proportion 0.15 0.15 0.15 0.15 \
+  --max-len 1024 \
+  --optimizer AdamW \
+  --learning-rate 0.00015 \
+  --lr-schedule cosine \
+  --lr-warmup 0.01 \
+  --remap-logit True \
+  --enable-sequence-serialized True \
+  --embedding-serialization-factor 4 \
+  --recompute-checkpoint-every-layer True \
+  --enable-half-partials True \
+  --replicated-tensor-sharding True \
+  --dataset 'generated' \
+  --epochs 1
 ```
+
 * Run from Precompiled Artifacts 
-```bash
-Note: Precompiled artifacts are present at the /software/graphcore/projects/models_compile location for the above models.
-copy them to your ~/tmp and set export POPTORCH_CACHE_DIR=~/tmp to skip the compile process.
-```
+
+Precompiled artifacts are present at the `/software/graphcore/projects/models_compile` location for the above models.
+copy them to your `~/tmp` and set `export POPTORCH_CACHE_DIR=~/tmp` to skip the compile process.
+
 
 ##### Run GPT2 on 16 IPUs (4 Instances)
 ```bash
-/opt/slurm/bin/srun --ipus=16 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py --model gpt2 --ipus-per-replica 4 --replication-factor 4 --gradient-accumulation 2048 --device-iterations 8 --batch-size 1 --layers-per-ipu 0 4 4 4 --matmul-proportion 0.15 0.15 0.15 0.15 --max-len 1024 --optimizer AdamW --learning-rate 0.00015 --lr-schedule cosine --lr-warmup 0.01 --remap-logit True --enable-sequence-serialized True --embedding-serialization-factor 4 --recompute-checkpoint-every-layer True --enable-half-partials True --replicated-tensor-sharding True --dataset 'generated' --epochs 1
+```bash
+/opt/slurm/bin/srun --ipus=16 python /home/$USER/graphcore/examples/nlp/gpt2/pytorch/train_gpt2.py \
+  --model gpt2 \
+  --ipus-per-replica 4 \
+  --replication-factor 4 \
+  --gradient-accumulation 2048 \
+  --device-iterations 8 \
+  --batch-size 1 \
+  --layers-per-ipu 0 4 4 4 \
+  --matmul-proportion 0.15 0.15 0.15 0.15 \
+  --max-len 1024 \
+  --optimizer AdamW \
+  --learning-rate 0.00015 \
+  --lr-schedule cosine \
+  --lr-warmup 0.01 \
+  --remap-logit True \
+  --enable-sequence-serialized True \
+  --embedding-serialization-factor 4 \
+  --recompute-checkpoint-every-layer True \
+  --enable-half-partials True \
+  --replicated-tensor-sharding True \
+  --dataset 'generated' \
+  --epochs 1
+```
 ```
 <details>
   <summary>Sample Output</summary>
