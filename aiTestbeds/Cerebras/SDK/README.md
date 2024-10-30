@@ -12,7 +12,7 @@ CSL provides libraries for several common primitive operations, such as broadcas
 
 There are two ways to use Cerebras SDK
 1. Simulator 
-2. Appliacne Mode   
+2. Appliance Mode   
    
 ## SDK with Simulator
 

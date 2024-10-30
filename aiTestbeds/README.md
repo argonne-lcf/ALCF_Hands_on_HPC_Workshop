@@ -27,3 +27,10 @@ We present an overview of novel AI accelerators namely, Cerebras, SambaNova, Gra
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
 + [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
+
+
+##### Acknowledgements
+
+Contributors: [Siddhisanket (Sid) Raskar](https://sraskar.github.io/), [Varuni Sastry](https://www.alcf.anl.gov/about/people/varuni-katti-sastry), [Bill Arnold](https://www.alcf.anl.gov/about/people/bill-arnold), [Krishna Teja Chitty-Venkata](https://krishnateja95.github.io/) and [Murali Emani](https://memani1.github.io/). 
+
+> This research used resources of the Argonne Leadership Computing Facility, which is a DOE Office of Science User Facility supported under Contract DE-AC02-06CH11357.
