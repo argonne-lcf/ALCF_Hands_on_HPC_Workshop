@@ -18,7 +18,8 @@ Day 2
    * [Python, Jupyter Notebooks & Containers](python_notebook_containers)
    * [Learning Frameworks & Distributed Deep Learning](learningFrameworks)
    * [LLM on Polaris](llm)
-   * [AI Testbeds](aiTestbeds)
+   * [LLM Inference Optimization](./InferenceOptimizations/)
+   * [AI Testbeds at ALCF](aiTestbeds)
    * [Integrating Al and Simulations](couplingSimulationML)
    * [Tools (NVIDIA, Intel, TAU & HPC-Toolkit)](tools)
 
