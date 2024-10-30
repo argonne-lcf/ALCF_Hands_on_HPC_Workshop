@@ -3,5 +3,5 @@
 set -e
 
 python compile.py 
-python run_appliance.py
+python run.py
 
