@@ -109,7 +109,7 @@ Other flags that can be used
 
 Refer to respective instrcutions below 
 
-* [GPT2](./GPT2.md)
+* [GPT2](./gpt2.md)
 
 
 ## Next Steps 

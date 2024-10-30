@@ -76,8 +76,8 @@ To visualize the profiles, download generated profiles to a local machine and op
 
 The Graphcore Hands-on section consists of examples using  PyTorch and Poplar Software Stack. 
 
-* [PyTorch](./PyTorch/README.md)
-* [Poplar](./Poplar/README.md)
+* [PyTorch](./PyTorch/)
+* [Poplar](./Poplar/)
 
 ## Useful Resources 
 

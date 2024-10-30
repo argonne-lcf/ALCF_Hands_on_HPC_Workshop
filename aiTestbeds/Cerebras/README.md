@@ -28,6 +28,6 @@ See `csctl -h` for more options.
 
 The Cerebras Hands-on section consists of examples using Cerebras ML software stack and Cerebras SDK. 
 
-* [Cerebras ML Software](./PyTorch/README.md)
-* [Cerebras SDK](./SDK/README.md)
+* [Cerebras PyTorch](./PyTorch/)
+* [Cerebras SDK](./SDK/)
 

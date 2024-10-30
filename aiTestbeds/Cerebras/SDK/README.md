@@ -39,7 +39,7 @@ Cerebras SDK depends on a singularity container and scripts that are part of Cer
 
 * Run Hands-on Session Example
 
-  * [GEMV-Simulator](./GEMV-Simulator/README.md)
+  * [GEMV-Simulator](./GEMV-Simulator/)
 
 ## SDK with Appliance Mode 
 
@@ -62,9 +62,9 @@ Cerebras SDK depends on a singularity container and scripts that are part of Cer
   ```
 
 * Run Examples
-  * [GEMV-Appliance](./GEMV-Appliance/README.md)
+  * [GEMV-Appliance](./GEMV-Appliance/)
 
-## Setup on Other systems 
+## Setup on Simulator Other systems 
 
 Cerebras Software Development Kit (SDK) can be used on any other system with Singularity. Please follow instructions on [Cerebras Documentation Page](https://sdk.cerebras.net/installation-guide) for setup instructions. 
 
@@ -75,7 +75,7 @@ Cerebras Software Development Kit (SDK) can be used on any other system with Sin
 # Profiling 
 
 Use SDK Debug GUI to get insights into code execution. 
-Refer to SDK GUI documentation for details. 
+Refer to [SDK GUI documentation](https://sdk.cerebras.net/debug/sdk-gui) for details. 
 
 ```bash
 $ cd csl-examples/examples/gemm-collectives_2d
