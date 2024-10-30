@@ -316,7 +316,7 @@ with parsl.load(polaris_config):
 
 ## Example: Run hello_affinity as an MPI application (5_mpi_app_example.py)
 
-In the previous example, `mpiexec` was used as a launcher, rather than an executor.  In order to run applications with MPI applications, `mpi` has to be used a different way by Parsl.  To run MPI applications, use the `SimpleLauncher` and the `MPIExecutor`.  Note that a the configuration has to set `max_workers_per_block` to align with the resource needs of the application.  To run applications with different node numbers a different `Config` object is needed.
+In the previous example, `mpiexec` was used as a launcher, rather than an executor.  In order to run applications that have MPI communication, `mpiexec` has to be used a different way by Parsl.  To run MPI applications, use the `SimpleLauncher` and the `MPIExecutor`.  Note that the configuration has to set `max_workers_per_block` to align with the resource needs of the application.  To run applications with different node numbers, a different `Config` object is needed.
 
 ```python
 import parsl
@@ -361,7 +361,8 @@ resource_specification = {
 }
 
 @bash_app
-def mpi_hello_affinity(parsl_resource_specification, depth=8, stdout='mpi_hello.stdout', stderr='mpi_hello.stderr'):
+def mpi_hello_affinity(parsl_resource_specification, depth=8,
+                        stdout='mpi_hello.stdout', stderr='mpi_hello.stderr'):
     # PARSL_MPI_PREFIX will resolve to `mpiexec -n 8 -ppn 4 -hosts NODE001,NODE002`
     APP_DIR = "/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu"
     return f"$PARSL_MPI_PREFIX --cpu-bind depth --depth={depth} \
