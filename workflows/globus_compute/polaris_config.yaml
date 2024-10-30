@@ -10,10 +10,6 @@ engine:
     prefetch_capacity: 0  # Increase if you have many more tasks than workers                                              
     max_retries_on_system_failure: 2
 
-    address:
-        type: address_by_interface
-        ifname: bond0
-
     strategy: simple
     job_status_kwargs:
         max_idletime: 300
