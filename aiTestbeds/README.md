@@ -11,19 +11,20 @@ We present an overview of novel AI accelerators namely, Cerebras, SambaNova, Gra
 
 ## Agenda
 
-| Time(CST)   | Topic                                   |
+| Time (CT)   | Topic                                   |
 |-------------|-----------------------------------------|
-| 1.30 - 2.30 | [Cerebras](./Cerebras/README.md)        |
-| 2.30 - 3.30 | [Graphcore](./Graphcore/README.md)      |
+| 1.30 - 1.45 | Overview of AI Testbeds at ALCF [[Slides]()]          |
+| 1.45 - 2.30 | [Cerebras Hands-On](./Cerebras/)        |
+| 2.30 - 3.30 | [Graphcore Hands-On](./Graphcore/)      |
 | 3:45 - 4:00 | Break                                   |
-| 4.00 - 4.40 | [Sambanova](./Sambanova/README.md)      |
-| 4.40 - 5.15 | [Groq](./Groq/README.md)                |
+| 4.00 - 4.40 | [Sambanova Hands-On](./Sambanova/)      |
+| 4.40 - 5.15 | [Groq Hands-On](./Groq/)                |
 
+> Slides will be updated shortly after the sessison. 
 
 ## Useful Links 
 
-+ [Link to Presentation Slides]()
-+ [ALCF Hands-on  HPC Workshop Agenda](https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop)
++ [ALCF Hands-on  HPC Workshop 2024 Agenda](https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop)
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
 + [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
