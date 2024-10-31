@@ -34,5 +34,5 @@ Plus bonus material that we will not cover during the workshop:
 Please clone the repo while on Polaris login node:
 
 ```
-git clone https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
+git clone --recurse-submodules https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
 ```

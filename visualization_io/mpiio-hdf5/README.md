@@ -17,13 +17,13 @@ You'll need a few modules loaded:
 * cray-mpich
 * cray-parallel-netcdf
 
-The project name for the workshop is “fallwkshp23” and we have two queues
-* fallws23single for single-node jobs
-* fallws23scaling for multi-node (up to 128 nodes) jobs
+The project name for the workshop is `alcf_training` and we have two queues
+* HandsOnHPC for single-node jobs
+* HandsOnHPCScale for multi-node (up to 128 nodes) jobs
 
-For example to submit job you could
+For example: to submit a job you could run
 
-    qsub -I -q fallws23single -t 60 -n 1 -A fallwkshp23
+    qsub -q HandsOnHPC -A alcf_training ./job-script.sh
 
 ## MPI-IO
 
