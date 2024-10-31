@@ -13,14 +13,13 @@ We present an overview of novel AI accelerators, namely Cerebras, SambaNova, Gra
 
 | Time (CT)   | Topic                                   |
 |-------------|-----------------------------------------|
-| 1:30 - 1:45 | Overview of AI Testbeds at ALCF [[Slides]()]          |
+| 1:30 - 1:45 | Overview of AI Testbeds at ALCF [[Slides](./ALCF-HandsOnWorkshop-AITestbeds-2024.pdf)]          |
 | 1:45 - 2:30 | [Cerebras Hands-On](./Cerebras/)        |
 | 2:30 - 3:30 | [Graphcore Hands-On](./Graphcore/)      |
 | 3:45 - 4:00 | Break                                   |
 | 4:00 - 4:40 | [Sambanova Hands-On](./Sambanova/)      |
 | 4:40 - 5:15 | [Groq Hands-On](./Groq/)                |
 
-> Slides will be updated shortly after the session. 
 
 ## Useful Links 
 

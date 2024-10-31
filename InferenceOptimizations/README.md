@@ -61,7 +61,7 @@ We will use LLAMA3-8B model to run inference hands-on examples.
 
 ## Useful Links 
 
-+ [Link to Presentation Slides]() (Slides will be updated shortly after the session. )
++ [Link to Presentation Slides](./HPC%20Workshop%20Inference%20Optimizations.pdf) 
 + [ALCF Hands-on  HPC Workshop Agenda](https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop)
 + [vLLM Documentation](https://docs.vllm.ai/en/latest/)
 + [vLLM Repo](https://github.com/vllm-project/vllm)
