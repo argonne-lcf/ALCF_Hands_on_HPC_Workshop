@@ -243,12 +243,12 @@ if __name__ == '__main__':
 
    gpus = tf.config.list_physical_devices('GPU')
    for gpu in gpus:
-      tf.config.set_memory_growth(gpu, True)
+      tf.config.experimental.set_memory_growth(gpu, True)
    if gpus:
       tf.config.set_visible_devices(gpus[hvd.local_rank()], 'GPU')
    
    # log device placement
-   tf.debugging.set_log_device_placement(True)
+   # tf.debugging.set_log_device_placement(True)
 
    print("Num GPUs Available: %d" % len(tf.config.list_physical_devices('GPU')))
    print("GPUs Available: %s" % tf.config.get_visible_devices('GPU'))
