@@ -15,6 +15,7 @@
 # What's the benchmark work directory?
 WORK_DIR=/home/hossainm/hpc_workshop_october_2024
 PROF_DIR=/home/hossainm/hpc_workshop_october_2024/profiles
+TEMPORARY_DIR=/eagle/datascience/hossainm/nsys_profile/tmpdir/
 LOG_WRAPPER=${WORK_DIR}/log_wrapper.sh
 NCU_WRAPPER=${WORK_DIR}/ncu_wrapper.sh 
 #cd ${WORK_DIR}
@@ -33,5 +34,5 @@ conda activate
 
 #RUN_ID=profiling_seq_parallel_fp32-ranks${NRANKS}-nodes${NNODES}-T${TRIAL}
 
-mpiexec -n ${NRANKS} -ppn ${NRANKS_PER_NODE} --env TMPDIR=/eagle/datascience/hossainm/nsys_profile/tmpdir/ --cpu-bind=verbose,list:4:24:36:48 -l --line-buffer \
+mpiexec -n ${NRANKS} -ppn ${NRANKS_PER_NODE} --env TMPDIR=${TEMPORARY_DIR} --cpu-bind=verbose,list:4:24:36:48 -l --line-buffer \
 ${NCU_WRAPPER} python ${WORK_DIR}/sequence_parallelism_compute.py --precision "bfloat16"  

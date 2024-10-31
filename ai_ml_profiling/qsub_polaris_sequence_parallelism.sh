@@ -14,7 +14,6 @@
 
 # What's the benchmark work directory?
 WORK_DIR=/home/hossainm/hpc_workshop_october_2024
-PROF_DIR=/home/hossainm/hpc_workshop_october_2024/profiles
 LOG_WRAPPER=${WORK_DIR}/log_wrapper.sh
 #cd ${WORK_DIR}
 

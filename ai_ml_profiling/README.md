@@ -1,7 +1,8 @@
 # Profiling a simple PyTorch example
-In the hands on session we will try to profile a simple PyTorch example. This mini-application (mini-benchmark) mimics the sequence parallelism strategy that we use for our auroraGPT training. A similar strategy is adopted by Megatron-DeepSpeed as well. 
+In the hands on session we will try to profile a simple PyTorch example. This mini-application (or "mini-benchmark") mimics the sequence parallelism strategy that we use for our AuroraGPT training. A similar strategy is adopted 
+by [Megatron-DeepSpeed](https://github.com/microsoft/Megatron-DeepSpeed) as well. 
 
-A request to an user would be to try and run the run the scripts either from an interactive session or a batch submission *before* jumping on to using the profilers! 
+Users should first attempt to run the following workload scripts without profiling on a Polaris compute node (from either an interactive session or a batch job submission). 
 
 ## Content of the repository 
 In this repository we have a few scripts. We will quickly give a brief introduction to them.
@@ -26,9 +27,7 @@ In this repository we have a few scripts. We will quickly give a brief introduct
     WORK_DIR=/path/to/sequence_parallelism.py
     PROF_DIR=/path/to/the/directory/for/profiles
     ```
-    The `PROF_DIR` path is unused in this piece of code, as we have a separate script for launching the profiler.
-
-    Keeping track of the stdout (`.OU`) and the stderror (`.ER`) files are important, as we plan to ask the NVIDIA Nsight Systems profiler to print out a summary for us. This summary comes in the .OU file.
+    Keeping track of the stdout (`.OU`) and the stderror (`.ER`) files are important, as we plan to ask the NVIDIA Nsight Systems profiler to print out a summary for us. This summary comes in the `.OU` file.
 - `nsys_wrapper.sh` \
     This is the wrapper that we will be using to run the profiler on more than 1 node. In principle, this should be usable for deploying the profiler in more than 1 rank. An user may have to perform a `chmod +rwx` on the scripts. This script has a few directory paths, which all needs to be changed accordingly. This script is set to track the Rank 0 on each node. For example, if we deploy the application in 2 nodes, 4 ranks (GPUs) each, then the wrapper, as is, will trace, Rank 0 and Rank 4.
 - `ncu_wrapper.sh` \
@@ -56,3 +55,106 @@ Follow the links below to install a version of NVIDIA's Nsight Systems and Nsigh
 [Getting Started, Download Nsys](https://developer.nvidia.com/nsight-systems/get-started)
 
 [Download Nsight Compute](https://developer.nvidia.com/tools-overview/nsight-compute/get-started)
+
+## Viewing the profile
+
+After the successful completion of the execution of the job script, we should 
+see the following message from each of the traced ranks:
+
+For `nsys` profiler reports
+```
+# From Rank 0
+
+ Generated:
+x3007c0s13b0n0.hsn.cm.polaris.alcf.anl.gov 0: /home/hossainm/hpc_workshop_october_2024/profiles/nsys_seq_parallel_bf16_n2_2024-10-30_134546/sequence_parallelism_compute_n2_2024-10-30_134546/nsys_seq_parallel_bf16_n2_2024-10-30_134546_0.nsys-rep
+x3007c0s13b0n0.hsn.cm.polaris.alcf.anl.gov 0: /home/hossainm/hpc_workshop_october_2024/profiles/nsys_seq_parallel_bf16_n2_2024-10-30_134546/sequence_parallelism_compute_n2_2024-10-30_134546/nsys_seq_parallel_bf16_n2_2024-10-30_134546_0.sqlite
+```
+
+For `ncu` profiler reports
+```
+# From Rank 4
+
+x3005c0s25b1n0.hsn.cm.polaris.alcf.anl.gov 4: ==PROF== Report: /home/hossainm/hpc_workshop_october_2024/profiles/ncu_seq_parallel_bf16_n2_2024-10-30_135414/sequence_parallelism_compute_n2_2024-10-30_135414/ncu_seq_parallel_bf16_n2_2024-10-30_135414_4.ncu-rep
+```
+
+Then, we can use either the `scp` or `rsync` to get the reports to our local 
+machine:
+
+```
+scp [USERNAME]@polaris.alcf.anl.gov:/path/to/the/profles/file.nsys-rep /path/to/local/machine
+
+or 
+
+rsync -avh --progress [USERNAME]@polaris.alcf.anl.gov:/path/to/the/profles/file.nsys-rep /path/to/local/machine 
+```
+
+The next step is to load the `nsys-rep` files in the Nsight Systems GUI, and 
+the `ncu-rep` files to the Nsight Compute GUI. 
+
+### For a single rank run
+
+#### `nsys` profiles
+In the single rank case, we go to the top left, go `file` --> `open` and select
+the file that we want to look at. For this particular example, we have focused
+on the GPU activities. This activity is shown on the second column from the 
+left, named as `CUDA HW ...`. If we expand the `CUDA HW ...` tab, we find an
+`NCCL` tab. This tab shows the communicaltion library calls. This is of 
+importance for this example because of the collective communication involved.
+
+#### `ncu` profiles
+The primary qualitative distinction between the `nsys-rep` files and the 
+`ncu-rep` files is that, the `nsys-rep` file presents data for the overall 
+execution of the application, whereas  the `ncu-rep` file presents data for the
+execution of one particular kernel. Our setup here traces only one kernel, but
+multiple kernels could be traced at a time, but that can become a time consuming
+process.
+
+We use the `--stats=true --show-output=true`(see `nsys_wrapper.sh`) 
+options while collecting the 
+`nsys` data. As a result, we get a system-wide summary in our `.OU` files 
+(if run with a job submission script, otherwise on the terminal), and find the
+names of the kernels that has been called/used for compute and communication. 
+Often we would start with investigating the kernels that have been called the 
+most times or the ones where we spent the most time executing them. In this 
+particular instance we chose to analyze the `gemm` kernels, which are related 
+to the matrix multiplication. The full name of this kernel is passed to the 
+`ncu` profiler with the option `-k` (see `ncu_wrapper.sh`).
+
+Loading the `ncu-rep` files works similarly as the `nsys-rep` files. Here, the 
+important tab is the `Details` tab. We find that at the 3rd row from the top.
+Under that tab we have the `GPU Speed of Light Throughput` section. In this 
+section we can find plots showing GPU compute and memory usage. On the right 
+hand side of the tab, there is a menu bar which gives us the option to select
+which plot to display, either the roofline plot or the compute-memory 
+throughput chart.
+
+### For a multi-rank run
+
+#### `nsys` profiles
+In the case, where we have traced multiple ranks, whether from a single node or
+multiple nodes `nsys` GUI allow us to view the reports in a combined fashion on
+a single timeline (same time-axis for both reports). This is done through the
+"multi-report view", `file` --> `New multi-report view` or `file` --> `Open` 
+and selecting however many reports we would like to see in a combined timeline,
+`nsys` prompts the user to allow for a "multi-report view". These can also be 
+viewed separately.
+
+## Profiler Options
+In both cases, `nsys` and `ncu` we have used the standard option sets to 
+generate the profiles. The exhaustive list could be found in the respective
+documentation pages:
+
+[Nsight System User Guide](https://docs.nvidia.com/nsight-systems/UserGuide/index.html)
+[Nsight Compute Documentation](https://docs.nvidia.com/nsight-compute/)
+[Nsight Compute CLI](https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html)
+
+There are many other information provided through these reports. Here we have 
+discussed the way to view the high level information.
+
+
+## Box link with profile examples
+In this Box link we have a few example profiles available for the users. The 
+intent here is to use if we can not generate the profiles during the hands on 
+session.
+
+[Box link for profiles](https://anl.box.com/s/qb088ojo9dyg4lcfl6y5q3oeh6jbze4q)
