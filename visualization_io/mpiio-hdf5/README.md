@@ -17,6 +17,14 @@ You'll need a few modules loaded:
 * cray-mpich
 * cray-parallel-netcdf
 
+The project name for the workshop is `alcf_training` and we have two queues
+* HandsOnHPC for single-node jobs
+* HandsOnHPCScale for multi-node (up to 128 nodes) jobs
+
+For example: to submit a job you could run
+
+    qsub -q HandsOnHPC -A alcf_training ./job-script.sh
+
 ## MPI-IO
 
 The I/O chapter of the MPI standard.  The most commonly available
