@@ -13,19 +13,29 @@
   qsub -I -l select=1:ngpus=4 -l filesystems=home:eagle:grand -l walltime=1:00:00 -l -q HandsOnHPC -A alcf_training
   ```
 
-* Create a new virtual environemnt for vLLM
+<!-- * Create a new virtual environemnt for vLLM
     ```bash
     module use /soft/modulefiles/
     module load conda
 
     conda create -n vLLM_workshop python=3.11 -y
-    ```
-* Clone repo and install required dependancies 
+    ``` -->
+<!-- * Clone repo and install required dependancies 
   ```bash
   git clone https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
   cd ALCF_Hands_on_HPC_Workshop/InferenceOptimizations
 
   pip install -r requirements.txt
+  ``` -->
+
+* Clone repo and activate module
+  ```bash
+  $ git clone https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
+  $ cd ALCF_Hands_on_HPC_Workshop/InferenceOptimizations
+
+  $ module use /soft/modulefiles
+  $ module load conda/2024-10-30-workshop
+  $ conda activate
   ```
 
 
