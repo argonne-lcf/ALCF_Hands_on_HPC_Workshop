@@ -12,11 +12,18 @@
  3. Mapping data
 
  ```
-  qsub -I -q HandsOnHPC -A alcf_training -l select=1:system=polaris,filesystems=home:grand:eagle -l walltime=0:30:00
+  qsub -I -q HandsOnHPC -A alcf_training -l select=1:filesystems=home -l walltime=0:30:00
  ```
-
  ## Set environment
 
+ ### Aurora
+
+ oneAPI environment (default modules on Aurora):
+ ```
+ cp Makefile.intel Makefile
+ ```
+
+ ### Polaris
  Compile for LLVM environment or PrgEnv-nvhpc:
 
  - LLVM environment:
