@@ -80,6 +80,7 @@
 
  ## Mapping data
 
+ ### Initial Version
  ```
  make 03_map
  # initially just `parallel for`, but then want to run on device,
@@ -92,45 +93,47 @@
  ./03_map
 ```
 
- ### Polaris
+ #### Polaris
  ```
  nsys profile -o output_03_map ./03_map
  nsys stats --report cuda_gpu_trace output_03_map.nsys-rep
  ```
- ### Aurora
+ #### Aurora
  ```
  iprof ./03_map
  ```
- 
+
+ ### Second Version
+ ```
  # slightly more complicated. we have multiple arrays, and
  # want to call daxpy on them. like good programmers, we
  # pull the code into a routine for reuse.
- ```
  make 03_map_function
  ./03_map_function
  ```
- ### Polaris
+ #### Polaris
  ```
  nsys profile -o output_03_map_function ./03_map_function
  nsys stats --report cuda_gpu_trace output_03_map_function.nsys-rep
  ```
- ### Aurora
+ #### Aurora
  ```
  iprof ./03_map_function
  ```
- # lots of data transfer. do we need this much?
 
- # unstructured data mapping
+ ### Third Version
  ```
+ # lots of data transfer. do we need this much?
+ # unstructured data mapping
  make 03_map_unstructured_function
  ./03_map_unstructured_function
  ```
- ### Polaris
+ #### Polaris
  ```
  nsys profile -o output_03_map_unstructured_function ./03_map_unstructured_function
  nsys stats --report cuda_gpu_trace output_03_map_unstructured_function.nsys-rep
  ```
- ### Aurora
+ #### Aurora
  ```
  iprof ./03_map_unstructured_function
  ```
