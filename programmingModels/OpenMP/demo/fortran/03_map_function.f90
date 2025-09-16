@@ -55,9 +55,9 @@ program main
   deallocate(c);
 
   if(num_errors == 0) then
-    write(*,*) "Success!\n"
+    write(*,*) "Success!"
   else
-    write(*,*) "Wrong!\n"
+    write(*,*) "Wrong!"
   endif
 end program main
 

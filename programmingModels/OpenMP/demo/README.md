@@ -46,9 +46,18 @@
  ```
  make 01_target_construct
  ./01_target_construct
+ ```
+ ### Polaris
+ ```
  nvidia-smi
  nsys profile --stats=true ./01_target_construct
  ```
+ ### Aurora
+ ```
+ module load thapi
+ iprof ./01_target_construct
+ ```
+
  ## Expressing parallelism 
 
  Artificial example showing a loop parallelized with
@@ -81,21 +90,47 @@
  # we want to map arrays a and b to the device, compute on the
  # device, and then map the arrays back.
  ./03_map
+```
+
+ ### Polaris
+ ```
  nsys profile -o output_03_map ./03_map
  nsys stats --report cuda_gpu_trace output_03_map.nsys-rep
-
+ ```
+ ### Aurora
+ ```
+ iprof ./03_map
+ ```
+ 
  # slightly more complicated. we have multiple arrays, and
  # want to call daxpy on them. like good programmers, we
  # pull the code into a routine for reuse.
+ ```
  make 03_map_function
  ./03_map_function
+ ```
+ ### Polaris
+ ```
  nsys profile -o output_03_map_function ./03_map_function
  nsys stats --report cuda_gpu_trace output_03_map_function.nsys-rep
+ ```
+ ### Aurora
+ ```
+ iprof ./03_map_function
+ ```
  # lots of data transfer. do we need this much?
 
  # unstructured data mapping
+ ```
  make 03_map_unstructured_function
  ./03_map_unstructured_function
+ ```
+ ### Polaris
+ ```
  nsys profile -o output_03_map_unstructured_function ./03_map_unstructured_function
  nsys stats --report cuda_gpu_trace output_03_map_unstructured_function.nsys-rep
+ ```
+ ### Aurora
+ ```
+ iprof ./03_map_unstructured_function
  ```
