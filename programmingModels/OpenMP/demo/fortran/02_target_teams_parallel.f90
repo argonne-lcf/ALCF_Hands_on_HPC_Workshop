@@ -4,7 +4,7 @@ program  main
   integer i
 !$omp target teams distribute parallel do simd
     do i=1,10000
-       write(*,*) "Thread", omp_get_thread_num(), &
+       print *, "Thread", omp_get_thread_num(), &
             "out of", omp_get_num_threads() ,&
             "threads in team", omp_get_team_num(), &
             "out of", omp_get_num_teams(), &
