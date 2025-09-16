@@ -1,4 +1,17 @@
 # ALCF Hands-on HPC Workshop
+### Virtual week Sep. 23-25 and Oct. 7-9, 2025
+https://www.alcf.anl.gov/events/2025-alcf-hands-hpc-workshop 
+
+
+
+
+
+
+
+
+
+
+
 ### October 29 - 31, 2024
 ### Agenda: https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop
 
