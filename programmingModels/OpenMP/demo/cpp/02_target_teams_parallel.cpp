@@ -2,7 +2,7 @@
 #include <omp.h>
 
 int main( int argv, char** argc ) {
-#pragma omp target teams distribute parallel for simd
+#pragma omp target teams distribute parallel for
   for(int i=0;i<10000;i++)
     {
       printf( "Thread %d out of %d threads in team %d out of %d teams is using index %d\n", 

@@ -2,7 +2,7 @@ program  main
   use omp_lib
   implicit none
   integer i
-!$omp target teams distribute parallel do simd
+!$omp target teams distribute parallel do
     do i=1,10000
        print *, "Thread", omp_get_thread_num(), &
             "out of", omp_get_num_threads() ,&
@@ -10,5 +10,5 @@ program  main
             "out of", omp_get_num_teams(), &
             "teams is using index" , i
      end do
-!$omp end target teams distribute parallel do simd
+!$omp end target teams distribute parallel do
 end program main

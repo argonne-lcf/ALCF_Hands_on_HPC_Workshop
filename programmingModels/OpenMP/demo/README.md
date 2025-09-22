@@ -54,6 +54,7 @@
  ```
  ### Aurora
  ```
+ sycl-ls
  module load thapi
  iprof ./01_target_construct
  ```
