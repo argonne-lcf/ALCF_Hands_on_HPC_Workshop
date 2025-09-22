@@ -1,53 +1,48 @@
 # ALCF Hands-on HPC Workshop
-### Virtual week Sep. 23-25 and Oct. 7-9, 2025
-https://www.alcf.anl.gov/events/2025-alcf-hands-hpc-workshop 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
 
+## Virtual week Sep. 23 - 25, 2025
+## In-person week October 7 - 9, 2025
+## Agenda: https://www.alcf.anl.gov/events/2025-alcf-hands-hpc-workshop 
 
+The ALCF is hosting a Hands-on HPC Workshop wihch features both a virtual event on September 23--25 and an in-person event on October 7--9, 2025, at the TCS Conference Center at Argonne National Laboratory.
 
-### October 29 - 31, 2024
-### Agenda: https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop
-
-The ALCF is hosting an in-person Hands-on HPC Workshop on October 29--31, 2024, at the TCS Conference Center at Argonne National Laboratory.
-
-The workshop will provide an opportunity for hands-on time on Polaris and AI Testbeds focusing on porting applications to heterogeneous architectures (CPU + GPU), improving code performance, and exploring AI/ML applications development on ALCF systems.
+The workshop will provide an opportunity for hands-on time on Aurora, Polaris and a few of the AI Testbeds focusing on porting applications to heterogeneous architectures (CPU + GPU), improving code performance, and exploring AI/ML applications development on ALCF systems.
 
 <!--
 The agenda below needs to be updated to reflect this years schedule
 -->
 
-### The repo is divided by the workshop sessions:
-Day 1 
+## Overview 
+
+The repo is divided into sections following the schedule of both the virtual and in-person weeks:
+
+**Virtual Week, Day 1** 
+  * Hardware Overview of Aurora
+  * Building, Compiling and Running Applications on Aurora
+  * CPU and GPU affinity on Aurora
   * [Programming Models](programmingModels)
 
-Day 2
-   * [Python, Jupyter Notebooks & Containers](python_notebook_containers)
-   * [Learning Frameworks & Distributed Deep Learning](learningFrameworks)
-   * [LLM on Polaris](llm)
-   * [LLM Inference Optimization](./InferenceOptimizations/)
-   * [AI Testbeds at ALCF](aiTestbeds)
-   * [Integrating Al and Simulations](couplingSimulationML)
-   * [Tools (NVIDIA, Intel, TAU & HPC-Toolkit)](tools)
-
-Day 3
-   * [Visualization, I/O & File System](visualization_io)
-   * [File System & Sharing](fs_sharing)
+**Virtual Week, Day 2**
+   * [Intel's Data Parallel Extensions for Python (DPEP)](data_science/intel_python)
+   * [Learning Frameworks & Distributed Deep Learning on Aurora](data_science/AI_frameworks)
+   * [Foundation Models on Aurora](data_science/AI_frameworks/ezpz)
    * [Workflows](workflows)
+   * [Inference Service](inference_service)
+   * [Agentic Workflows](agentic_workflows)
 
-Plus bonus material that we will not cover during the workshop:
-   * [Supplementary machine learning materials](extraMachineLearningMaterials)
+**Virtual Week, Day 3**
+   * [Tools](tools)
 
-Please clone the repo while on Polaris login node:
+
+## Obtaining the material and running the examples
+
+Please clone the repo while on a Polaris or Aurora login node:
 
 ```
 git clone --recurse-submodules https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
 ```
+
+Then navigate to the particular material of interest and follow the instructions for executing the hands-on examples.
+
+
+
