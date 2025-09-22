@@ -17,14 +17,12 @@ module load frameworks
 conda list | grep -E "dpnp|dpctl|numba"
 ```
 
-???+ example "Output"
-
-	``` { .bash .no-copy }
-	dpctl                     0.20.2
-    dpnp                      0.18.1
-	numba                     0.60.0
-    numba-dpex                0.23.0+0.g46e90f690.dirty
-	```
+> ```bash
+>    dpctl                     0.20.2
+>    dpnp                      0.18.1
+>    numba                     0.60.0
+>    numba-dpex                0.23.0+0.g46e90f690.dirty
+> ```
 
 
 ## Compute-Follows-Data Programming Model
