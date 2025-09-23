@@ -24,7 +24,7 @@ int main( int argc, char** argv )
     }
 
   //#pragma omp parallel for
-  #pragma omp target teams distribute parallel for simd map(tofrom:a[:num_elements]) map(to:b[:num_elements])
+  #pragma omp target teams distribute parallel for map(tofrom:a[:num_elements]) map(to:b[:num_elements])
   for (size_t j=0; j<num_elements; j++) {
     a[j] += scalar*b[j];
   }

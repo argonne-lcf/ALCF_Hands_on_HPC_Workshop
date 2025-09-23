@@ -12,27 +12,32 @@
  3. Mapping data
 
  ```
-  qsub -I -q fallws23single -t 60 -n 1 -A fallwkshp23 --attrs filesystems=home
+  qsub -I -q HandsOnHPC -A alcf_training -l select=1:filesystems=home -l walltime=0:30:00
  ```
-
  ## Set environment
 
+ ### Aurora
+
+ oneAPI environment (default modules on Aurora):
+ ```
+ cp Makefile.intel Makefile
+ ```
+
+ ### Polaris
  Compile for LLVM environment or PrgEnv-nvhpc:
 
  - LLVM environment:
  ```
+ module use /soft/modulefiles
  module load mpiwrappers/cray-mpich-llvm 
  module load cudatoolkit-standalone
  cp Makefile.llvm Makefile
  ```
- Note: You may need to use the nsys from a different module
- to get it to show the kernel: /opt/nvidia/hpc_sdk/Linux_x86_64/23.3/compilers/bin/nsys
 
 - PrgEnv-nvhpc:
  This should be in by default, but just in case:
  ```
- module load PrgEnv-nvhpc
- module swap nvhpc/21.9 nvhpc/23.3
+ module swap ... PrgEnv-nvhpc
  cp Makefile.nvidia Makefile
  ```
 
@@ -41,9 +46,19 @@
  ```
  make 01_target_construct
  ./01_target_construct
+ ```
+ ### Polaris
+ ```
  nvidia-smi
  nsys profile --stats=true ./01_target_construct
  ```
+ ### Aurora
+ ```
+ sycl-ls
+ module load thapi
+ iprof ./01_target_construct
+ ```
+
  ## Expressing parallelism 
 
  Artificial example showing a loop parallelized with
@@ -66,6 +81,7 @@
 
  ## Mapping data
 
+ ### Initial Version
  ```
  make 03_map
  # initially just `parallel for`, but then want to run on device,
@@ -76,21 +92,49 @@
  # we want to map arrays a and b to the device, compute on the
  # device, and then map the arrays back.
  ./03_map
+```
+
+ #### Polaris
+ ```
  nsys profile -o output_03_map ./03_map
  nsys stats --report cuda_gpu_trace output_03_map.nsys-rep
+ ```
+ #### Aurora
+ ```
+ iprof ./03_map
+ ```
 
+ ### Second Version
+ ```
  # slightly more complicated. we have multiple arrays, and
  # want to call daxpy on them. like good programmers, we
  # pull the code into a routine for reuse.
  make 03_map_function
  ./03_map_function
+ ```
+ #### Polaris
+ ```
  nsys profile -o output_03_map_function ./03_map_function
  nsys stats --report cuda_gpu_trace output_03_map_function.nsys-rep
- # lots of data transfer. do we need this much?
+ ```
+ #### Aurora
+ ```
+ iprof ./03_map_function
+ ```
 
+ ### Third Version
+ ```
+ # lots of data transfer. do we need this much?
  # unstructured data mapping
  make 03_map_unstructured_function
  ./03_map_unstructured_function
+ ```
+ #### Polaris
+ ```
  nsys profile -o output_03_map_unstructured_function ./03_map_unstructured_function
  nsys stats --report cuda_gpu_trace output_03_map_unstructured_function.nsys-rep
+ ```
+ #### Aurora
+ ```
+ iprof ./03_map_unstructured_function
  ```

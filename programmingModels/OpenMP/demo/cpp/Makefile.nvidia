@@ -1,4 +1,4 @@
-# this assumes that the LLVM compiler is used
+# this assumes that the NVHPC compiler is used
 
 CXX = CC
 CXXOFFLOAD = -mp=gpu -gpu=cc80

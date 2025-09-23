@@ -4,11 +4,11 @@ subroutine daxpy( a, b, scalar, num_elements )
   double precision :: a(num_elements), b(num_elements)
   double precision scalar
 
-!$omp target teams distribute parallel do simd map(tofrom:a(:num_elements)) map(to:b(:num_elements))
+!$omp target teams distribute parallel do map(tofrom:a(:num_elements)) map(to:b(:num_elements))
     do j=1,num_elements
        a(j) = a(j)+scalar*b(j)
     end do
-!$omp end target teams distribute parallel do simd
+!$omp end target teams distribute parallel do
 
 end subroutine daxpy
 
@@ -65,9 +65,9 @@ program main
   deallocate(c);
 
   if(num_errors == 0) then
-    write(*,*) "Success!\n"
+    write(*,*) "Success!"
   else
-    write(*,*) "Wrong!\n"
+    write(*,*) "Wrong!"
   endif
 
 end program main
