@@ -1,4 +1,4 @@
-# PyTorch
+# PyTorch on Aurora
 
 **Learning Goals:**
 
@@ -8,9 +8,10 @@
 
 ## Overview
 
-ALCF supports popular Deep Learning Python libraries (AI Frameworks) on Aurora, such as [PyTorch](https://docs.alcf.anl.gov/aurora/data-science/frameworks/pytorch/) and [TensorFlow](https://docs.alcf.anl.gov/aurora/data-science/frameworks/tensorflow/), which are included in the [`frameworks` module](https://docs.alcf.anl.gov/aurora/data-science/python/#AIML-Framework-Module). 
-
+ALCF supports popular Deep Learning Python libraries (AI Frameworks) on Aurora, such as [PyTorch](https://docs.alcf.anl.gov/aurora/data-science/frameworks/pytorch/) and [TensorFlow](https://docs.alcf.anl.gov/aurora/data-science/frameworks/tensorflow/). 
 In this session, we will focus on [PyTorch](https://pytorch.org/), a popular, open-source deep learning framework developed and released by Facebook. 
+A PyTorch build compatible with Intel GPUs is included in the [`frameworks` module](https://docs.alcf.anl.gov/aurora/data-science/python/#AIML-Framework-Module).
+
 Assuming you have developed a PyTorch model on your laptop, we will see how to:
 
 - Train your PyTorch model on a *GPU* on Aurora
@@ -18,13 +19,10 @@ Assuming you have developed a PyTorch model on your laptop, we will see how to:
 
 
 
-## Intel Extension for PyTorch (IPEX)
+## Setup and Environment Check
 
-[Intel Extension for PyTorch (IPEX)](https://pytorch.org/tutorials/recipes/recipes/intel_extension_for_pytorch.html) is an [open-source project](https://github.com/intel/intel-extension-for-pytorch) that extends PyTorch with optimizations for extra performance boost on Intel CPUs and enables the use of Intel GPUs. 
+First, we verify that we can import PyTorch, check its version, and get information on the GPU devices available on an Aurora compute node.
 
-Along with importing the `torch` library, you need to import the `intel_extension_for_pytorch` library in order to detect Intel GPUs as `xpu` devices. 
-
-> **Note**: It is [highly recommended](https://github.com/intel/intel-extension-for-pytorch/blob/main/docs/tutorials/getting_started.md) to import `intel_extension_for_pytorch` right after `import torch`, and prior to importing other packages.
 
 ### ⌨️   Hands on
 
@@ -39,7 +37,7 @@ Along with importing the `torch` library, you need to import the `intel_extensio
    # a shell opens on a login node
    
    # 3. submit an interactive job
-   aurora-uan-0009:$ qsub -l select=1,walltime=30:00 -l filesystems=home:flare -k doe -j oe -I -q debug -A <your_project_name>
+   aurora-uan-0009:$ qsub -I -l select=1,walltime=30:00 -q debug -A <your_project_name> -l filesystems=home:flare -k doe -j oe
    
    # a shell opens on a compute node
    x4706c7s6b0n0:$
@@ -50,17 +48,16 @@ Along with importing the `torch` library, you need to import the `intel_extensio
    module load frameworks
    ```
 
-1. Then, you can `import` PyTorch in Python as usual (below showing results from the `frameworks/2025.0.0`  module):
+1. Then, you can `import` PyTorch in Python as usual (below showing results from the `frameworks/2025.2.0`  module):
    ```python
    >>> import torch
    >>> torch.__version__
-   '2.5.1+cxx11.abi'
+   ''2.8.0a0+gitba56102''
    ```
 
 1. A simple but useful check could be to use PyTorch to get device information on a compute node. You can do this the following way:
    ```python
    import torch
-   import intel_extension_for_pytorch as ipex
    
    print(f"GPU availability: {torch.xpu.is_available()}")
    print(f'Number of tiles = {torch.xpu.device_count()}')
@@ -85,17 +82,19 @@ Along with importing the `torch` library, you need to import the `intel_extensio
    - each GPU is composed of 2 tiles (also called "Sub-devices")
    - By default, each tile is mapped to one PyTorch device, giving a total of 12 devices per node in the above output. 
 
+
+### Intel Extension for PyTorch (IPEX)
+
+[Intel Extension for PyTorch (IPEX)](https://pytorch.org/tutorials/recipes/recipes/intel_extension_for_pytorch.html) is an [open-source project](https://github.com/intel/intel-extension-for-pytorch) that enhances PyTorch with optimizations for Intel CPUs and GPUs. 
+The standard `torch` library can run on Aurora without it, using upstream PyTorch ops. 
+To try IPEX, it is [recommended](https://github.com/intel/intel-extension-for-pytorch/blob/main/docs/tutorials/getting_started.md) to import `intel_extension_for_pytorch` right after `import torch`, and prior to importing other packages.
+
         
 
 ## Code changes to run PyTorch on Aurora GPUs
 
 Here we list some common changes that you may need to do to your PyTorch code in order to use Intel GPUs.  
 
-1. Import the `intel_extension_for_pytorch` **right after** importing `torch`:
-   ```diff
-   import torch
-   + import intel_extension_for_pytorch as ipex
-   ```
 1. All the `API` calls involving `torch.cuda`, should be replaced with `torch.xpu`. For example:
    ```diff
    - torch.cuda.device_count()
@@ -121,7 +120,6 @@ Here is a simple code to train a dummy PyTorch model on a single GPU tile on Aur
 
 ```diff
 import torch
-+ import intel_extension_for_pytorch as ipex
 + device = torch.device('xpu')
 
 torch.manual_seed(0)
@@ -136,8 +134,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 criterion = torch.nn.CrossEntropyLoss()
 model.train()
 + model = model.to(device)
-+ criterion = criterion.to(device)
-+ model, optimizer = ipex.optimize(model, optimizer=optimizer)
 
 for epoch in range(10):
     for source, targets in loader:
@@ -226,16 +222,16 @@ From a compute node of an interactive session:
 
 ## Distributed Training on multiple GPUs
 
-Distributed training with PyTorch on Aurora is facilitated through both [Distributed Data Parallel (DDP)](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html) and [Horovod](https://horovod.readthedocs.io/en/stable/pytorch.html), with comparable performance. 
+Distributed training with PyTorch on Aurora is facilitated through both [Distributed Data Parallel (DDP)](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html). 
 Here we show how to use native PyTorch DDP to perform Data Parallel training on Aurora. 
 
 
 ### Code changes to train on multiple GPUs using PyTorch Distributed Data Parallel (DDP)
 
-The key steps in performing distributed training on Aurora are:
+The key steps in performing distributed training are:
 
-1. Load the `oneccl_bindings_for_pytorch` library, which enables efficient distributed deep learning training in PyTorch using [Intel's oneCCL library](https://github.com/intel/torch-ccl), implementing collectives like `allreduce`, `allgather`, `alltoall`.
-1. Initialize PyTorch's `DistributedDataParallel`
+1. Initialize PyTorch's `DistributedDataParallel` using the [`xccl` backend](https://pytorch.org/blog/pytorch-2-8-brings-native-xccl-support-to-intel-gpus-case-studies-from-argonne-national-laboratory/), which enables efficient distributed deep learning training in PyTorch using [Intel's oneCCL library](https://github.com/intel/torch-ccl), implementing collectives like `allreduce`, `allgather`, `alltoall`
+   - (Optional, when using IPEX, import the `oneccl_bindings_for_pytorch` library, and use the `ccl` backend)
 1. Use `DistributedSampler` to partition the training data among the ranks
 1. Pin each rank to a GPU
 1. Wrap the model in DDP to keep it in sync across the ranks 
@@ -252,8 +248,6 @@ Here is the code to train the [same dummy PyTorch model](#example-training-a-pyt
 + import os, socket
 import torch
 + from torch.nn.parallel import DistributedDataParallel as DDP
-import intel_extension_for_pytorch as ipex
-+ import oneccl_bindings_for_pytorch as torch_ccl
 
 # DDP: Set environmental variables used by PyTorch
 + SIZE = MPI.COMM_WORLD.Get_size()
@@ -268,7 +262,7 @@ import intel_extension_for_pytorch as ipex
 + print(f"DDP: Hi from rank {RANK} of {SIZE} with local rank {LOCAL_RANK}. {MASTER_ADDR}")
 
 # DDP: initialize distributed communication with nccl backend
-+ torch.distributed.init_process_group(backend='ccl', init_method='env://', rank=int(RANK), world_size=int(SIZE))
++ torch.distributed.init_process_group(backend='xccl', init_method='env://', rank=int(RANK), world_size=int(SIZE))
 
 # DDP: pin GPU to local rank.
 + torch.xpu.set_device(int(LOCAL_RANK))
@@ -288,8 +282,6 @@ model = torch.nn.Transformer(batch_first=True)
 criterion = torch.nn.CrossEntropyLoss()
 model.train()
 model = model.to(device)
-criterion = criterion.to(device)
-model, optimizer = ipex.optimize(model, optimizer=optimizer)
 # DDP: wrap the model in DDP
 + model = DDP(model)
 
@@ -316,11 +308,11 @@ for epoch in range(10):
 
 
 > ⚠️  **Note:** The following enviroment variables must be set in order to use more than one node: 
-```bash
-export FI_MR_CACHE_MONITOR=userfaultfd
-export CCL_KVS_MODE=mpi
-export CCL_KVS_CONNECTION_TIMEOUT=300
-```
+> ```bash
+> export FI_MR_CACHE_MONITOR=userfaultfd
+> export CCL_KVS_MODE=mpi
+> export CCL_KVS_CONNECTION_TIMEOUT=300
+> ```
 
 Here are the steps to run the above code on Aurora:
 
@@ -330,7 +322,7 @@ Here are the steps to run the above code on Aurora:
    ```
 1. [Request an interactive job on two nodes](https://docs.alcf.anl.gov/aurora/running-jobs-aurora#submitting-a-job) for 30 minutes:
    ```bash
-   qsub -q debug -A <your_project_name> -l select=2,walltime=30:00 -l filesystems=home:flare -k doe -j oe -I
+   qsub -I -l select=2,walltime=30:00 -q debug -A <your_project_name> -l filesystems=home:flare -k doe -j oe
    ```
 1. Go into the directory `./examples/pytorch_ddp/` of this repository, and change permissions to the script [`pytorch_ddp.py`](examples/pytorch_ddp/pytorch_ddp.py) to make it executable with `chmod a+x pytorch_ddp.py`.
 1. [Load the frameworks module](https://docs.alcf.anl.gov/aurora/data-science/python#aiml-framework-module):
