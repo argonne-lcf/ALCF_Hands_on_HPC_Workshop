@@ -2,6 +2,10 @@ engine:
     # This engine uses the HighThroughputExecutor
     type: GlobusComputeEngine
     
+    address:
+        type: address_by_interface
+        ifname: bond0
+
     available_accelerators: 4 # Assign one worker per GPU
     max_workers_per_node: 4
     
@@ -33,7 +37,7 @@ engine:
         scheduler_options: "#PBS -l filesystems=home:eagle:grand"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "source /grand/alcf_training/workflows_2024/_env/bin/activate; module load PrgEnv-nvhpc; cd $HOME/.globus_compute/workshop-endpoint"
+        worker_init: "source /grand/alcf_training/workflows/_env/bin/activate; export TMPDIR=/tmp; cd $HOME/.globus_compute/workshop-endpoint"
 
         walltime: 00:30:00
         nodes_per_block: 1

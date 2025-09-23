@@ -16,6 +16,9 @@ def add(*args):
     return accumulator
 
 
+# Here we use a join_app that can launch a sub-workflow
+# Join apps return a future object so that the parsl workflow can
+# continue to run other tasks while waiting for the sub-workflow
 @join_app
 def fibonacci(n):
     if n == 0:

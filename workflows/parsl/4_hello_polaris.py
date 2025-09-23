@@ -1,31 +1,43 @@
 import parsl
 import os
-from parsl import bash_app
-from config import polaris_config
+from parsl import python_app
+from polaris_pbs_config import polaris_config as config
+# To run on Aurora, uncomment the following line and comment out the above line
+# from aurora_pbs_config import aurora_config as config
 
 # We will save outputs in the current working directory
 working_directory = os.getcwd()
 
-# Application that reports which worker affinities
-@bash_app
-def hello_affinity(stdout='hello.stdout', stderr='hello.stderr'):
-    return '/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu/hello_affinity'
+# python app that reports worker affinities
+@python_app
+def hello_affinity():
+    import os
+    import socket
+    import time
+
+    time.sleep(5)  # Simulate some work being done
+
+    hostname = socket.gethostname()
+
+    # First look for cuda device
+    gpu_id = os.environ.get("CUDA_VISIBLE_DEVICES")
+    # If no cuda device set, look for intel device
+    if gpu_id is None:
+        gpu_id = os.environ.get("ZE_AFFINITY_MASK", "No GPUs assigned")
+
+    return f"Hello from host {hostname}, GPU ID(s): {gpu_id}"
 
 # Load config for polaris
-with parsl.load(polaris_config):
+with parsl.load(config):
 
     # Create futures calling 'hello_affinity', store them in list 'tasks'
     tasks = []
     for i in range(4):
-        tasks.append(hello_affinity(stdout=f"{working_directory}/output/hello_{i}.stdout",
-                                    stderr=f"{working_directory}/output/hello_{i}.stderr"))
-
+        tasks.append(hello_affinity())
+        
     # Wait on futures to return, and print results
     for i, t in enumerate(tasks):
-        t.result()
-        with open(f"{working_directory}/output/hello_{i}.stdout", "r") as f:
-            print(f"Stdout of task {i}:")
-            print(f.read())
+        print(f"Result of task {i}: {t.result()}")
 
     # Workflow complete!
     print("Hello tasks completed")
