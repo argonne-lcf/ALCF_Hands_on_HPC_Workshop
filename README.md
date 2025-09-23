@@ -2,7 +2,7 @@
 
 [**2025 ALCF Hands-On HPC Workshop**](https://www.alcf.anl.gov/events/2025-alcf-hands-hpc-workshop)
 
-The ALCF is hosting a Hands-on HPC Workshop wihch features both:
+The ALCF is hosting a Hands-on HPC Workshop which features both:
 
 - Virtual event on **September 23--25** and an
 - In-person event on **October 7--9, 2025**, at the TCS Conference Center at Argonne National Laboratory.
