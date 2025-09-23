@@ -1,6 +1,13 @@
 # ALCF Hands-on HPC Workshop
 
+[**2025 ALCF Hands-On HPC Workshop**](https://www.alcf.anl.gov/events/2025-alcf-hands-hpc-workshop)
 
+The ALCF is hosting a Hands-on HPC Workshop wihch features both:
+
+- Virtual event on **September 23--25** and an
+- In-person event on **October 7--9, 2025**, at the TCS Conference Center at Argonne National Laboratory.
+
+The workshop will provide an opportunity for hands-on time on Aurora, Polaris and a few of the AI Testbeds focusing on porting applications to heterogeneous architectures (CPU + GPU), improving code performance, and exploring AI/ML applications development on ALCF systems.
 
 ## Overview 
 
@@ -34,26 +41,13 @@ git clone --recurse-submodules https://github.com/argonne-lcf/ALCF_Hands_on_HPC_
 
 Then navigate to the particular material of interest and follow the instructions for executing the hands-on examples.
 
+## Schedule
 
+### Virtual week Sep. 23 - 25, 2025
 
+#### Tuesday, Sept. 23
 
-## Agenda
-
-[**2025 ALCF Hands-On HPC Workshop**](https://www.alcf.anl.gov/events/2025-alcf-hands-hpc-workshop)
-
-The ALCF is hosting a Hands-on HPC Workshop wihch features both:
-
-- Virtual event on **September 23--25** and an
-- In-person event on **October 7--9, 2025**, at the TCS Conference Center at Argonne National Laboratory.
-
-The workshop will provide an opportunity for hands-on time on Aurora, Polaris and a few of the AI Testbeds focusing on porting applications to heterogeneous architectures (CPU + GPU), improving code performance, and exploring AI/ML applications development on ALCF systems.
-
-
-## Virtual week Sep. 23 - 25, 2025
-
-### Tuesday, Sept. 23
-
-#### On Boarding on Aurora and Polaris
+##### On Boarding on Aurora and Polaris
 
 | Topic                                              | Duration | Time             | Speakers             |
 | -------------------------------------------------- | -------- | ---------------- | -------------------- |
@@ -62,7 +56,7 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Affinity on Aurora                                 | 30 min   | 11:45 - 12:15 PM | Victor Anisimov, ANL |
 | Break                                              | 30 min   | 12:15-12:45 PM   |                      |
 
-#### Programming Models
+##### Programming Models
 
 | Topic  | Duration | Time            | Speakers                     |
 | ------ | -------- | --------------- | ---------------------------- |
@@ -71,9 +65,9 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Break  | 15 min   | 2:45 - 3:00 PM  |                              |
 | KOKKOS | 60 min   | 3:00 - 4:00 PM  | Brian Homerding, ANL         |
 
-### Wednesday, Sept. 24
+#### Wednesday, Sept. 24
 
-#### Overview of AI
+##### Overview of AI
 
 | Topic             | Duration | Time            | Speakers                            |
 | ----------------- | -------- | --------------- | ----------------------------------- |
@@ -84,7 +78,7 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Break             | 30 min   | 12:00 - 12:30PM |                                     |
 | Foundation Models | 45 min   | 12:30 -1:15 PM  | Sam Foreman, ANL                    |
 
-#### WorkFlows and Data Management
+##### WorkFlows and Data Management
 
 | Topic             | Duration | Time           | Speakers                           |
 | ----------------- | -------- | -------------- | ---------------------------------- |
@@ -92,9 +86,9 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Inference Service | 60 min   | 2:15 -3:15 PM  | Benoit Cote, Aditya Tanikanti, ANL |
 | Agentic Workflows | 30 min   | 3:15 - 3:45 PM | Riccardo Balin, ANL                |
 
-### Thursday, Sept. 25
+#### Thursday, Sept. 25
 
-#### Tools Overview
+##### Tools Overview
 
 | Topic                     | Duration | Time             | Speakers                |
 | ------------------------- | -------- | ---------------- | ----------------------- |
@@ -104,11 +98,11 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Intel Tools               | 90 min   | 12:30 - 2:00 PM  | JaeHyuk Kwack, ANL      |
 | Overview of Visualization | 30 min   | 2:00 - 2:30 PM   | Joe Insley, ANL         |
 
-## In-Person: Oct. 7 - Oct. 9
+### In-Person: Oct. 7 - Oct. 9
 
-### Tuesday, Oct. 7
+#### Tuesday, Oct. 7
 
-#### Tools and Extended Hands-on Time
+##### Tools and Extended Hands-on Time
 
 | Topic                                                                                                 | Duration | Time             | Speakers                             |
 | ----------------------------------------------------------------------------------------------------- | -------- | ---------------- | ------------------------------------ |
@@ -122,9 +116,9 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Hands-On Time                                                                                         | 75 min   | 2:45 -4:00 PM    |                                      |
 | Argonne Tour                                                                                          | 60 min   | 4:00 - 5:00 PM   |                                      |
 
-### Wednesday, Oct. 8
+#### Wednesday, Oct. 8
 
-#### AI and Extended Hands-on Time
+##### AI and Extended Hands-on Time
 
 | Topic             | Duration | Time             | Speakers            |
 | ----------------- | -------- | ---------------- | ------------------- |
@@ -139,9 +133,9 @@ The workshop will provide an opportunity for hands-on time on Aurora, Polaris an
 | Hands-On Time     | 175 min  | 2:15 -4:00 PM    |                     |
 | Argonne Tour      | 60 min   | 4:00 - 5:00 PM   |                     |
 
-### Thursday, Oct. 9
+#### Thursday, Oct. 9
 
-#### Data Management, I/O and Extended Hands-on Time
+##### Data Management, I/O and Extended Hands-on Time
 
 | Topic                                                                            | Duration | Time             | Speakers              |
 | -------------------------------------------------------------------------------- | -------- | ---------------- | --------------------- |
