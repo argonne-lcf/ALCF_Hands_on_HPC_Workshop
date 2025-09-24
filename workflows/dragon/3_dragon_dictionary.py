@@ -34,3 +34,6 @@ if __name__ == '__main__':
     print("Distributed dictionary contents:", flush=True)
     for k in dist_dict.keys():
         print(f"{k} = {dist_dict[k]}", flush=True)
+
+    # Destroy dictionary and free resources
+    dist_dict.destroy()
