@@ -27,7 +27,7 @@ cd ALCF_Hands_on_HPC_Workshop/workflows/parsl
 For the workshop, you can use the workshop python virtual environment that has parsl installed:
 ```bash
 module unload xalt
-source /grand/alcf_training/workflows_2024/_env/bin/activate
+source /grand/alcf_training/workflows/_env/bin/activate
 ```
 
 To create your own environment:
