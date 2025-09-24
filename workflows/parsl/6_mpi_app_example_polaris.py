@@ -24,7 +24,6 @@ config = Config(
             provider=PBSProProvider(
                 account=account,
                 worker_init=f"""{load_env};
-                                export TMPDIR=/tmp;
                                 cd {working_directory}""",
                 walltime="00:10:00",
                 queue=queue,
@@ -49,6 +48,7 @@ resource_specification = {
 def mpi_hello_affinity(parsl_resource_specification, depth=8, stdout='mpi_hello.stdout', stderr='mpi_hello.stderr'):
     # PARSL_MPI_PREFIX will resolve to `mpiexec -n 8 -ppn 4 -hosts NODE001,NODE002`
     APP_DIR = "/grand/alcf_training/workflows/GettingStarted/Examples/Polaris/affinity_gpu"
+    # wrap application with set_affinity_gpu_polaris.sh to set GPU affinity; see GettingStarted/Examples/Polaris/affinity_gpu for details
     return f"$PARSL_MPI_PREFIX --cpu-bind depth --depth={depth} \
             {APP_DIR}/set_affinity_gpu_polaris.sh {APP_DIR}/hello_affinity"
 

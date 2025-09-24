@@ -44,14 +44,13 @@ polaris_config = Config(
                 # Commands run before workers launched
                 # Make sure to activate your environment where Parsl is installed
                 worker_init=f'''{load_env};
-                            export TMPDIR=/tmp;
                             cd {execute_dir}''',
                 # Wall time for batch jobs
                 walltime="0:05:00",
                 # Change if data/modules located on other filesystem
                 scheduler_options="#PBS -l filesystems=home:eagle:grand",
                 # Ensures 1 manger per node and allows it to divide work to all 64 threads
-                launcher=MpiExecLauncher(bind_cmd="--cpu-bind", overrides="--ppn 1"),
+                launcher=MpiExecLauncher(bind_cmd="--cpu-bind", overrides="--ppn 1 --env TMPDIR=/tmp"),
                 # options added to #PBS -l select aside from ncpus
                 select_options="ngpus=4",
                 # Number of nodes per batch job

@@ -22,7 +22,7 @@ engine:
             type: MpiExecLauncher
             # Ensures 1 manger per node, work on all 64 cores
             bind_cmd: --cpu-bind
-            overrides: --ppn 1
+            overrides: --ppn 1 --env TMPDIR=/tmp
 
         account: alcf_training
         queue: alcf_training
@@ -33,7 +33,7 @@ engine:
         scheduler_options: "#PBS -l filesystems=home:eagle:grand"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "module unload xalt; source /grand/alcf_training/workflows/_env/bin/activate; export TMPDIR=/tmp; cd $HOME/.globus_compute/workshop-endpoint"
+        worker_init: "module unload xalt; source /grand/alcf_training/workflows/_env/bin/activate; cd $HOME/.globus_compute/workshop-backup"
 
         walltime: 00:30:00
         nodes_per_block: 1
