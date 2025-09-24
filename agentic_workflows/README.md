@@ -55,6 +55,7 @@ In particular, the LLMs are served locally on the compute nodes of the system, f
 Advantages of local agentic workflows include:
 * Lower latency between tasks
 * Running tasks bypassing the scheduler and system queues
+* Can serve custom LLMs if needed
 
 Disadvantages of local agentic workflows include:
 * Higher implementation complexity (need to serve LLMs locally)
