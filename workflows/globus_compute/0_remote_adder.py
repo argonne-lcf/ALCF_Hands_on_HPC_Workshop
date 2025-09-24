@@ -20,5 +20,7 @@ with Executor(endpoint_id=endpoint_id) as gce:
     # ... then submit for execution, ...
     future = gce.submit(add_func, 5, 10)
 
+    print("Submitted task to remote endpoint, waiting for result...")
+
     # ... and finally, wait for the result
     print(future.result())
