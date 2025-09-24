@@ -20,13 +20,15 @@ There are several requirements to deploying an application through Globus Comput
 
 On Polaris, you will need to create a python virtual environment or a conda environment with the module `globus-compute-endpoint`.
 
-For the workshop, you can use the workshop python virtual environment:
+For the workshop, you can use the workshop python virtual environment.  You will also need to unload xalt:
 ```bash
-source /grand/alcf_training/workflows_2024/_env/bin/activate
+module unload xalt
+source /grand/alcf_training/workflows/_env/bin/activate
 ```
 
 To create your own environment:
 ```bash
+module unload xalt
 module load conda
 conda activate base
 python -m venv env
@@ -34,15 +36,22 @@ source env/bin/activate
 pip install globus-compute-endpoint
 ```
 
+Also, verify the version of python you are running on Polaris:
+```bash
+python --version
+```
+
+The pre-staged workshop environment has python version `3.11.8`, but make a note of the version in your environment if you have built your own, whichever you are running.
+
 ### Your remote machine
 
-Your remote machine could be your laptop or a machine at another facility.  This remote machine will be the location from which you will send functions to the Globus Compute service.  You will need an environment with python 3.8+ to install the required globus compute client packages on the remote machine.  It's also recommended that you use the same python version on the remote machine as you are using on Polaris.  This may not be necessary for all functions, but the serialization and deserialization steps that Globus Compute will put your function through on the different machines may lead to incompatibility issues with different versions.  For this workshop, the functions we will test will be simple and this likely won't be an issue.
+Your remote machine could be your laptop or a machine at another facility.  This remote machine will be the location from which you will send functions to the Globus Compute service.  You will need an environment with python 3.8+ to install the required globus compute client packages on the remote machine.  **It is recommended that you use the same major python version on the remote machine as you are using on Polaris.**  This may not be necessary for all functions, but the serialization and deserialization steps that Globus Compute will put your function through on the different machines may lead to incompatibility issues with different versions.  For this workshop, the functions we will test will be simple and this likely won't be an issue.
 
-You will need to install the package `globus-compute-sdk` in this environment.  As an example, on a laptop running Mac OS with python installed through miniconda, a virtual python enviroment could be created like this:
+You will need to install the package `globus-compute-sdk` in this environment.  As an example, on a laptop running Mac OS with python installed through miniconda, a conda environment could be installed like this:
 ```bash
-# Create remote machine virtual environment
-python -m venv env
-source env/bin/activate
+# Create remote machine conda environment with the same python version as the environment on Polaris
+conda create -n workshop python==3.11.8
+conda activate workshop
 
 # Install globus compute client module
 pip install globus-compute-sdk
@@ -108,6 +117,8 @@ engine:
         min_blocks: 0
         max_blocks: 1
 ```
+
+The config `aurora_config.yaml` can be used in the same way to set up an endpoint on Aurora that will run on worker per GPU tile.
 
 There will be a command line tool `globus-compute-endpoint` in your path that will allow you to manage your endpoint process.  
 
