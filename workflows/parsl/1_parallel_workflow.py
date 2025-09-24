@@ -20,8 +20,10 @@ with parsl.load():
     for i in range(5):
         rand_nums.append(generate(10, i))
 
+    print("Submitted tasks, waiting for results...")
+    
     # Wait for all apps to finish and collect the results
     outputs = [i.result() for i in rand_nums]
 
     # Print results
-    print(outputs)
+    print(f"{outputs=}")

@@ -107,7 +107,7 @@ For example, visualize and execute the [05_dpnp_timing.py](./05_dpnp_timing.py) 
 Numba-dpex is Intel's Data Parallel Extension for Numba which allows users to apply Numba's JIT compiler and generate performant, parallel code on Intel's GPU.
 Its LLVM-based code generator implements a new kernel programming API (kapi) in pure Python that is modeled after the SYCL API.
 
-The example [06_numba-dpex.py](./07_numba-dpex.py) implements and launches simple vector addition as a range kernel.
+The example [06_numba-dpex.py](./06_numba-dpex.py) implements and launches simple vector addition as a range kernel.
 Range kernels implement a basic parallel-for calculation that is ideally suited for embarrassingly parallel operations, such as element-wise computations over n-dimensional arrays.
 
 
