@@ -105,11 +105,8 @@ Here we list some common changes that you may need to do to your PyTorch code in
    - model = model.to("cuda")
    + model = model.to("xpu")
    ```
-1. Convert model and loss criterion to `xpu`, and then call `ipex.optimize` for additional performance boost:
+1. (Optional, when using IPEX: call `ipex.optimize` for additional performance boost):
    ```python
-   device = torch.device('xpu')
-   model = model.to(device)
-   criterion = criterion.to(device)
    model, optimizer = ipex.optimize(model, optimizer=optimizer)
    ```
 
