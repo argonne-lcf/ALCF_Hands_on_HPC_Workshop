@@ -3,6 +3,11 @@
 Sam Foreman  
 2025-09-24
 
+> [!NOTE]
+> View online at:
+> [Training Foundation Models on Supercomputers – Sam Foreman](https://samforeman.me/talks/2025/09/24/)
+
+
 ## 👀 Scaling: Overview
 
 - ✅ **Goal**:
