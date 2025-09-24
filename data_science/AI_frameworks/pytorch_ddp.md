@@ -258,7 +258,7 @@ import torch
 + os.environ['MASTER_PORT'] = str(2345)
 + print(f"DDP: Hi from rank {RANK} of {SIZE} with local rank {LOCAL_RANK}. {MASTER_ADDR}")
 
-# DDP: initialize distributed communication with nccl backend
+# DDP: initialize distributed communication with xccl backend
 + torch.distributed.init_process_group(backend='xccl', init_method='env://', rank=int(RANK), world_size=int(SIZE))
 
 # DDP: pin GPU to local rank.
