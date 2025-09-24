@@ -20,13 +20,15 @@ There are several requirements to deploying an application through Globus Comput
 
 On Polaris, you will need to create a python virtual environment or a conda environment with the module `globus-compute-endpoint`.
 
-For the workshop, you can use the workshop python virtual environment:
+For the workshop, you can use the workshop python virtual environment.  You will also need to unload xalt:
 ```bash
-source /grand/alcf_training/workflows_2024/_env/bin/activate
+module unload xalt
+source /grand/alcf_training/workflows/_env/bin/activate
 ```
 
 To create your own environment:
 ```bash
+module unload xalt
 module load conda
 conda activate base
 python -m venv env
@@ -34,15 +36,22 @@ source env/bin/activate
 pip install globus-compute-endpoint
 ```
 
+Also, verify the version of python you are running on Polaris:
+```bash
+python --version
+```
+
+The pre-staged workshop environment has python version `3.11.8`, but make a note of the version in your environment if you have built your own, whichever you are running.
+
 ### Your remote machine
 
-Your remote machine could be your laptop or a machine at another facility.  This remote machine will be the location from which you will send functions to the Globus Compute service.  You will need an environment with python 3.8+ to install the required globus compute client packages on the remote machine.  It's also recommended that you use the same python version on the remote machine as you are using on Polaris.  This may not be necessary for all functions, but the serialization and deserialization steps that Globus Compute will put your function through on the different machines may lead to incompatibility issues with different versions.  For this workshop, the functions we will test will be simple and this likely won't be an issue.
+Your remote machine could be your laptop or a machine at another facility.  This remote machine will be the location from which you will send functions to the Globus Compute service.  You will need an environment with python 3.8+ to install the required globus compute client packages on the remote machine.  **It is recommended that you use the same major python version on the remote machine as you are using on Polaris.**  This may not be necessary for all functions, but the serialization and deserialization steps that Globus Compute will put your function through on the different machines may lead to incompatibility issues with different versions.  For this workshop, the functions we will test will be simple and this likely won't be an issue.
 
-You will need to install the package `globus-compute-sdk` in this environment.  As an example, on a laptop running Mac OS with python installed through miniconda, a virtual python enviroment could be created like this:
+You will need to install the package `globus-compute-sdk` in this environment.  As an example, on a laptop running Mac OS with python installed through miniconda, a conda environment could be installed like this:
 ```bash
-# Create remote machine virtual environment
-python -m venv env
-source env/bin/activate
+# Create remote machine conda environment with the same python version as the environment on Polaris
+conda create -n workshop python==3.11.8
+conda activate workshop
 
 # Install globus compute client module
 pip install globus-compute-sdk
@@ -109,6 +118,8 @@ engine:
         max_blocks: 1
 ```
 
+The config `aurora_config.yaml` can be used in the same way to set up an endpoint on Aurora that will run on worker per GPU tile.
+
 There will be a command line tool `globus-compute-endpoint` in your path that will allow you to manage your endpoint process.  
 
 Congiure and start the endpoint:
@@ -149,7 +160,7 @@ from globus_compute_sdk import Executor
 def add_func(a, b):
     return a + b
 
-# Paste your endpoint id here
+# Paste your endpoint id here, e.g.
 endpoint_id = ''
 
 # ... then create the executor, ...
@@ -157,8 +168,11 @@ with Executor(endpoint_id=endpoint_id) as gce:
     # ... then submit for execution, ...
     future = gce.submit(add_func, 5, 10)
 
+    print("Submitted task to remote endpoint, waiting for result...")
+
     # ... and finally, wait for the result
-    print(future.result())
+    print(f"Remote result returned: add_func result={future.result()}")
+
 ```
 
 ## Register a function with Globus Service (1_register_function.py)
@@ -215,24 +229,24 @@ from globus_compute_sdk import Executor
 
 # This script is intended to be run from your remote machine
 
-# Paste your endpoint id here, e.g.
-# endpoint_id = 'c0396551-2870-45f2-a2aa-70991eb120a4'
+# Paste your endpoint id here
 endpoint_id = ''
 
-# Paste your hello_affinity function id here, e.g.
-# affinity_func_id = '86afdb48-04e8-4e58-bfd1-cb2d8610a722'
+# Paste your hello_affinity function id here
 affinity_func_id = ''
 
 # Set a directory where application will run on Polaris file system
 run_dir = '$HOME/workshop_globus_compute'
 
+# Get an Executor client
 gce = Executor(endpoint_id=endpoint_id)
 
-# Create tasks.  Task ids are saved t
-task_ids = []
+# Create tasks.  Task ids are saved to list tasks
 tasks = []
-for i in range(4):
+for i in range(32):
     tasks.append(gce.submit_to_registered_function(args=[f"{run_dir}/{i}"], function_id=affinity_func_id))
+
+print("Submitted tasks to remote endpoint, waiting for results...")
 
 # Wait for tasks to return
 for t in tasks:
@@ -240,10 +254,14 @@ for t in tasks:
 
 print("Affinity Reported! \n")
 
+print("Details on task execution:")
 # Print task execution details
+# First get a client
 gcc = Client()
+# Loop through tasks and get task record
 for t in tasks:
     print(gcc.get_task(t.task_id),"\n")
+
 ```
 
 # Next Steps
