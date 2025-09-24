@@ -10,7 +10,7 @@ endpoint_id = ''
 affinity_func_id = ''
 
 # Prestaged endpoint and function as backup for live demo:
-# endpoint_id = '899ce0d3-c81f-4d56-b84d-8589f6b200a7'
+# endpoint_id = '315217a9-62e3-4bc0-b624-2f887d0b79e3'
 # affinity_func_id = '7755343d-b082-4a55-afcf-33f30d517bb9'
 
 # Set a directory where application will run on Polaris file system

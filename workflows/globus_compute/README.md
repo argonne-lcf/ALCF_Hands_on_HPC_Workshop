@@ -160,7 +160,7 @@ from globus_compute_sdk import Executor
 def add_func(a, b):
     return a + b
 
-# Paste your endpoint id here
+# Paste your endpoint id here, e.g.
 endpoint_id = ''
 
 # ... then create the executor, ...
@@ -168,8 +168,11 @@ with Executor(endpoint_id=endpoint_id) as gce:
     # ... then submit for execution, ...
     future = gce.submit(add_func, 5, 10)
 
+    print("Submitted task to remote endpoint, waiting for result...")
+
     # ... and finally, wait for the result
-    print(future.result())
+    print(f"Remote result returned: add_func result={future.result()}")
+
 ```
 
 ## Register a function with Globus Service (1_register_function.py)
@@ -226,24 +229,24 @@ from globus_compute_sdk import Executor
 
 # This script is intended to be run from your remote machine
 
-# Paste your endpoint id here, e.g.
-# endpoint_id = 'c0396551-2870-45f2-a2aa-70991eb120a4'
+# Paste your endpoint id here
 endpoint_id = ''
 
-# Paste your hello_affinity function id here, e.g.
-# affinity_func_id = '86afdb48-04e8-4e58-bfd1-cb2d8610a722'
+# Paste your hello_affinity function id here
 affinity_func_id = ''
 
 # Set a directory where application will run on Polaris file system
 run_dir = '$HOME/workshop_globus_compute'
 
+# Get an Executor client
 gce = Executor(endpoint_id=endpoint_id)
 
-# Create tasks.  Task ids are saved t
-task_ids = []
+# Create tasks.  Task ids are saved to list tasks
 tasks = []
-for i in range(4):
+for i in range(32):
     tasks.append(gce.submit_to_registered_function(args=[f"{run_dir}/{i}"], function_id=affinity_func_id))
+
+print("Submitted tasks to remote endpoint, waiting for results...")
 
 # Wait for tasks to return
 for t in tasks:
@@ -251,10 +254,14 @@ for t in tasks:
 
 print("Affinity Reported! \n")
 
+print("Details on task execution:")
 # Print task execution details
+# First get a client
 gcc = Client()
+# Loop through tasks and get task record
 for t in tasks:
     print(gcc.get_task(t.task_id),"\n")
+
 ```
 
 # Next Steps

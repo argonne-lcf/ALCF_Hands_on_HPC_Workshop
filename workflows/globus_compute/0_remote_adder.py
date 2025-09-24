@@ -13,7 +13,7 @@ def add_func(a, b):
 endpoint_id = ''
 
 # Pre-staged endpoint for the live demo as a backup
-# endpoint_id = '899ce0d3-c81f-4d56-b84d-8589f6b200a7'
+# endpoint_id = '315217a9-62e3-4bc0-b624-2f887d0b79e3'
 
 # ... then create the executor, ...
 with Executor(endpoint_id=endpoint_id) as gce:
