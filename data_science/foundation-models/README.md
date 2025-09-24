@@ -3,7 +3,6 @@
 Sam Foreman  
 2025-09-24
 
-
 ## 👀 Scaling: Overview
 
 - ✅ **Goal**:
@@ -298,34 +297,6 @@ Parallel](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
 >   - Failure to do so will result in other ranks waiting
 >     **indefinitely**
 
-### 🤔 Plan of Attack
-
-<div id="fig-scaling-strategy-mermaid">
-
-``` mermaid
-flowchart TB
-    A{"Model Perfect?"}
-    A -- no --> M{"Available Memory?"}
-    A -- yes --> AD["Done"]
-    M -- yes --> MY["Make Model Larger"]
-    M -- no --> ZMP["Free Up Memory"]
-    MY --> A
-    ZMP --> MP["TP (or) ZeRO (or) Act. Ckpt."]
-    MP --> MY
-    A:::block
-    M:::block
-    AD:::block
-    MY:::block
-    ZMP:::block
-    MP:::block
-    classDef text fill:#CCCCCC02,stroke:#838383,stroke-width:0px,color:#838383
-    classDef block fill:#CCCCCC02,stroke:#838383,stroke-width:1px,color:#838383
-```
-
-Figure 5: General strategy for scaling model training
-
-</div>
-
 ### 🚧 Common Pitfalls
 
 <div class="flex-container">
@@ -357,7 +328,7 @@ classDef block fill:#CCCCCC02,stroke:#838383,stroke-width:1px,font-weight:500,co
 class 0,1,2,3,N,X,CKPT block
 ```
 
-Figure 6: To ensure all workers have the same copies, we load on
+Figure 5: To ensure all workers have the same copies, we load on
 `RANK==0` and `broadcast`
 
 </div>
@@ -401,6 +372,34 @@ Figure 6: To ensure all workers have the same copies, we load on
 >
 > Keeping the communication to computation ratio small is important for
 > effective scaling.
+
+### 🤔 Plan of Attack
+
+<div id="fig-scaling-strategy-mermaid">
+
+``` mermaid
+flowchart TB
+    A{"Model Perfect?"}
+    A -- no --> M{"Available Memory?"}
+    A -- yes --> AD["Done"]
+    M -- yes --> MY["Make Model Larger"]
+    M -- no --> ZMP["Free Up Memory"]
+    MY --> A
+    ZMP --> MP["TP (or) ZeRO (or) Act. Ckpt."]
+    MP --> MY
+    A:::block
+    M:::block
+    AD:::block
+    MY:::block
+    ZMP:::block
+    MP:::block
+    classDef text fill:#CCCCCC02,stroke:#838383,stroke-width:0px,color:#838383
+    classDef block fill:#CCCCCC02,stroke:#838383,stroke-width:1px,color:#838383
+```
+
+Figure 6: General strategy for scaling model training
+
+</div>
 
 ## 🚀 Going Beyond Data Parallelism
 
@@ -706,69 +705,66 @@ Figure 13: AERIS: Scaling Results
     ezpz_setup_env
     ```
 
-    - <details closed>
 
-      <summary>
+- <details closed><summary>Output:</summary>
 
-      Output:
-      </summary>
+  ``` bash
+  ; source <(curl -L https://bit.ly/ezpz-utils) && ezpz_setup_env
+  [2025-05-05-072645][W] PBS_O_WORKDIR is not set! Setting it to current working directory
+  [2025-05-05-072645][I] Exporting PBS_O_WORKDIR=/lus/flare/projects/datascience/foremans/projects/saforem2/ezpz
+  [2025-05-05-072645][I]  ===== Running Full Environment Setup =====
+  [2025-05-05-072645][I] [PYTHON]
+  [2025-05-05-072645][I]   - No conda_prefix OR virtual_env found in environment. Setting up conda...
+  [2025-05-05-072645][I] Setting up conda on aurora
+  [2025-05-05-072647][I] List of active modules:
 
-      ``` bash
-      ; source <(curl -L https://bit.ly/ezpz-utils) && ezpz_setup_env
-      [2025-05-05-072645][W] PBS_O_WORKDIR is not set! Setting it to current working directory
-      [2025-05-05-072645][I] Exporting PBS_O_WORKDIR=/lus/flare/projects/datascience/foremans/projects/saforem2/ezpz
-      [2025-05-05-072645][I]  ===== Running Full Environment Setup =====
-      [2025-05-05-072645][I] [PYTHON]
-      [2025-05-05-072645][I]   - No conda_prefix OR virtual_env found in environment. Setting up conda...
-      [2025-05-05-072645][I] Setting up conda on aurora
-      [2025-05-05-072647][I] List of active modules:
+  Currently Loaded Modules:
+      1) gcc-runtime/13.3.0-ghotoln (H)   7) libiconv/1.17-jjpb4sl         (H)  13) cray-pals/1.4.0
+      2) gmp/6.3.0-mtokfaw          (H)   8) libxml2/2.13.5                     14) cray-libpals/1.4.0
+      3) mpfr/4.2.1-gkcdl5w         (H)   9) hwloc/2.11.3-mpich-level-zero      15) pti-gpu/0.11.0
+      4) mpc/1.3.1-rdrlvsl          (H)  10) yaksa/0.3-7ks5f26             (H)  16) frameworks/2025.0.0
+      5) gcc/13.3.0                      11) mpich/opt/develop-git.6037a7a
+      6) oneapi/release/2025.0.5         12) libfabric/1.22.0
 
-      Currently Loaded Modules:
-          1) gcc-runtime/13.3.0-ghotoln (H)   7) libiconv/1.17-jjpb4sl         (H)  13) cray-pals/1.4.0
-          2) gmp/6.3.0-mtokfaw          (H)   8) libxml2/2.13.5                     14) cray-libpals/1.4.0
-          3) mpfr/4.2.1-gkcdl5w         (H)   9) hwloc/2.11.3-mpich-level-zero      15) pti-gpu/0.11.0
-          4) mpc/1.3.1-rdrlvsl          (H)  10) yaksa/0.3-7ks5f26             (H)  16) frameworks/2025.0.0
-          5) gcc/13.3.0                      11) mpich/opt/develop-git.6037a7a
-          6) oneapi/release/2025.0.5         12) libfabric/1.22.0
+      Where:
+      H:  Hidden Module
 
-          Where:
-          H:  Hidden Module
+  [2025-05-05-072647][I]   - Setting up venv from conda=/opt/aurora/24.347.0/frameworks/aurora_nre_models_frameworks-2025.0.0...
+  [2025-05-05-072647][I]   - Found conda at /opt/aurora/24.347.0/frameworks/aurora_nre_models_frameworks-2025.0.0
+  [2025-05-05-072647][I]   - No VIRTUAL_ENV found in environment!
+  [2025-05-05-072647][I]   - Looking for venv in VENV_DIR=./venvs/aurora_nre_models_frameworks-2025.0.0...
+  [2025-05-05-072647][I]   - Activating existing venv in VENV_DIR=venvs/aurora_nre_models_frameworks-2025.0.0
+  [2025-05-05-072647][I]   - Using python from: /lus/flare/projects/datascience/foremans/projects/saforem2/ezpz/venvs/aurora_nre_models_frameworks-2025.0.0/bin/python3
+  [2025-05-05-072647][I] [JOB]
+  [2025-05-05-072647][I]   - Setting up job for foremans
+  [2025-05-05-072647][I]   - Machine: aurora
+  [2025-05-05-072647][I]   - Hostname: x4318c6s6b0n0
+  [2025-05-05-072647][I] [ezpz_get_pbs_env]
+  [2025-05-05-072647][I]   - hostfile=/var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+  [2025-05-05-072647][I]   - jobenv_file=/home/foremans/.pbsenv
+  [2025-05-05-072648][I] [HOSTS]
+  [2025-05-05-072648][I]   - HOSTFILE=/var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+  [2025-05-05-072648][I]   - NHOSTS=2
+  [2025-05-05-072648][I]   - HOSTS:
+  [2025-05-05-072648][I]     - [host:0] - x4318c6s5b0n0.hostmgmt2318.cm.aurora.alcf.anl.gov
+  [2025-05-05-072648][I]     - [host:1] - x4318c6s6b0n0.hostmgmt2318.cm.aurora.alcf.anl.gov
+  [2025-05-05-072648][I] [DIST_INFO]
+  [2025-05-05-072648][I]   - HOSTFILE=/var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+  [2025-05-05-072648][I]   - NHOSTS=2
+  [2025-05-05-072648][I]   - NGPU_PER_HOST=12
+  [2025-05-05-072648][I]   - NGPUS=24
+  [2025-05-05-072648][I] [LAUNCH]
+  [2025-05-05-072648][I]   - To launch across all available GPUs, use: 'launch'
+  [2025-05-05-072648][I]     launch = mpiexec --verbose --envall -n 24 -ppn 12 --hostfile /var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov --cpu-bind depth -d 8 --no-vni
+  [2025-05-05-072648][I]   - Run 'which launch' to ensure that the alias is set correctly
+  [2025-05-05-072648][I] ===== Environment Setup Complete =====
+  took: 0h:00m:03s
+  ```
 
-      [2025-05-05-072647][I]   - Setting up venv from conda=/opt/aurora/24.347.0/frameworks/aurora_nre_models_frameworks-2025.0.0...
-      [2025-05-05-072647][I]   - Found conda at /opt/aurora/24.347.0/frameworks/aurora_nre_models_frameworks-2025.0.0
-      [2025-05-05-072647][I]   - No VIRTUAL_ENV found in environment!
-      [2025-05-05-072647][I]   - Looking for venv in VENV_DIR=./venvs/aurora_nre_models_frameworks-2025.0.0...
-      [2025-05-05-072647][I]   - Activating existing venv in VENV_DIR=venvs/aurora_nre_models_frameworks-2025.0.0
-      [2025-05-05-072647][I]   - Using python from: /lus/flare/projects/datascience/foremans/projects/saforem2/ezpz/venvs/aurora_nre_models_frameworks-2025.0.0/bin/python3
-      [2025-05-05-072647][I] [JOB]
-      [2025-05-05-072647][I]   - Setting up job for foremans
-      [2025-05-05-072647][I]   - Machine: aurora
-      [2025-05-05-072647][I]   - Hostname: x4318c6s6b0n0
-      [2025-05-05-072647][I] [ezpz_get_pbs_env]
-      [2025-05-05-072647][I]   - hostfile=/var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
-      [2025-05-05-072647][I]   - jobenv_file=/home/foremans/.pbsenv
-      [2025-05-05-072648][I] [HOSTS]
-      [2025-05-05-072648][I]   - HOSTFILE=/var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
-      [2025-05-05-072648][I]   - NHOSTS=2
-      [2025-05-05-072648][I]   - HOSTS:
-      [2025-05-05-072648][I]     - [host:0] - x4318c6s5b0n0.hostmgmt2318.cm.aurora.alcf.anl.gov
-      [2025-05-05-072648][I]     - [host:1] - x4318c6s6b0n0.hostmgmt2318.cm.aurora.alcf.anl.gov
-      [2025-05-05-072648][I] [DIST_INFO]
-      [2025-05-05-072648][I]   - HOSTFILE=/var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
-      [2025-05-05-072648][I]   - NHOSTS=2
-      [2025-05-05-072648][I]   - NGPU_PER_HOST=12
-      [2025-05-05-072648][I]   - NGPUS=24
-      [2025-05-05-072648][I] [LAUNCH]
-      [2025-05-05-072648][I]   - To launch across all available GPUs, use: 'launch'
-      [2025-05-05-072648][I]     launch = mpiexec --verbose --envall -n 24 -ppn 12 --hostfile /var/spool/pbs/aux/4671985.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov --cpu-bind depth -d 8 --no-vni
-      [2025-05-05-072648][I]   - Run 'which launch' to ensure that the alias is set correctly
-      [2025-05-05-072648][I] ===== Environment Setup Complete =====
-      took: 0h:00m:03s
-      ```
+</details>
 
-    </details>
 
-#### 🔍 Environment Setup with `ezpz_setup_env`
+### 🔍 Environment Setup with `ezpz_setup_env`
 
 - Wrapper around `ezpz_setup_job` `&&` `ezpz_setup_python`
 
