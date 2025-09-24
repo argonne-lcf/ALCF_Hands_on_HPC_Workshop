@@ -5,15 +5,15 @@ from globus_compute_sdk import Executor
 # Scripts adapted from Globus Compute docs
 # https://globus-compute.readthedocs.io/en/latest/quickstart.html
 
-
 # First, define the function ...
 def add_func(a, b):
     return a + b
 
-
 # Paste your endpoint id here, e.g.
-# endpoint_id = 'c0396551-2870-45f2-a2aa-70991eb120a4'
 endpoint_id = ''
+
+# Pre-staged endpoint for the live demo as a backup
+# endpoint_id = '899ce0d3-c81f-4d56-b84d-8589f6b200a7'
 
 # ... then create the executor, ...
 with Executor(endpoint_id=endpoint_id) as gce:
@@ -23,4 +23,4 @@ with Executor(endpoint_id=endpoint_id) as gce:
     print("Submitted task to remote endpoint, waiting for result...")
 
     # ... and finally, wait for the result
-    print(future.result())
+    print(f"Remote result returned: add_func result={future.result()}")

@@ -2,10 +2,11 @@ engine:
     # This engine uses the HighThroughputExecutor
     type: GlobusComputeEngine
 
-    available_accelerators: 4 # Assign one worker per GPU
-    max_workers_per_node: 4
+    available_accelerators: 12 # Assign one worker per GPU tile
+    max_workers_per_node: 12
     
-    cpu_affinity: "list:24-31,56-63:16-23,48-55:8-15,40-47:0-7,32-39"
+    # Optimal binding of cpu threads to gpus on Aurora
+    cpu_affinity: "list:1-8,105-112:9-16,113-120:17-24,121-128:25-32,129-136:33-40,137-144:41-48,145-152:53-60,157-164:61-68,165-172:69-76,173-180:77-84,181-188:85-92,189-196:93-100,197-204"
     
     prefetch_capacity: 0  # Increase if you have many more tasks than workers                                              
     max_retries_on_system_failure: 2
@@ -26,14 +27,13 @@ engine:
 
         account: alcf_training
         queue: alcf_training
-        cpus_per_node: 64
-        select_options: ngpus=4
+        cpus_per_node: 208
 
         # e.g., "#PBS -l filesystems=home:grand:eagle\n#PBS -k doe"
-        scheduler_options: "#PBS -l filesystems=home:eagle:grand"
+        scheduler_options: "#PBS -l filesystems=home:flare"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "module unload xalt; source /grand/alcf_training/workflows/_env/bin/activate; export TMPDIR=/tmp; cd $HOME/.globus_compute/workshop-endpoint"
+        worker_init: "source /flare/alcf_training/workflows/_env/bin/activate; cd $HOME/.globus_compute/workshop-endpoint"
 
         walltime: 00:30:00
         nodes_per_block: 1

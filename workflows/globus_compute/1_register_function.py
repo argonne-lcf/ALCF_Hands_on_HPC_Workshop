@@ -1,7 +1,6 @@
-import globus_compute_sdk
+from globus_compute_sdk import Client
 
 # This script is intended to be run from your remote machine
-
 
 # Define a function that calls executable on Polaris
 def hello_affinity(run_directory):
@@ -13,7 +12,7 @@ def hello_affinity(run_directory):
     os.chdir(os.path.expandvars(run_directory))
 
     # This is the command that calls the compiled executable
-    command = "/grand/alcf_training/workflows_2024/GettingStarted/Examples/Polaris/affinity_gpu/hello_affinity"
+    command = "/grand/alcf_training/workflows/GettingStarted/Examples/Polaris/affinity_gpu/hello_affinity"
 
     # This runs the application command
     res = subprocess.run(command.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -33,6 +32,6 @@ def hello_affinity(run_directory):
         return res.returncode, res.stdout.decode("utf-8"), res.stderr.decode("utf-8")
 
 
-gc = globus_compute_sdk.Client()
-fusion_func = gc.register_function(hello_affinity)
-print(f"Registered hello_affinity; id {fusion_func}")
+gcc = Client()
+func_id = gcc.register_function(hello_affinity)
+print(f"Registered hello_affinity; id {func_id}")
