@@ -25,13 +25,13 @@ The repository currently contains two examples, one running the workflow in a re
 
 ### Multi-System (Remote) Workflow
 
-In a multi-system or remote deployment of the workflow, the agents run and launch the computtional components of the workflow in various ALCF or local systems.
+In a multi-system or remote deployment of the workflow, the agents run and launch the computational components of the workflow in various ALCF or local systems.
 In particular, the LLMs are served remotely, for example using the [ALCF Inference Endpoints](https://docs.alcf.anl.gov/services/inference-endpoints/).
 
 Advantages of remote agentic workflows include:
 * Lower implementation complexity
 * Workflows can leverage ALCF services
-* Users can target specific systems with each pf the computational components, making efficient use of their allocation
+* Users can target specific systems with each of the computational components, making efficient use of their allocation
 * Better support for long-running workflows since the agents can run on local systems or login nodes
 
 Disadvantages of remote agentic workflows include:
@@ -49,5 +49,30 @@ Notes for running the example during the ALCF Hands-On Workshop:
 
 ### Single-System (Local) Workflow
 
+In a single-system or local deployment of the workflow, the agents and all computational components run on the same system, and even within the same batch job.
+In particular, the LLMs are served locally on the compute nodes of the system, for example using [vLLM](https://docs.alcf.anl.gov/aurora/data-science/inference/vllm/).
 
+Advantages of local agentic workflows include:
+* Lower latency between tasks
+* Running tasks bypassing the scheduler and system queues
+
+Disadvantages of local agentic workflows include:
+* Higher implementation complexity (need to serve LLMs locally)
+* Subject to queue limitations (e.g., maximum run time)
+* May consume allocation inefficiently 
+
+An example of a local agentic workflow using the Polaris or Aurora systems at ALCF can be found [here](https://github.com/argonne-lcf/alcf-agentics-workflow/tree/main/localWorkflow).
+
+
+Notes for running the example during the ALCF Hands-On Workshop:
+* The model weights for the `Llama-2-7b-chat-hf` model have been made available in the workshop project space on the Eagle file system. Thus, the environment variables can be set up as follows
+```
+export HF_HOME=/eagle/alcf_training/model-weights/hub
+export HF_DATASETS_CACHE=/eagle/alcf_training/model-weights/hub
+export MODEL=meta-llama/Llama-2-7b-chat-hf
+export TMPDIR="/tmp"
+export HF_TOKEN="your_huggingface_token"
+```
+* When requesting an interactive node on Polaris or Aurora, make sure to use the appropriate queue and allocation names for the workshop. For this workshop, set both the queue and account names to `alcf_training`.
+* It is useful to run the workflow with the `--log-level DEBUG` flag to get more detailed logging during each of the steps.
 
