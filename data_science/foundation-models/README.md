@@ -6,7 +6,7 @@ Sam Foreman
 ## 👀 Scaling: Overview
 
 - ✅ **Goal**:
-  - Minimize: <span class="highlight-red">Cost</span> (i.e. amount of
+  - Minimize: <span class="highlight-red">Cost</span> (i.e. amount of
     time spent training)
   - Maximize: <span class="highlight-blue">Performance</span>
 
@@ -55,7 +55,7 @@ class x3, grey
 class N0,D,G0,n0 block
 ```
 
-Figure 1: **SLOW** !! model size limited by GPU memory
+Figure 1: **SLOW** !! model size limited by GPU memory
 
 </div>
 
@@ -115,7 +115,7 @@ class AR block
 class bc text
 ```
 
-Figure 2: Each GPU receives **unique** data at each step
+Figure 2: Each GPU receives **unique** data at each step
 
 </div>
 
@@ -178,7 +178,7 @@ class AR block
 class bc text
 ```
 
-Figure 3: Average gradients across all GPUs
+Figure 3: Average gradients across all GPUs
 
 </div>
 
@@ -242,7 +242,7 @@ class BC block
 class bc text
 ```
 
-Figure 4: Send global updates back to each GPU. See: [PyTorch /
+Figure 4: Send global updates back to each GPU. See: [PyTorch /
 Distributed Data
 Parallel](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
 
@@ -304,7 +304,7 @@ Parallel](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
 <div class="column">
 
 - Each worker needs to be fed a **unique** batch of data at each step
-- Only perform File I/O on one worker (i.e. `rank==0`)
+- Only perform File I/O on one worker (i.e. `rank==0`)
   - When loading from a checkpoint, read in on one worker and broadcast
     to others
 - Collective operations must be called by **all** workers
@@ -328,7 +328,7 @@ classDef block fill:#CCCCCC02,stroke:#838383,stroke-width:1px,font-weight:500,co
 class 0,1,2,3,N,X,CKPT block
 ```
 
-Figure 5: To ensure all workers have the same copies, we load on
+Figure 5: To ensure all workers have the same copies, we load on
 `RANK==0` and `broadcast`
 
 </div>
@@ -397,7 +397,7 @@ flowchart TB
     classDef block fill:#CCCCCC02,stroke:#838383,stroke-width:1px,color:#838383
 ```
 
-Figure 6: General strategy for scaling model training
+Figure 6: General strategy for scaling model training
 
 </div>
 
@@ -427,7 +427,7 @@ Figure 6: General strategy for scaling model training
 
 <img src="./assets/zero.png" style="width:70.0%" />
 
-Figure 7: [DeepSpeed](deepspeed.ai) +
+Figure 7: [DeepSpeed](deepspeed.ai) +
 [`ZeRO`](https://www.deepspeed.ai/tutorials/zero-offload/)
 
 </div>
@@ -508,7 +508,7 @@ class a1, blue
 class b1, yellow
 ```
 
-Figure 8: Pipeline Parallelism
+Figure 8: Pipeline Parallelism
 
 </div>
 
@@ -575,7 +575,7 @@ flowchart LR
   t2("`x₂`") --> X2
 ```
 
-Figure 11
+Figure 11
 
 </div>
 
@@ -590,7 +590,7 @@ Figure 11
 <img src="./assets/mprot-3p5B-scaling-2.svg"
 style="margin:0; padding-unset;;width:100.0%" />
 
-Figure 12: Scaling results for `3.5B` model across ~38,400 GPUs
+Figure 12: Scaling results for `3.5B` model across ~38,400 GPUs
 
 </div>
 
@@ -619,7 +619,7 @@ Figure 12: Scaling results for `3.5B` model across ~38,400 GPUs
 
 ![](./assets/aeris-scaling.svg)
 
-Figure 13: AERIS: Scaling Results
+Figure 13: AERIS: Scaling Results
 
 </div>
 
@@ -705,8 +705,12 @@ Figure 13: AERIS: Scaling Results
     ezpz_setup_env
     ```
 
+- <details closed>
 
-- <details closed><summary>Output:</summary>
+  <summary>
+
+  Output:
+  </summary>
 
   ``` bash
   ; source <(curl -L https://bit.ly/ezpz-utils) && ezpz_setup_env
@@ -763,7 +767,6 @@ Figure 13: AERIS: Scaling Results
 
 </details>
 
-
 ### 🔍 Environment Setup with `ezpz_setup_env`
 
 - Wrapper around `ezpz_setup_job` `&&` `ezpz_setup_python`
@@ -789,7 +792,7 @@ Figure 13: AERIS: Scaling Results
     jobs
 - 🪄 *Automagically*:
   - Determine the specifics of our active (PBS, SLURM) job  
-    (e.g. `${NHOSTS}`, `${NGPU_PER_HOST}`, `${NGPUS}`, …)
+    (e.g. `${NHOSTS}`, `${NGPU_PER_HOST}`, `${NGPUS}`, …)
   - Load the appropriate modules[^5]
   - Create (or activate) a virtual environment *on top* of a base conda
     environment
@@ -1944,7 +1947,7 @@ Systems Model for Reliable and Skillful Predictions.”
     <https://raw.githubusercontent.com/saforem2/ezpz/main/bin/utils.sh>
     is a bit of a pain
 
-[^4]: e.g. `${NHOSTS}`, `${NGPU_PER_HOST}`, `${NGPUS}`, …
+[^4]: e.g. `${NHOSTS}`, `${NGPU_PER_HOST}`, `${NGPUS}`, …
 
 [^5]: On any of the ALCF systems, including:
     [Aurora](https://alcf.anl.gov/aurora),
