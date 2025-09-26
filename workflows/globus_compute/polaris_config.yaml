@@ -33,7 +33,7 @@ engine:
         scheduler_options: "#PBS -l filesystems=home:eagle:grand"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "module unload xalt; source /grand/alcf_training/workflows/_env/bin/activate; cd $HOME/.globus_compute/workshop-backup"
+        worker_init: "module unload xalt; source /grand/alcf_training/workflows/_env/bin/activate; cd $HOME/.globus_compute/workshop-endpoint"
 
         walltime: 00:30:00
         nodes_per_block: 1
