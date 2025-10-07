@@ -56,19 +56,19 @@ The following are the minimal steps to run our simple examples on Aurora
 ### Clone the repository
 
 Once we have used `ssh` to log in to Aurora, from a login node, we can clone
-the [repository](https://github.com/argonne-lcf/ATPESC_MachineLearning/tree/kh-profiling-2025) 
+the [repository](https://github.com/argonne-lcf/ALCF_Hands_on_HPC_Workshop/tree/master) 
 and switch to the correct branch the following way
 
 ```bash
-git clone git@github.com:argonne-lcf/ATPESC_MachineLearning.git
-cd ATPESC_MachineLearning 
-git switch kh-profiling-2025
+git@github.com:argonne-lcf/ALCF_Hands_on_HPC_Workshop.git
+cd ALCF_Hands_on_HPC_Workshop
+git switch data_science_2025
 ```
 Now, that we have cloned the repository, we request a node for an interactive 
 session
 
 ```bash
-qsub -l select=1 -l walltime=00:59:00 -A ATPESC2025 -q ATPESC -l filesystems=home:flare -I
+qsub -l select=1 -l walltime=00:59:00 -A alcf_training -q alcf_training -l filesystems=home:flare -I
 ```
 _Note_: The `filesystems=home:flare` is necessary, because the `conda` 
 environment is coming from a world-readable location in `/lus/flare`
