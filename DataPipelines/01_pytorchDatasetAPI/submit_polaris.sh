@@ -1,10 +1,9 @@
 #!/bin/bash -l
 #PBS -l select=1
 #PBS -l walltime=00:20:00
-#PBS -l filesystems=eagle:home_fs
-#PBS -q debug
-#PBS -o logdir/
-#PBS -e logdir/
+#PBS -l filesystems=eagle:home
+#PBS -q alcf_training
+#PBS -A alcf_training
 
 cd $PBS_O_WORKDIR
 
