@@ -1,0 +1,62 @@
+This directory contains a small MPI+OpenMP program. Each MPI rank launches
+8 GPU threads and each offloads computation on a GPU tile using OpenMP TARGET.
+
+Type 'make' and the Makefile will tell you how to build and run the example
+
+Some exercises:
+1. The version of HPCToolkit you are using shows lots of blank lines in the
+   trace view. It begins to trace a series of level0 threads before realizing
+   that they are runtime threads that cannot safely be traced. These blank
+   lines clutter the display. hpcviewer has a solution for that.  Open: 
+      Filter->Filter Execution Contexts
+   In that view, you can click the button "uncheck all" to deselect what all
+   threads so that none will be shown in the trace view. You will notice a 
+   column that indicates how many samples have been recorded for each thread.
+   Many threads have only a few, e.g. < 6. If you type in a minimum sample 
+   count that you want for a thread to be displayed, e.g. 6, then you can 
+   select the 'Check All' button and close the menu. Back in the trace view,
+   you will see all of the mostly idle system threads disappear. 
+ 
+2. Similarly, in the Filter Execution Contexts view, you can uncheck all and
+   just show the GPU trace lines by typing GPU in the 'Filter' box. That will
+   restrict the lines shown to just those that represent GPU activity. Click
+   'Check All', close the pane, and you will see only the GPU trace lines.
+
+Suggestions and Questions:
+   Are the GPU tiles mostly busy or mostly idle? (You can see this on the GPU
+   timelines.)
+    
+   What fraction of the time is the GPU computing? Copying data? (You can see
+   this in the trace view by selecting the 'Statistics' pane next to the 'Call
+   Stack' pane.
+
+   What are the OpenMP threads doing on the CPU? Are they mostly computing or 
+   mostly idle? (You can see this by selecting all threads in the 
+   Filter Execution Contexts menu, then typing GPU in the Filter box, then 
+   Uncheck All. Look back at the result in the trace view.
+
+   Open the profile view. If you select the column GPU OPS (I), this shows 
+   inclusive costs of all call paths with GPU operations within. If you select
+   the <program root> scope, then hit the flame button while the GPU OPS (I) 
+   column is selected, you will be taken to the call path context where the
+   the cost of launching GPU operations is the highest.
+
+   For the context where the most costly GPU operation is initiated, where was
+   the GPU operation launched? (Hint: it is further up the call chain. Look for
+   twork (a user procedure in the program). Many of the contexts that you see
+   are the internals of the GPU runtime.
+
+   For the most costly GPU operation in the Top-down view in the calling context
+   tree, graph the cost in each of the execution contexts (processes, threads,
+   GPU streams). Select the button above the navigation pane that looks like a
+   grid of dots and decide what you want to compare and graph across the execution
+   contexts. 
+
+   Would fewer OpenMP threads improve the performance? Does the code use strong
+   scaling or weak scaling of work? (Is there a constant number of data elements
+   to compute that are partitioned across the threads, or does the work increase
+   with the number of threads? (You can experiment by collecting data for a different
+   number of threads per rank. The original execution uses 8 thread per rank?
+
+   Would applying CPU bindings and the gpu_compact.sh script used by qmcpack help
+   with performance? Try it and see.

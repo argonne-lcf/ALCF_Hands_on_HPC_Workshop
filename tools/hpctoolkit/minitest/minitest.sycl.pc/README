@@ -1,0 +1,20 @@
+This directory contains a small MPI program. Each MPI rank offloads
+a computation on a GPU tile using SYCL.
+
+Type 'make' for information about how to build the program, measure
+its performance, analyze resulting measurements, and view the 
+results.
+
+This example uses a preview of HPCToolkit's PC sampling support
+for performing instruction-level performance measurement of GPU
+kernels using sampling.
+
+The rightmost columns show GINS (GPU instruction count) and GPU_STL:ANY a
+measure of GPU instruction stalls collected using hardware support for PC
+sampling. Hidden are a collection of stall reasons. You can reveal these
+hidden columns using the column chooser. Any column that is grey-ed out
+means that there were no measurements recorded for this metric.
+
+During hpcprof then takes the counts for each machine instruction or
+stall and maps them back to source code lines, letting you know how many
+instruction instances executed on behalf of each source code line.
