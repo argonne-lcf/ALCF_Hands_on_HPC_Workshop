@@ -1,8 +1,9 @@
 # Building a CPU-side data pipeline
 
-Author: J. Taylor Childers (jchilders@anl.gov)
+Authors: Huihuo Zheng <huihuo.zheng@anl.gov> and J. Taylor Childers <jchilders@anl.gov>
 
 ## Learning Goals:
+- Understanding data pipelines and know available packages
 - Using the CPU on a system to build data batches in parallel as ML calculations are performed on the GPU
 - Using parallel processes on CPU to speed up the data pipeline process.
 - Do all this using the framework's (PyTorch, Tensorflow) data APIs
