@@ -1,0 +1,32 @@
+Description:
+
+  This directory contains a hands-on example where you will use HPCToolkit
+  to measure and analyze the performance of a prebuilt benchmark that is
+  part of QMCPACK - a sophisticated quantum Monte Carlo materials code
+  that was developed as part of the Exascale Computing Project. This is
+  a non-trivial example. The execution will use 12 MPI ranks and 12 GPU
+  tiles, read an input file of roughly 8GB in size and produce two output
+  files that are roughly 2GB each.
+
+Contents:
+
+  Makefile 
+    a makefile used to collect, analyze, and view performance measurements of
+    qmcpack using HPCToolkit's utilities: hpcrun, hpcstruct, hpcprof, and
+    hpcviewer
+
+  measure_qmcpack.sh
+    a script invoked by the Makefile to measure an execution of qmcpack on a
+    node of Aurora
+
+Directions:
+  0. If you haven't done this already, cd to the parent directory and source sourceme-aurora.sh
+  1. Run "make" with no arguments to learn how to use the Makefile commands to measure,
+     analyze, and view profiles and traces for qmcpack 
+
+Notes:
+  1. Using hpcrun to measure an execution of qmcpack will take about 2.5 minutes.
+  2. Running hpcstruct to analyze the 1.8GB of binaries measured in the execution of qmcpack
+     will take ~20s with HPCTOOLKIT_HPCSTRUCT_CACHE pointed at a warm structure cache (as
+     directed by item 0 above).
+  3. Running hpcprof to integrate measurements + binary analysis results will take about 1.5m 
