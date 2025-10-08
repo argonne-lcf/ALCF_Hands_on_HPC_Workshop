@@ -6,7 +6,7 @@ We present an overview of novel AI accelerators, namely Cerebras, SambaNova, Gra
 
 * **Time:** October 8, 2025
   * 1 - 2 PM: ALCF AI Testbeds
-* **Location:** 
+* **Location:** Room 1501
 
 
 
