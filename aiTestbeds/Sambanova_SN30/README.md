@@ -19,7 +19,7 @@ You can also ssh to `sn30-r1-h1 , sn30-r1-h2, sn30-r2-h1, sn30-r2-h2, sn30-r3-h1
 We use examples from Sambanova for this hands-on. 
 Copy those examples to your home directory. 
 ```bash
-cp -r /opt/sambaflow/apps/ ~
+cp -r /opt/sambaflow/apps/ ~/
 ```
 
 ## Create Virtual Environment 
@@ -30,7 +30,7 @@ Each of the samples or application examples provided by SambaNova has its own pr
 
 ## Hands-on Session Example 
 
-* [Unet2d](./gpt.md)
+* [Unet2d](./unet2d.md)
 
 ## Useful Directories 
 
