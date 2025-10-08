@@ -32,10 +32,6 @@ Each of the samples or application examples provided by SambaNova has its own pr
 
 * [GPT](./gpt.md)
 
-## Next Steps 
-
-* [Lenet](./lenet.md)
-
 ## Useful Directories 
 
 * Sambanova Applications Path : `/opt/sambaflow/apps`
