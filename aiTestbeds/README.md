@@ -12,7 +12,7 @@ We present an overview of novel AI accelerators, namely Cerebras, SambaNova, Gra
 
 ## Useful Links 
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
-+ [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
++ [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
 
 ##### Acknowledgements
