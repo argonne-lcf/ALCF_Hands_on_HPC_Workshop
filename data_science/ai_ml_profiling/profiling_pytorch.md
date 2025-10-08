@@ -74,11 +74,11 @@ _Note_: The `filesystems=home:flare` is necessary, because the `conda`
 environment is coming from a world-readable location in `/lus/flare`
 
 On the compute node, then from the inside of the 
-`ATPESC_MachineLearning/01advanced_profiling_deep_learning` directory we can
+`ALCF_Hands_on_HPC_Workshop/data_science/ai_ml_profiling` directory we can
 activate the `conda` environment
 
 ```bash
-source atpesc_2025_pytorch_2p8.env
+source hpc_hands_on_2025_pytorch_2p8.env
 export ZE_FLAT_DEVICE_HIERARCHY=FLAT ## Displays each 'tile' as a 'device'
 
 Python 3.10.18 | packaged by conda-forge | (main, Jun  4 2025, 14:45:41) [GCC 13.3.0] on linux
@@ -380,7 +380,8 @@ N ## Number of total ranks
 
 PPN ## Number of ranks per node
 ```
-For profiles shown here, I used `N=1, PPN=1`. I have tested the code to run and
+For profiles shown here, I used `N=2, PPN=2` and displayed the results for the 
+Rank 0 in each case. I have tested the code to run and
 profile up to 12 ranks per node, in 2 nodes. The code is set up to run at any 
 scale, _profiling can be challenging beyond a certain point because of resource 
 limitations_.
@@ -400,16 +401,23 @@ active.
 And, the timeline trace from the compiled model looks like:
 ![JIT Compiled Trace](./figures/xpu_compile_1.png)
 
-In the compiled trace, two important features are
+At a first glance the traces look very similar! But looking a bit closely to 
+the execution times of important kernels shows the consistency of execution in
+the compiled mode.
 
-- The consistency in execution of the two profiler steps. They are very similar
-in time span
-- The data-loading becomes faster in the second step, whereas it takes one more
-step for the non-compiled compute graph to offer similar execution time. This 
-is more likely to be compensated in the first iteration, where the compilation
-is happening. We do not record that step here -- would be interesting to see
-the execution time for the first step, but it is quite common to skip the first
-step when analyzing the execution pattern of an AI/ML application.
+As an example, the longest a `linear layer` kernel execution takes in the eager
+mode is ~1.5 ms, and the fastest is ~146 us. The difference is ~1.3 ms. 
+Whereas, the same in the compiled mode is ~710 us. 
+
+The data-loading becomes noticeably faster in the 3rd step of the compiled mode, 
+whereas it is quite close (~60 us) to the non-compiled compute graph in the 2nd 
+step. This is more likely to be compensated in the first iteration, 
+where the compilation is happening. We do not record that step here -- would be 
+interesting to see the execution time for the first step, but it is quite 
+common to skip the first
+step when analyzing the execution pattern of an AI/ML application. For really 
+long training runs, the signs are encouraging in the sense that in the compiled
+mode the data loading time becoming smaller in each step.
 
 One of the useful features of the perfetto viewer is collecting the slices with
 the same name and being able to sort them. If we click on a colored box, and 
@@ -426,11 +434,11 @@ For example, if we look at two important functions, the `linear layer` and the
 ![Attention Compile](./figures/attention_compile.png)
 
 We see that, the highest duration call of `Attention` in the modes are 
-different by ~5 ms, compiled being lower.
+different by ~25 us, eager being lower.
 
 Whereas, in the case of the `linear layer`, the highest duration call in the 
-eager mode is ~48 ms vs ~2 ms!! But the subsequent calls are almost ~2x higher 
-in the compiled case (~700 ms vs. ~310 ms). 
+eager mode is ~1.5 ms vs ~856 us!! And the lowest recorded call is ~146 us, 
+very close to each other. 
 
 ![Linear Eager](./figures/linear_eager.png)
 
@@ -439,7 +447,10 @@ in the compiled case (~700 ms vs. ~310 ms).
 Therefore, it is difficult to give a fixed strategy, at least for our "toy" use
 case. But from our experiments, we could see a more consistent execution times
 and patterns from the compiled case. For a real life workload, extensive 
-experimentation will be needed to device the optimal training strategy.
+experimentation will be needed to device the optimal training strategy. The 
+take home message would be to be aware that compile could bring extra 
+performance benefits for specific type of kernel execution, may not be 
+beneficial across the board. 
 
 ### An Exercise
 
