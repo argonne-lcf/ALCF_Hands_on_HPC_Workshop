@@ -6,16 +6,16 @@
 
 
 ```bash
-#Make your home directory navigable
-mkdir ~/R_2.5.0
-cd ~/R_2.5.0
-# Note: "deactivate" does not actually work in scripts.
-deactivate
-rm -r venv_cerebras_pt
-/software/cerebras/python3.8/bin/python3.8 -m venv venv_cerebras_pt
-source venv_cerebras_pt/bin/activate
-pip install --upgrade pip
-pip install -e modelzoo
+    #Make your home directory navigable
+    mkdir ~/R_2.5.0
+    cd ~/R_2.5.0
+    # Note: "deactivate" does not actually work in scripts.
+    deactivate
+    rm -r venv_cerebras_pt
+    /software/cerebras/python3.8/bin/python3.8 -m venv venv_cerebras_pt
+    source venv_cerebras_pt/bin/activate
+    pip install --upgrade pip
+    pip install -e modelzoo
 ```
 
 ## Clone Cerebras modelzoo
