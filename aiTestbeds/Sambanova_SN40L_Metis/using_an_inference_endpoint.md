@@ -4,7 +4,7 @@
 
 The endpoints running on the SambaStack SN40L cluster can be accessed from any internet-connected machine.
 
-The API endpoint information, including user-unique API keys, is stored in the AI-testbed home directory for your ALCF ai-testbed account. These files may be accessed from the login nodes for ALCF's SambaNova SN30 cluster; access to the SN30 cluster and the inference endpoints running on the SN40L SambaRacks is linked. See [ALCF Get Started](https://www.alcf.anl.gov/support-center/get-started) to request an account and for additional information.
+The API endpoint information, including user-unique API keys, is stored in the AI-testbed home directory for your ALCF ai-testbed account. These files may be accessed from the login nodes for ALCF's SambaNova SN30 cluster; access to the SN30 cluster and the inference endpoints running on the SN40L SambaRacks is linked. 
 
 ### Log into the sambanova login node to access endpoint API keys
 
