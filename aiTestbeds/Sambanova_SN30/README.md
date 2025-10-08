@@ -30,7 +30,7 @@ Each of the samples or application examples provided by SambaNova has its own pr
 
 ## Hands-on Session Example 
 
-* [GPT](./gpt.md)
+* [Unet2d](./gpt.md)
 
 ## Useful Directories 
 
