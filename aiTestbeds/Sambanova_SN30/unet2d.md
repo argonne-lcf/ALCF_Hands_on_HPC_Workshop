@@ -3,7 +3,7 @@
 ## UNet2D
 
 The UNet application example is provided in the the path : `/opt/sambaflow/apps/image/segmentation/`. As any other application, we first compile and then train the model using *compile* and *run* arguments respectively.
-The scripts containing the compile and run commands for UNet2D model can be accessed at [Unet2d.sh](./files/Unet2d.sh "Unet2d.sh") or at `/data/ANL/scripts/Unet2d.sh` on any SN30 compute node.
+The scripts containing the compile and run commands for UNet2D model can be accessed at [Unet2d.sh](./unet2d.sh "Unet2d.sh") or at `/data/ANL/scripts/Unet2d.sh` on any SN30 compute node.
 
 Change directory and copy files.
 
@@ -13,7 +13,7 @@ cd ~/apps/image/unet
 ```
 
 Copy and paste the contents of
-[Unet2d.sh](./files/Unet2d.sh "Unet2d.sh")
+[Unet2d.sh](./unet2d.sh "Unet2d.sh")
 to a file with the same name into the current directory using your favorite editor.
 
 ```bash
