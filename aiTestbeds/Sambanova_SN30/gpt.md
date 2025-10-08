@@ -1,10 +1,9 @@
 # GPT 1.5B on Sambanova
 
-## GPT 1.5B
-
 The GPT 1.5B application example is provided in the the path : `/opt/sambaflow/apps/nlp/transformers_on_rdu/`.
 The scripts containing the `compile` and `run` commands for the GPT 1.5B model can be accessed at the path `/data/ANL/scripts/1.24.1/legacy_models/Gpt1.5B_base_single_compile.sh` and `/data/ANL/scripts/1.24.1/legacy_models/Gpt1.5B_base_single_run.sh` on any SN30 compute node. This script is compiled and run for only 1 instance and the model fits on 4 tiles or half of a RDU. The scripts are provided for reference. 
 
+## Copy the compile and run scripts
 Change directory and copy files.
 
 ```bash
@@ -22,7 +21,7 @@ If you have already compiled for a previous version of the sambaflow stack, dele
 ```bash
 rm /data/scratch/$(whoami)/GPT1.5B_base_single_32/GPT1.5B_base_single_32/GPT1.5B_base_single_32.pef
 ```
-
+## Execute the scripts
 Run the script with batch size as an argument(shown below with an example of 32).
 
 ```bash
