@@ -23,16 +23,15 @@ pip install -e modelzoo
 We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/modelzoo) for this hands-on. 
 
 * Clone the modezoo repository.
-
-    ```bash
+```bash
     mkdir ~/R_2.5.0
-cd ~/R_2.5.0
-export HTTPS_PROXY=http://proxy.alcf.anl.gov:3128
-git clone https://github.com/Cerebras/modelzoo.git
-cd modelzoo
-git tag
-git checkout Release_2.5.0
-    ```
+    cd ~/R_2.5.0
+    export HTTPS_PROXY=http://proxy.alcf.anl.gov:3128
+    git clone https://github.com/Cerebras/modelzoo.git
+    cd modelzoo
+    git tag
+    git checkout Release_2.5.0
+```
 
 * Activate PyTorch virtual Environment 
     ```bash
