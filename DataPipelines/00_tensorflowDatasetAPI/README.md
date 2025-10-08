@@ -22,14 +22,14 @@ You can login to Polaris using:
 # our proxy port, must be > 1024
 export PORT=10001
 # login to theta with a port forwarding
-ssh -D $PORT user@polaris.alcf.anl.gov
+ssh -L localhost:$PORT:localhost:$PORT user@polaris.alcf.anl.gov
 # load any conda environment that has a compatible tensorboard installation
 module use /soft/modulefiles
 module load conda
 conda activate
 cd <path/to/dataPipelines/00_tensorflowDatasetAPI/>
 # start tensorboard (load_fast==false is a recent setting that seems to be needed until Tensorflow work's out the bugs)
-tensorboard --bind_all --logdir logdir
+tensorboard --bind_all --port $PORT --logdir logdir 
 ```
 Note the Port number that `tensorboard` reports when it starts up.
 
