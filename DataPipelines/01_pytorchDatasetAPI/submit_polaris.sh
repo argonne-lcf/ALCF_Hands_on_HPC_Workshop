@@ -4,11 +4,14 @@
 #PBS -l filesystems=eagle:home
 #PBS -q alcf_training
 #PBS -A alcf_training
+#PBS -j oe
+
+export TMPDIR=/tmp/
 
 cd $PBS_O_WORKDIR
 
 echo [$SECONDS] setup conda environment
-module use /soft/modulefiles
+
 module load conda
 conda activate
 
@@ -27,21 +30,14 @@ export MASTER_ADDR="localhost"
 export MASTER_PORT=12399
 echo [$SECONDS] MASTER_ADDR=$MASTER_ADDR  MASTER_PORT=$MASTER_PORT
 
-PROFILE='echo "--profile logdir/$PBS_JOBID/${OMP_NUM_THREADS}_${NUM_WORKERS}_${DEPTH}"'
+PROFILE='echo "--profile logdir/$PBS_JOBID/${NUM_WORKERS}_${DEPTH}"'
 # PROFILE='echo "--profile"'
 # PROFILE='echo ""'
 
-
-export OMP_NUM_THREADS=2
-NUM_WORKERS=2
-DEPTH=8
-echo [$SECONDS] run example with $OMP_NUM_THREADS:$NUM_WORKERS:$DEPTH threads
-mpiexec -n $RANKS --ppn $GPUS_PER_NODE --depth=$DEPTH --cpu-bind depth --env OMP_NUM_THREADS=$OMP_NUM_THREADS -env OMP_PLACES=threads \
+NUM_WORKERS=${NUM_WORKERS:-1}
+DEPTH=16
+echo [$SECONDS] run example with $NUM_WORKERS:$DEPTH threads
+mpiexec -n $RANKS --ppn $GPUS_PER_NODE --depth=$DEPTH --cpu-bind depth \
    python ilsvrc_dataset.py -c ilsvrc.json --num-workers $NUM_WORKERS \
-       --logdir logdir $(eval $PROFILE)
+       --logdir logdir $(eval $PROFILE)  |& tee -a run_$NUM_WORKERS.log
 
-
-
-
-
-echo [$SECONDS] done
