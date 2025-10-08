@@ -41,7 +41,7 @@ We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/m
 
 ## Hands-on Session Example
 
-* [LLAMA2-7B](./llama2-7b.md)
+* [LLAMA3-8B](./llama3-8b.md)
   
 
 # Useful Resources 
