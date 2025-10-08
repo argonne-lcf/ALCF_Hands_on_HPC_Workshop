@@ -29,7 +29,7 @@ module load conda
 conda activate
 cd <path/to/dataPipelines/00_tensorflowDatasetAPI/>
 # start tensorboard (load_fast==false is a recent setting that seems to be needed until Tensorflow work's out the bugs)
-tensorboard --bind_all --port $PORT --logdir logdir 
+tensorboard --bind_all --port 10001 --logdir logdir 
 ```
 Note the Port number that `tensorboard` reports when it starts up.
 
