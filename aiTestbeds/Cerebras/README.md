@@ -26,7 +26,7 @@ ssh cer-anl-net001-us-sr02
 ```
 ## Job Queuing and Submission
 
-The CS-2 cluster has its own Kubernetes-based system for job submission and queuing. Jobs are started automatically through the Python scripts. 
+The CS-3 cluster has its own Kubernetes-based system for job submission and queuing. Jobs are started automatically through the Python scripts. 
 
 Use Cerebras cluster command line tool to get addional information about the jobs.
 
