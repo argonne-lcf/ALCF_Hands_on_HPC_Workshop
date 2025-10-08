@@ -7,12 +7,10 @@ We present an overview of novel AI accelerators, namely Cerebras, SambaNova, Gra
 * **Time:** October 8, 2025
   * 1 - 2 PM: ALCF AI Testbeds
 * **Location:** 
-* **Slack Channel:** [#ai-testbeds](https://join.slack.com/share/enQtNzk0NTczODk1MzIzNy03ODEyOTEyZjUzOWNhODZkMGE0YWY2YTRlZTkyZDZhMGQ1ZDVlMWYyYzI1NGRkM2QwMjZmZmQ4ZTI0ZGUzMGEz): Use to get help, post questions, error messages, etc.             |
+
 
 
 ## Useful Links 
-
-+ [ALCF Hands-on HPC Workshop 2024 Agenda](https://www.alcf.anl.gov/events/2024-alcf-hands-hpc-workshop)
 + [Overview of AI Testbeds at ALCF](https://www.alcf.anl.gov/alcf-ai-testbed)
 + [ALCF AI Testbed Documentation](https://docs.alcf.anl.gov/ai-testbed/getting-started/)
 + [Director’s Discretionary Allocation Program](https://www.alcf.anl.gov/science/directors-discretionary-allocation-program)
