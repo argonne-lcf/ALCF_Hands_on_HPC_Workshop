@@ -8,19 +8,15 @@ The scripts containing the `compile` and `run` commands for the GPT 1.5B model c
 Change directory and copy files.
 
 ```bash
-mkdir -p ~/apps/nlp/Gpt1.5B_single
-cd ~/apps/nlp/Gpt1.5B_single
+mkdir -p ~/workshop/Gpt1.5B_single
+cd ~/workshop/Gpt1.5B_single
 ```
 
-Copy and paste the contents of
-[Gpt1.5B_base_single_compile.sh](./files/Gpt1.5B_base_single_compile.sh "Gpt1.5B_base_single_compile.sh") and [Gpt1.5B_base_single_run.sh](./files/Gpt1.5B_base_single_run.sh "Gpt1.5B_base_single_run.sh") 
-to a file with the same names into the current directory using your favorite editor.
-
-or copy the contents from `/data/ANL/scripts/Gpt1.5B_base_single_compile.sh` and `/data/ANL/scripts/Gpt1.5B_base_single_run.sh`.
+copy the contents from `/data/ANL/scripts/Gpt1.5B_base_single_compile.sh` and `/data/ANL/scripts/Gpt1.5B_base_single_run.sh`.
 
 ```bash
-cp /data/ANL/scripts/1.24.1/legacy_models/Gpt1.5B_base_single_compile.sh ~/apps/nlp/Gpt1.5B_single/
-cp /data/ANL/scripts/1.24.1/legacy_models/Gpt1.5B_base_single_run.sh ~/apps/nlp/Gpt1.5B_single/
+cp /data/ANL/scripts/1.24.1/legacy_models/Gpt1.5B_base_single_compile.sh ~/workshop/Gpt1.5B_single
+cp /data/ANL/scripts/1.24.1/legacy_models/Gpt1.5B_base_single_run.sh ~/workshop/Gpt1.5B_single
 ```
 If you have already compiled for a previous version of the sambaflow stack, delete existing pef file, if it exists.
 ```bash
