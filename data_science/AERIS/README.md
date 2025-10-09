@@ -219,7 +219,7 @@ Figure 9: AERIS: Scaling Results
 Figure 10: Hurricane Laura tracks (top) and intensity (bottom).
 Initialized 7(a), 5(b) and 3(c) days prior to 2020-08-28T00z.
 
-## S2S: Subsseasonal-to-Seasonal Forecasts
+## S2S: Subseasonal-to-Seasonal Forecasts
 
 > [!IMPORTANT]
 >
