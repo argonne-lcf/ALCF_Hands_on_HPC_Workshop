@@ -69,14 +69,16 @@ Then navigate to the particular material of interest and follow the instructions
 
 ##### Overview of AI
 
-| Topic             | Duration | Time            | Speakers                            |
-| ----------------- | -------- | --------------- | ----------------------------------- |
-| Intel Python      | 30 min   | 10:00 - 10:30AM | Riccardo Balin, ANL                 |
-| Torch             | 50 min   | 10:30 - 11:20AM | Filippo Simini, Khalid Hossain, ANL |
-| TensorFlow        | 10 min   | 11:20 - 11:30AM | Filippo Simini, Khalid Hossain, ANL |
-| JAX               | 30 min   | 11:30 - 12:00AM | Filippo Simini, Khalid Hossain, ANL |
-| Break             | 30 min   | 12:00 - 12:30PM |                                     |
-| Foundation Models | 45 min   | 12:30 -1:15 PM  | Sam Foreman, ANL                    |
+
+| Topic                                                        | Duration | Time            | Speakers                            |
+| ------------------------------------------------------------ | -------- | --------------- | ----------------------------------- |
+| Intel Python                                                 | 30 min   | 10:00 - 10:30AM | Riccardo Balin, ANL                 |
+| Torch                                                        | 50 min   | 10:30 - 11:20AM | Filippo Simini, Khalid Hossain, ANL |
+| TensorFlow                                                   | 10 min   | 11:20 - 11:30AM | Filippo Simini, Khalid Hossain, ANL |
+| JAX                                                          | 30 min   | 11:30 - 12:00AM | Filippo Simini, Khalid Hossain, ANL |
+| Break                                                        | 30 min   | 12:00 - 12:30PM |                                     |
+| [Foundation Models](https://samforeman.me/talks/2025/09/24/) | 45 min   | 12:30 -1:15 PM  | Sam Foreman, ANL                    |
+
 
 ##### WorkFlows and Data Management
 
@@ -120,18 +122,19 @@ Then navigate to the particular material of interest and follow the instructions
 
 ##### AI and Extended Hands-on Time
 
-| Topic             | Duration | Time             | Speakers            |
-| ----------------- | -------- | ---------------- | ------------------- |
-| Profiling AI/ML   | 60 min   | 9:00 - 10:00 AM  | Khalid Hossain, ANL |
-| Data Pipelines    | 60 min   | 10:00 - 11:00 AM | Huihuo Zheng, ANL   |
-| AM Break          | 10 min   | 11:00 -11:10 AM  |                     |
-| Hands-On Time     | 50 min   | 11:10 - 12:00 PM |                     |
-| Group Photo       | 10 min   | 12:00 - 1:00PM   | Everyone            |
-| **Working Lunch** | 60 min   | 12:00 - 1:00 PM  | Sam Foreman, ANL    |
-| AI Testbeds       | 60 min   | 1:00 - 2:00 PM   | Varuni Sastry, ANL  |
-| PM Break          | 15 min   | 2:00 - 2:15 PM   |                     |
-| Hands-On Time     | 175 min  | 2:15 -4:00 PM    |                     |
-| Argonne Tour      | 60 min   | 4:00 - 5:00 PM   |                     |
+| Topic                                                                                                               | Duration | Time             | Speakers            |
+| ------------------------------------------------------------------------------------------------------------------- | -------- | ---------------- | ------------------- |
+| Profiling AI/ML                                                                                                     | 60 min   | 9:00 - 10:00 AM  | Khalid Hossain, ANL |
+| Data Pipelines                                                                                                      | 60 min   | 10:00 - 11:00 AM | Huihuo Zheng, ANL   |
+| AM Break                                                                                                            | 10 min   | 11:00 -11:10 AM  |                     |
+| Hands-On Time                                                                                                       | 50 min   | 11:10 - 12:00 PM |                     |
+| Group Photo                                                                                                         | 10 min   | 12:00 - 1:00PM   | Everyone            |
+| [AERIS: Argonne Earth Systems Model for Reliable and Skillful Predictions](https://samforeman.me/talks/2025/10/08/) | 60 min   | 12:00 - 1:00 PM  | Sam Foreman, ANL    |
+| AI Testbeds                                                                                                         | 60 min   | 1:00 - 2:00 PM   | Varuni Sastry, ANL  |
+| PM Break                                                                                                            | 15 min   | 2:00 - 2:15 PM   |                     |
+| Hands-On Time                                                                                                       | 175 min  | 2:15 -4:00 PM    |                     |
+| Argonne Tour                                                           | 60 min   | 4:00 - 5:00 PM   |                     |
+
 
 #### Thursday, Oct. 9
 
