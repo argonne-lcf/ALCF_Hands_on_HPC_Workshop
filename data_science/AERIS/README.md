@@ -260,36 +260,19 @@ removed; m/s), averaged between 10°S and 10°N, for a 90-day rollout.
 
 ## References
 
-1.  [What are Diffusion Models? \|
-    Lil’Log](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/)
-2.  [Step by Step visual introduction to Diffusion Models. - Blog by
-    Kemal
-    Erdem](https://erdem.pl/2023/11/step-by-step-visual-introduction-to-diffusion-models)
-3.  [Understanding Diffusion Models: A Unified
-    Perspective](https://calvinyluo.com/2022/08/26/diffusion-tutorial.html)
-
-<div id="refs" class="references csl-bib-body hanging-indent"
-entry-spacing="0">
-
-<div id="ref-stock2025aeris" class="csl-entry">
+1.  [What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/)
+2.  [Step by Step visual introduction to Diffusion Models.](https://erdem.pl/2023/11/step-by-step-visual-introduction-to-diffusion-models)
+3.  [Understanding Diffusion Models: A Unified Perspective](https://calvinyluo.com/2022/08/26/diffusion-tutorial.html)
 
 Hatanpää, Väinö, Eugene Ku, Jason Stock, Murali Emani, Sam Foreman,
 Chunyong Jung, Sandeep Madireddy, et al. 2025. “AERIS: Argonne Earth
 Systems Model for Reliable and Skillful Predictions.”
 <https://arxiv.org/abs/2509.13523>.
 
-
-
-<div id="ref-price2024gencast" class="csl-entry">
-
 Price, Ilan, Alvaro Sanchez-Gonzalez, Ferran Alet, Tom R. Andersson,
 Andrew El-Kadi, Dominic Masters, Timo Ewalds, et al. 2024. “GenCast:
 Diffusion-Based Ensemble Forecasting for Medium-Range Weather.”
 <https://arxiv.org/abs/2312.15796>.
-
-
-
-
 
 ## Extras
 
@@ -300,15 +283,15 @@ Diffusion-Based Ensemble Forecasting for Medium-Range Weather.”
 
 - Given $x_{0} \sim q(x)$, we can construct a *forward diffusion
   process* by gradually adding noise to $x_{0}$ over $T$ steps:
-  $x_{0} \rightarrow \left\{x_{1}, \ldots, x_{T}\right\}$.
+  $x_{0} \rightarrow \left(x_{1}, \ldots, x_{T}\right)$.
 
   - Step sizes $\beta_{t} \in (0, 1)$ controlled by a *variance
     schedule* $\{\beta\}_{t=1}^{T}$, with:
 
-    $$\begin{aligned}
+    $$\begin{align}
     q(x_{t}|x_{t-1}) = \mathcal{N}(x_{t}; \sqrt{1-\beta_{t}} x_{t-1}, \beta_{t} I) \\
     q(x_{1:T}|x_{0}) = \prod_{t=1}^{T} q(x_{t}|x_{t-1})
-    \end{aligned}$$
+    \end{align}$$
 
   - Introduce:
 
