@@ -1,5 +1,4 @@
 import torch
-import intel_extension_for_pytorch as ipex
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
@@ -20,8 +19,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 criterion = torch.nn.CrossEntropyLoss()
 model.train()
 model = model.to(device)
-criterion = criterion.to(device)
-model, optimizer = ipex.optimize(model, optimizer=optimizer)
+
 
 for epoch in range(50):
     print(epoch)

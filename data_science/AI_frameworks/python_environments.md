@@ -1,4 +1,4 @@
-# Python Environments
+# Python Environments on Aurora
 
 **Learning Goals:**
 
@@ -8,8 +8,12 @@
 
 ## Overview
 
-ALCF provides a pre-built Anaconda environment that makes available [PyTorch](https://pytorch.org/), [TensorFlow](https://www.tensorflow.org/), [Horovod](https://horovod.readthedocs.io/en/stable/tensorflow.html), and [mpi4py](https://mpi4py.readthedocs.io/en/stable/) with Intel extensions and optimizations, among other popular Python and ML packages.
+ALCF provides a pre-built Anaconda environment that makes available [PyTorch](https://pytorch.org/), other libraries from the PyTorch ecosystem like [torchtitan](https://github.com/pytorch/torchtitan), [torchtune](https://github.com/pytorch/torchtune),  [torchao](https://github.com/pytorch/ao), Intel extensions and optimizations, and other popular Python and ML packages like numpy and [mpi4py](https://mpi4py.readthedocs.io/en/stable/).
 This Anaconda environment can be activated loading the `frameworks` module.
+
+
+[TensorFlow](https://www.tensorflow.org/) and [Horovod](https://horovod.readthedocs.io/en/stable/tensorflow.html) are available in the `tensorflow` module: `module load tensorflow`. 
+Legacy tensorflow applications can run with this module or in a container image, but we recommend using PyTorch for new projects. 
 
 
 ## The AI/ML `frameworks` module
