@@ -1,0 +1,25 @@
+This directory contains a small MPI program. Each MPI rank offloads
+a computation on a GPU tile using SYCL.
+
+Type 'make' for information about how to build the program, measure
+its performance, analyze resulting measurements, and view the
+results.
+
+This example uses Intel's GTPin to instrument GPU binaries used by
+the code to do instruction counting. The instrumentation adds a
+counter to each basic block. At runtime, the counter for a basic
+block is incremented each time the block is entered. When hpcrun
+finalizes measurements, it takes the count for a basic block and
+propagates it to each instruction in the basic block.
+(Each instruction in the basic block is executed the same number
+of times the block is entered.)
+
+During hpcprof then takes the counts for each machine instruction
+and maps them back to source code lines, letting you know how many
+instruction instances executed on behalf of each source code line.
+
+NOTE: A shortcoming in Intel's Level Zero runtime may cause
+differences between GPU binaries across MPI ranks. This can cause
+measurements within GPU kernels to be separate per rank rather
+than all summed together. This example uses two ranks and you
+may see two copies of the kernel being launched, one per rank.

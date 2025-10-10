@@ -2,12 +2,12 @@
 
 Go to directory with fc_mnist example. 
 ```bash
-cd ~/R_2.3.0/modelzoo/modelzoo/transformers/pytorch/bert
+cd ~/R_2.5.0/modelzoo/modelzoo/transformers/pytorch/bert
 ```
 
 Activate PyTroch virtual Environment 
 ```bash
-source ~/R_2.3.0/venv_pt/bin/activate
+source ~/R_2.5.0/venv_pt/bin/activate
 ```
 
 Replace config file with correct configurations file. 
@@ -19,7 +19,7 @@ Run Training Job
 ```bash
 export MODEL_DIR=model_dir_bert_large_pytorch
 if [ -d "$MODEL_DIR" ]; then rm -Rf $MODEL_DIR; fi
-python run.py CSX --job_labels name=bert_pt --params configs/bert_large_MSL128_sampleds.yaml --num_workers_per_csx=1 --mode train --model_dir $MODEL_DIR --mount_dirs /home/ /software/ --python_paths /home/$(whoami)/R_2.3.0/modelzoo/ --compile_dir $(whoami) |& tee mytest.log
+python run.py CSX --job_labels name=bert_pt --params configs/bert_large_MSL128_sampleds.yaml --num_workers_per_csx=1 --mode train --model_dir $MODEL_DIR --mount_dirs /home/ /software/ --python_paths /home/$(whoami)/R_2.5.0/modelzoo/ --compile_dir $(whoami) |& tee mytest.log
 ```
 <details>
   <summary>Sample Output</summary>

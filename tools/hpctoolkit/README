@@ -1,0 +1,26 @@
+This hands-on session is meant to be done on Aurora.
+
+To get a compute node for the hands-on session, execute the command below on the login node:
+
+source sourceme-get-compute-node.sh  
+
+Once you are on a compute node, load the hpctoolkit module with the following command
+
+source sourceme-on-compute-node.sh
+
+
+The hands-on examples are in the directories below
+
+hpcstruct - measuring hpctoolkit's hpcstruct multithreaded binary analysis tool
+minitest - a set of small examples 
+
+  standard measurement with profiling and tracing:
+    minitest.omp - a small test program that offloads a kernel three times with OpenMP 
+    minitest.sycl - a small test program that offloads a kernel three times with sycl 
+
+  instruction-level measurement within kernels using binary instrumentation:
+    minitest.sycl.gtpin - a small test program that offloads a kernel three times with sycl 
+
+  instruction-level measurement within kernels using hardware-based instruction sampling:
+    minitest.sycl.pc - a small test program that offloads a kernel three times with sycl 
+

@@ -6,16 +6,16 @@
 
 
 ```bash
-#Make your home directory navigable
-mkdir ~/R_2.3.0
-cd ~/R_2.3.0
-# Note: "deactivate" does not actually work in scripts.
-deactivate
-rm -r venv_cerebras_pt
-/software/cerebras/python3.8/bin/python3.8 -m venv venv_cerebras_pt
-source venv_cerebras_pt/bin/activate
-pip install --upgrade pip
-pip install cerebras_pytorch==2.3.0
+    #Make your home directory navigable
+    mkdir ~/R_2.5.0
+    cd ~/R_2.5.0
+    # Note: "deactivate" does not actually work in scripts.
+    deactivate
+    rm -r venv_cerebras_pt
+    /software/cerebras/python3.8/bin/python3.8 -m venv venv_cerebras_pt
+    source venv_cerebras_pt/bin/activate
+    pip install --upgrade pip
+    pip install -e modelzoo
 ```
 
 ## Clone Cerebras modelzoo
@@ -23,32 +23,25 @@ pip install cerebras_pytorch==2.3.0
 We use example from [Cerebras Modelzoo repository](https://github.com/Cerebras/modelzoo) for this hands-on. 
 
 * Clone the modezoo repository.
-
-    ```bash
-    mkdir ~/R_2.3.0
-    cd ~/R_2.3.0
+```bash
+    mkdir ~/R_2.5.0
+    cd ~/R_2.5.0
+    export HTTPS_PROXY=http://proxy.alcf.anl.gov:3128
     git clone https://github.com/Cerebras/modelzoo.git
     cd modelzoo
     git tag
-    git checkout Release_2.3.0
-    ```
+    git checkout Release_2.5.0
+```
 
 * Activate PyTorch virtual Environment 
     ```bash
-    source ~/R_2.3.0/venv_cerebras_pt/bin/activate
-    pip install -r ~/R_2.3.0/modelzoo/requirements.txt
+    source ~/R_2.5.0/venv_cerebras_pt/bin/activate
+    pip install -r ~/R_2.5.0/modelzoo/requirements.txt
     ```
 
 ## Hands-on Session Example
 
-* [LLAMA2-7B](./llama2-7b.md)
-
-
-## Next Steps
-
-Try additonal examples. 
-* [FC-MNIST](./fc-mnist.md)
-* [BERT-Large](./bert-large.md)
+* [LLAMA3-8B](./llama3-8b.md)
   
 
 # Useful Resources 

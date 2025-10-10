@@ -1,0 +1,9 @@
+This directory contains a small MPI program. Each MPI rank offloads
+a computation on a GPU tile using SYCL.
+
+Type 'make' for information about how to build the program, measure
+its performance, analyze resulting measurements, and view the 
+results.
+
+For suggestions about how to explore the data, see the README file
+in ../minitest.omp

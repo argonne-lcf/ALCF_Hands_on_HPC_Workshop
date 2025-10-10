@@ -1,0 +1,53 @@
+This directory showcases measurement and analysis of a multithreaded
+CPU code.  The example uses hpctoolkit's hpcrun to measure
+hpctoolkit's binary analyzer analyzing itself. This serves to
+illustrate that you can use hpctoolkit to analyze just about
+anything. hpcstruct is parallelized using OpenMP tasks.
+
+Type 'make' for information about how to build the program, measure
+its performance, analyze resulting measurements, and view the results.
+
+Some suggestions for how to explore the performance data:
+
+A good approach to understanding parallel program performance is to
+first start with traces, if any.
+
+Select the trace tab in the top pane of the browser.
+
+The main view shows the traces of threads over time. The top trace
+line represents thread 0. The rest of the trace lines represent OpenMP
+worker threads.  In the call stack pane on the right, you will you can
+see the full call stack of the thread selected by the cursor at the
+time where the cursor is positioned. You can move the cursor to
+another position by simply selecting a new point with a mouse click.
+
+You can zoom in by selecting a rectangular region. You can also zoom
+in, zoom out, pan up/down/left/right, or reset the display to the
+whole trace using the trace control buttons. Hover over a button for a
+tool tip that will explain what it does.
+
+You can view the trace lines at different call stack depths. You can
+change the depth of the view by either selecting a frame in the call
+stack, typing a number into the depth selector, or pressing the up or
+down button next to the depth selector. To the right of the depth
+selector is a downward pointing arrow. You can move your selection to
+the deepest call stack depth by pressing that button.
+
+One striking element of the view is that there are several unbroken
+bands of color: two teal and one tan.  What call stack is a thread in
+when it is in the teal band? What call stack is a thread in when it is
+in the tan banc?
+
+Load imbalance and serialization are visibile as some threads working
+while others are waiting.
+
+What does the reddish brown region indicate? Select that in thread 0 and
+look at the full call stack in the master thread associated with this
+activity. Switch to the profile view and locate the call stack that
+you see with a selection in the brown band in thread 0.  What is
+causing the activity represented by the brown band across all of the
+threads? How could it be avoided?
+
+In the trace view, the statistics tab will tabulate a view that shows you the distribution of the time at the current depth.
+
+
