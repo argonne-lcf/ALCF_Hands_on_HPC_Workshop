@@ -1,7 +1,7 @@
 Globus Compute: Remote execution of applications with Globus
 ===============================================
 
-This tutorial demonstrates how to run applications on Polaris using [Globus Compute](https://www.globus.org/compute).  Globus Compute (formerly called FuncX) operates on a "fire-and-forget" model in which functions are sent to the Globus service to be deployed on a machine of the user's choice.  Globus Compute will communicate with a user process operating on a machine's login node callend an [endpoint](https://globus-compute.readthedocs.io/en/latest/endpoints.html).  The Globus Compute endpoint will use Parsl locally to communicate with the scheduler and execute work on compute nodes.
+This tutorial demonstrates how to run applications on Polaris using [Globus Compute](https://globus-compute.readthedocs.io/en/3.16.1/index.html).  These matterials apply to Globus Compute version 3.16.1.  These materials will be updated to version 4 in 2026.  Globus Compute (formerly called FuncX) operates on a "fire-and-forget" model in which functions are sent to the Globus service to be deployed on a machine of the user's choice.  Globus Compute will communicate with a user process operating on a machine's login node callend an [endpoint](https://globus-compute.readthedocs.io/en/3.16.1/endpoints/endpoints.html).  The Globus Compute endpoint will use Parsl locally to communicate with the scheduler and execute work on compute nodes.
 
 Globus Compute can be used to execute functions remotely as a service and can be integrated with [Globus Flows](https://docs.globus.org/api/flows/) to create workflows that automate the inegration of data transfers and function execution.
 
@@ -33,7 +33,7 @@ module load conda
 conda activate base
 python -m venv env
 source env/bin/activate
-pip install globus-compute-endpoint
+pip install globus-compute-endpoint==3.16.1
 ```
 
 Also, verify the version of python you are running on Polaris:
