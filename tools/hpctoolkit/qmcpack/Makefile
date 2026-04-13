@@ -12,7 +12,7 @@ default:
 	@echo "  veryclean: clean + remove hpctoolkit database with analysis results"
 	@echo ---------------------------------------------------------------------------------------
 
-run:
+run: veryclean
 	time ./measure_qmcpack.sh |& tee hpcrun.log
 
 analyze:

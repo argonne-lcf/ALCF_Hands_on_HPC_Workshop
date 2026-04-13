@@ -4,9 +4,6 @@ LIBS=-lm
 
 SOURCES=src/single.cc src/syclgpu.cc
 
-HPCRUN_PC=/soft/perftools/hpctoolkit/.install/2025-05-incite/hpctoolkit/branches/pcsampling-preview/installdir-db7e75c/bin/hpcrun
-LP=LD_LIBRARY_PATH=/soft/perftools/hpctoolkit/.install/2025-05-incite/hpctoolkit/branches/pcsampling-preview/installdir-db7e75c/lib64:$(LD_LIBRARY_PATH)
-
 EXEC=minitest.sycl
 EXEC_PATH=./$(EXEC)
 
@@ -24,6 +21,7 @@ default:
 	@echo IMPORTANT: you must be on a compute node to use the run target
 	@echo
 	@echo The Makefile supports five commands:
+	@echo "  build:     compile the executable $(EXEC)"
 	@echo "  run:       measure a 2-ranks + 2 GPU tile execution of $(EXEC) using hpcrun"
 	@echo "  view:      view the performance database produced by hpcprof"
 	@echo "  clean:     remove qmcpack output and hpctoolkit measurements"
@@ -39,7 +37,7 @@ view:
 	else echo You must first use \'make run\' on a compute node to build $(DB); fi 
 	
 $(DB): $(EXEC_PATH)
-	$(LP) mpiexec -np 1 $(HPCRUN_PC) -o $(MD) -e CPUTIME -e gpu=level0,pc $(EXEC_PATH)
+	$(LP) mpiexec -np 1 hpcrun -o $(MD) -e CPUTIME -e gpu=level0,pc $(EXEC_PATH)
 	hpcstruct -x libyaksa $(MD)
 	hpcprof -o $(DB) $(MD)
 

@@ -55,6 +55,9 @@ twork( int iter, int threadnum)
   int gpu_index = (threadnum + rank) % gpu_queues.size();
   sycl::queue &q = gpu_queues[gpu_index];
 
+#ifdef EARLY_COPYOUT
+  {
+#endif
   // Create buffers that hold the data shared between the host and the devices.
   // The buffer destructor is responsible to copy the data back to host when it
   // goes out of scope.
@@ -84,6 +87,9 @@ twork( int iter, int threadnum)
   }
   );
   q.wait();
+#ifdef EARLY_COPYOUT
+  }
+#endif
 
   hrtime_t endtime = gethrtime();
   double  tempus =  (double) (endtime - iterstarttime) / (double)1000000000.;

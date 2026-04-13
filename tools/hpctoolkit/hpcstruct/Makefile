@@ -6,7 +6,6 @@ default:
 	@echo
 	@echo The Makefile supports five commands:
 	@echo "  run:       measure a 12-rank + 12 GPU tile execution of qmcpack using hpcrun"
-	@echo "  analyze:   analyze binaries using hpcstruct and postprocess measurements with hpcprof"
 	@echo "  view:      view the performance database produced by hpcprof"
 	@echo "  clean:     remove qmcpack output and hpctoolkit measurements"
 	@echo "  veryclean: clean + remove hpctoolkit database with analysis results"

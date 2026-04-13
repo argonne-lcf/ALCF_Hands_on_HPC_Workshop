@@ -37,7 +37,7 @@ view:
 	else echo You must first use \'make run\' on a compute node to build $(DB); fi 
 	
 $(DB): $(EXEC_PATH)
-	OMP_NUM_THREADS=8 mpiexec -np 12 hpcrun -o $(MD) -e CPUTIME -e gpu=level0 -t $(EXEC_PATH)
+	OMP_NUM_THREADS=8 mpiexec --envall -np 12 -ppn 12 -depth 8 hpcrun -o $(MD) -e REALTIME -e gpu=level0 -tt $(EXEC_PATH) -I 10
 	hpcstruct $(MD)
 	hpcprof -o $(DB) $(MD)
 

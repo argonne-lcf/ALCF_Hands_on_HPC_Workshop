@@ -1,6 +1,10 @@
-CPPFLAGS=-DUSE_MPI
+CPPFLAGS=-DUSE_MPI $(SCOPE)
 OPT=-g -O2 -fsycl
 LIBS=-lm
+
+ifeq ($(EARLY),1)
+    CPPFLAGS += -DEARLY_COPYOUT
+endif
 
 SOURCES=src/single.cc src/syclgpu.cc
 
@@ -21,12 +25,22 @@ default:
 	@echo IMPORTANT: you must be on a compute node to use the run target
 	@echo
 	@echo The Makefile supports five commands:
-	@echo "  build:     compile the executable $(EXEC)"
+	@echo "  build:     ensure the executable $(EXEC)" is compiled
+	@echo "  early:     compile the executable $(EXEC), with early copyout"
+	@echo "  late:      compile the executable $(EXEC), with late copyout"
 	@echo "  run:       measure a 12-rank + 12 GPU tile execution of $(EXEC) using hpcrun"
 	@echo "  view:      view the performance database produced by hpcprof"
 	@echo "  clean:     remove qmcpack output and hpctoolkit measurements"
 	@echo "  veryclean: clean + remove hpctoolkit database with analysis results"
 	@echo ---------------------------------------------------------------------------------------
+
+early:
+	rm -f $(EXEC_PATH)
+	make build EARLY=1
+
+late:
+	rm -f $(EXEC_PATH)
+	make build
 
 build: $(EXEC_PATH)
 
@@ -38,7 +52,8 @@ view:
 	
 $(DB): $(EXEC_PATH)
 	#OMP_NUM_THREADS=2 mpiexec -np 12 hpcrun -o $(MD) -e CPUTIME -e gpu=level0 -t $(EXEC_PATH)
-	mpiexec -np 12 hpcrun -o $(MD) -e CPUTIME -e gpu=level0 -t $(EXEC_PATH)
+	mpiexec -np 12 hpcrun -o $(MD) -e CPUTIME -e gpu=level0 -t $(EXEC_PATH) -I 10
+	# mpiexec -np 24 -ppn 12 hpcrun -o $(MD) -e CPUTIME -e gpu=level0 -t $(EXEC_PATH) -I 10
 	hpcstruct $(MD)
 	hpcprof -o $(DB) $(MD)
 

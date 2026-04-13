@@ -1,8 +1,8 @@
 #!/bin/bash
-#PBS -A ATPESC2025
+#PBS -A gpu_hack
 #PBS -l walltime=10:00
 #PBS -l filesystems=flare
-#PBS -q ATPESC
+#PBS -q debug
 
 # The rest is an example of how an MPI job might be set up
 echo Working directory is `pwd`
@@ -35,6 +35,7 @@ NNODES=`wc -l < $PBS_NODEFILE`
 NRANKS=12         # Number of MPI ranks per node
 NDEPTH=8          # Number of hardware threads per rank, spacing between MPI ranks on a node
 
+NRANKS=6
 NTOTRANKS=$(( NNODES * NRANKS ))
 echo "NUM_NODES=${NNODES}  TOTAL_RANKS=${NTOTRANKS}  RANKS_PER_NODE=${NRANKS}  THREADS_PER_RANK=${OMP_NUM_THREADS}"
 
@@ -43,7 +44,8 @@ echo Information about the i915 GPU driver:
 cat /sys/module/i915/version
 
 exe_root=/flare/alcf_training/hpctoolkit_examples/.qmcpack
-exe_bin=$exe_root/qmcpack/build-g/bin
+exe_root=/home/johnmc/work/hackathon
+exe_bin=$exe_root/qmcpack/build_aurora_oneapi2025.3.1_gpu_real_MP/bin
 
 echo # blank line
 echo "Output from ldd qmcpack (showing all of the libraries linked with it):"
@@ -55,26 +57,23 @@ export ExperimentalH2DCpuCopyThreshold=50000
 CPU_BIND=list:1-8:9-16:17-24:25-32:33-40:41-48:53-60:61-68:69-76:77-84:85-92:93-100
 CPU_BIND_VERBOSE=verbose,$CPU_BIND
 
-module load gcc/13.3.0
-LD_LIBRARY_PATH=/opt/aurora/24.347.0/spack/unified/0.9.2/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib64:$LD_LIBRARY_PATH
-
-module use /soft/perftools/hpctoolkit/.install/2025-10/modulefiles
-module load hpctoolkit/2025.1.0-alpha
+module use /soft/perftools/hpctoolkit/modulefiles
+module load hpctoolkit
 
 HPCRUN_BIN=`which hpcrun`
 
-export HPCRUN="$HPCRUN_BIN --disable-auditor -e CPUTIME -t -e gpu=level0 -e gpu=opencl -o qmcpack.m"
+export HPCRUN="$HPCRUN_BIN -e CPUTIME -tt -e gpu=level0 -e gpu=opencl -o qmcpack.m"
 
 COMPACT=/soft/tools/mpi_wrapper_utils/gpu_tile_compact.sh 
 
 QMCPACK=$exe_bin/qmcpack 
-QMCPACK_INPUT=/flare/alcf_training/hpctoolkit_examples/.qmcpack/inputs/NiO-fcc-S128-dmc.xml
+QMCPACK_INPUT=/home/johnmc/work/inputs/NiO-fcc-S128-dmc.xml
 
 echo # blank line
 echo "Start time: `date`"
 echo # blank line
 echo Executing the following command:
-cmd="mpiexec -np ${NTOTRANKS} -ppn ${NRANKS} -d ${NDEPTH} --cpu-bind $CPU_BIND $COMPACT $HPCRUN $QMCPACK --enable-timers=fine $QMCPACK_INPUT "
+cmd="mpiexec --envall -np ${NTOTRANKS} -ppn ${NRANKS} -d ${NDEPTH} --cpu-bind $CPU_BIND $COMPACT $HPCRUN $QMCPACK --enable-timers=fine $QMCPACK_INPUT "
 echo $cmd
 eval $cmd
 rc=$?
